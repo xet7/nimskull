@@ -292,6 +292,14 @@ window.addEventListener('DOMContentLoaded', main);
 
   else:
       nil">LexerReport</a></li>
+  <li><a class="reference" href="#MismatchInfo"
+    title="MismatchInfo = object
+  kind*: MismatchKind        ## reason for mismatch
+  pos*: int ## position of provided argument that mismatches. This doesn't always correspond to
+            ## the *expression* subnode index (e.g. `.=`) nor the *target parameter* index (varargs)
+  arg*: PNode                ## the node of the mismatching provided argument
+  formal*: PSym ## parameter that mismatches against provided argument
+                ## its position can differ from `arg` because of varargs">MismatchInfo</a></li>
   <li><a class="reference" href="#ParserReport"
     title="ParserReport = object of ReportBase
   msg*: string
@@ -384,26 +392,9 @@ window.addEventListener('DOMContentLoaded', main);
   <li><a class="reference" href="#SemCallMismatch"
     title="SemCallMismatch = object
   target*: PSym              ## Procedure that was tried for an overload resolution
-  expression*: PNode         ## Full typed expression that was used as a
-                             ## procedure call
-  arg*: int ## Mismatched argument index. This corresponds to the
-            ## *expression* subnode index - due to varargs actual *target
-            ## parameter* index might differe. See `.formal` field for the actual
-            ## target argument symbol.
-  targetArg*: PSym           ## parameter that mismatches against provided
-                             ## argument its position can differ from `arg` because of varargs
-  arguments*: seq[PNode]
-  case kind*: MismatchKind
-  of kTypeMismatch, kVarNeeded:
-      typeMismatch*: SemTypeMismatch ## Argument type mismatch
-                                     ## elaboration
-      diag*: SemDiagnostics
-
-  of kPositionalAlreadyGiven, kUnknownNamedParam, kAlreadyGiven, kMissingParam:
-      nil                    ## Parameter name (if used) is stored in the `.targetArg` symbol
-    
-  else:
-      nil">SemCallMismatch</a></li>
+  firstMismatch*: MismatchInfo ## mismatch info for better error messages
+  diag*: SemDiagnostics
+  diagnosticsEnabled*: bool  ## Set by sfExplain. efExplain or notFoundError ignore this">SemCallMismatch</a></li>
   <li><a class="reference" href="#SemDiagnostics"
     title="SemDiagnostics = object
   diagnosticsTarget*: PSym   ## The concept sym that didn't match
@@ -839,7 +830,7 @@ window.addEventListener('DOMContentLoaded', main);
 
   </div>
   &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L1"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L1"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L1" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -880,9 +871,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L561"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L551"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L561" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L551" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -903,9 +894,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L444"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L434"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L444" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L434" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -945,9 +936,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L516"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L506"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L516" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L506" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -978,9 +969,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L475"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L465"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L475" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L465" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -991,9 +982,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L463"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L453"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L463" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L453" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1005,9 +996,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L464"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L454"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L464" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L454" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1035,9 +1026,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L496"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L486"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L496" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L486" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1069,9 +1060,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 Report about external environment reads, passed configuration options etc.
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L588"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L578"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L588" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L578" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1081,7 +1072,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L34"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L34"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L34" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -1100,9 +1091,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 Information used to construct messages for CLI reports - <tt class="docutils literal"><span class="pre"><span class="Operator">--</span><span class="Identifier">help</span></span></tt>, <tt class="docutils literal"><span class="pre"><span class="Operator">--</span><span class="Identifier">fullhelp</span></span></tt>
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L653"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L643"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L653" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L643" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1139,9 +1130,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 Report generated for the internal compiler workings
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L664"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L654"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L664" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L654" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1165,9 +1156,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L638"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L628"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L638" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L628" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1187,9 +1178,28 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L92"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L92"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L92" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="MismatchInfo">
+<dt><pre><a href="reports.html#MismatchInfo"><span class="Identifier">MismatchInfo</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">kind</span><span class="Operator">*</span><span class="Other">:</span> <a href="ast_types.html#MismatchKind"><span class="Identifier">MismatchKind</span></a>        <span class="Comment">## reason for mismatch</span>
+  <span class="Identifier">pos</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Comment">## position of provided argument that mismatches. This doesn't always correspond to</span>
+            <span class="Comment">## the *expression* subnode index (e.g. `.=`) nor the *target parameter* index (varargs)</span>
+  <span class="Identifier">arg</span><span class="Operator">*</span><span class="Other">:</span> <a href="ast_types.html#PNode"><span class="Identifier">PNode</span></a>                <span class="Comment">## the node of the mismatching provided argument</span>
+  <span class="Identifier">formal</span><span class="Operator">*</span><span class="Other">:</span> <a href="ast_types.html#PSym"><span class="Identifier">PSym</span></a> <span class="Comment">## parameter that mismatches against provided argument</span>
+                <span class="Comment">## its position can differ from `arg` because of varargs</span>
+  </pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L154"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L154" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1212,7 +1222,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L111"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L111"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L111" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -1250,9 +1260,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 Toplevel wrapper type for the compiler report
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L716"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L706"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L716" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L706" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1275,7 +1285,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L74"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L74"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L74" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -1296,7 +1306,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L65"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L65"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L65" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -1309,7 +1319,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L60"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L60"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L60" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -1325,7 +1335,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 Location expressed in terms of a single point in the file
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L43"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L43"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L43" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -1339,9 +1349,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 List of the accumulated reports. Used for various <tt class="docutils literal"><span class="pre"><span class="Identifier">sem</span><span class="Operator">*</span></span></tt> reporting mostly, and in other places where report might be <em>generated</em>, but not guaranteed to be printed out.
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L930"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L920"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L930" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L920" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1353,9 +1363,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L936"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L926"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L936" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L926" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1371,7 +1381,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L49"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L49"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L49" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -1386,44 +1396,26 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L706"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L696"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L706" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L696" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="SemCallMismatch">
 <dt><pre><a href="reports.html#SemCallMismatch"><span class="Identifier">SemCallMismatch</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">target</span><span class="Operator">*</span><span class="Other">:</span> <a href="ast_types.html#PSym"><span class="Identifier">PSym</span></a>              <span class="Comment">## Procedure that was tried for an overload resolution</span>
-  <span class="Identifier">expression</span><span class="Operator">*</span><span class="Other">:</span> <a href="ast_types.html#PNode"><span class="Identifier">PNode</span></a>         <span class="Comment">## Full typed expression that was used as a</span>
-                             <span class="Comment">## procedure call</span>
-  <span class="Identifier">arg</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Comment">## Mismatched argument index. This corresponds to the</span>
-            <span class="Comment">## *expression* subnode index - due to varargs actual *target</span>
-            <span class="Comment">## parameter* index might differe. See `.formal` field for the actual</span>
-            <span class="Comment">## target argument symbol.</span>
-  <span class="Identifier">targetArg</span><span class="Operator">*</span><span class="Other">:</span> <a href="ast_types.html#PSym"><span class="Identifier">PSym</span></a>           <span class="Comment">## parameter that mismatches against provided</span>
-                             <span class="Comment">## argument its position can differ from `arg` because of varargs</span>
-  <span class="Identifier">arguments</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">]</span>
-  <span class="Keyword">case</span> <span class="Identifier">kind</span><span class="Operator">*</span><span class="Other">:</span> <a href="ast_types.html#MismatchKind"><span class="Identifier">MismatchKind</span></a>
-  <span class="Keyword">of</span> <span class="Identifier">kTypeMismatch</span><span class="Other">,</span> <span class="Identifier">kVarNeeded</span><span class="Other">:</span>
-      <span class="Identifier">typeMismatch</span><span class="Operator">*</span><span class="Other">:</span> <a href="reports.html#SemTypeMismatch"><span class="Identifier">SemTypeMismatch</span></a> <span class="Comment">## Argument type mismatch</span>
-                                     <span class="Comment">## elaboration</span>
-      <span class="Identifier">diag</span><span class="Operator">*</span><span class="Other">:</span> <a href="reports.html#SemDiagnostics"><span class="Identifier">SemDiagnostics</span></a>
-
-  <span class="Keyword">of</span> <span class="Identifier">kPositionalAlreadyGiven</span><span class="Other">,</span> <span class="Identifier">kUnknownNamedParam</span><span class="Other">,</span> <span class="Identifier">kAlreadyGiven</span><span class="Other">,</span> <span class="Identifier">kMissingParam</span><span class="Other">:</span>
-      <span class="Keyword">nil</span>                    <span class="Comment">## Parameter name (if used) is stored in the `.targetArg` symbol</span>
-    
-  <span class="Keyword">else</span><span class="Other">:</span>
-      <span class="Keyword">nil</span>
-
+  <span class="Identifier">firstMismatch</span><span class="Operator">*</span><span class="Other">:</span> <a href="reports.html#MismatchInfo"><span class="Identifier">MismatchInfo</span></a> <span class="Comment">## mismatch info for better error messages</span>
+  <span class="Identifier">diag</span><span class="Operator">*</span><span class="Other">:</span> <a href="reports.html#SemDiagnostics"><span class="Identifier">SemDiagnostics</span></a>
+  <span class="Identifier">diagnosticsEnabled</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">bool</span>  <span class="Comment">## Set by sfExplain. efExplain or notFoundError ignore this</span>
   </pre></dt>
 <dd>
 
 Description of the single candidate mismatch. This type is later used to construct meaningful type mismatch message, and must contain all the necessary information to provide meaningful sorting, collapse and other operations.
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L154"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L162"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L154" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L162" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1436,7 +1428,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L150"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L150"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L150" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -1450,7 +1442,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L133"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L133"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L133" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -1467,9 +1459,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 keep history for each transition
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L189"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L179"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L189" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L179" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1611,9 +1603,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L197"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L187"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L197" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L187" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1625,7 +1617,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L139"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L139"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L139" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -1642,9 +1634,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L183"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L173"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L183" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L173" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1657,7 +1649,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L146"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L146"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L146" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -1687,9 +1679,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L620"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L610"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L620" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L610" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1705,9 +1697,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L766"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L756"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L766" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L756" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1725,9 +1717,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L369"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L359"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L369" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L359" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1742,9 +1734,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L925"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L915"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L925" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L915" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1754,9 +1746,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L956"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L946"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L956" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L946" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1767,9 +1759,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 Add report to the report list
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L942"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L932"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L942" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L932" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1779,9 +1771,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L947"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L937"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L947" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L937" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1791,9 +1783,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L798"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L788"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L798" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L788" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1803,9 +1795,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L940"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L930"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L940" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L930" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1815,9 +1807,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L957"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L947"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L957" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L947" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1827,9 +1819,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L958"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L948"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L958" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L948" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1839,9 +1831,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 Get report from the report list using it's id
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L951"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L941"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L951" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L941" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1851,9 +1843,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L939"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L929"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L939" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L929" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1863,9 +1855,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L857"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L847"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L857" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L847" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1875,9 +1867,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L782"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L772"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L782" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L772" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1887,9 +1879,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L783"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L773"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L783" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L773" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1900,9 +1892,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L402"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L392"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L402" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L392" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1912,9 +1904,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L785"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L775"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L785" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L775" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1924,9 +1916,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L787"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L777"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L787" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L777" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1936,9 +1928,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L784"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L774"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L784" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L774" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1948,9 +1940,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L400"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L390"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L400" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L390" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1962,9 +1954,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L415"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L405"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L415" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L405" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1975,9 +1967,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L422"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L412"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L422" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L412" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1988,9 +1980,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L384"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L374"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L384" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L374" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2001,9 +1993,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L409"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L399"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L409" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L399" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2013,7 +2005,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L126"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L126"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L126" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -2025,7 +2017,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L104"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L104"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L104" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -2037,9 +2029,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L581"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L571"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L581" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L571" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2049,9 +2041,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L455"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L445"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L455" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L445" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2061,9 +2053,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L557"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L547"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L557" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L547" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2073,9 +2065,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L613"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L603"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L613" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L603" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2085,9 +2077,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L694"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L684"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L694" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L684" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2099,9 +2091,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 Return report severity accounting for 'asError' and 'asWarning' mapping sets.
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L829"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L819"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L829" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L819" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2112,9 +2104,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L812"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L802"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L812" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L802" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2124,9 +2116,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L376"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L366"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L376" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L366" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2136,9 +2128,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L959"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L949"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L959" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L949" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2149,9 +2141,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L850"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L840"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L850" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L840" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2161,9 +2153,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L880"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L870"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L880" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L870" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2173,9 +2165,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L884"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L874"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L884" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L874" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2185,9 +2177,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L888"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L878"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L888" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L878" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2197,9 +2189,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L896"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L886"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L896" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L886" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2209,9 +2201,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L892"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L882"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L892" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L882" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2221,9 +2213,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L868"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L858"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L868" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L858" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2233,9 +2225,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L872"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L862"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L872" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L862" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2245,9 +2237,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L876"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L866"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L876" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L866" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2257,9 +2249,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L918"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L908"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L918" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L908" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2269,9 +2261,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L900"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L890"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L900" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L890" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2282,9 +2274,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L913"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L903"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L913" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L903" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2294,9 +2286,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L906"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L896"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L906" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L896" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2311,9 +2303,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L853"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L843"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L853" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L843" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2323,9 +2315,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L771"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L761"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L771" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L761" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2335,9 +2327,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L860"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L850"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L860" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L850" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2347,9 +2339,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 Shorthand for inline if/else. Allows use of conditions in strformat, simplifies use in expressions. Less picky with formatting
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L435"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L425"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L435" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L425" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2359,9 +2351,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L429"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L419"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L429" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L419" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2371,9 +2363,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/811aa9a498b6cd64c93f17d6d727819734271e7d/compiler/ast/reports.nim#L922"
+href="https://github.com/nim-works/nimskull/tree/301d1f42a5d50e0d9ad704e4e2a6fd27c3d60b30/compiler/ast/reports.nim#L912"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L922" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/ast/reports.nim#L912" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -2392,7 +2384,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-03-02 00:00:00 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-03-07 00:00:00 UTC</small>
       </div>
     </div>
   </div>

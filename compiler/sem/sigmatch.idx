@@ -1,6 +1,3 @@
-MismatchInfo	sem/sigmatch.html#MismatchInfo	sigmatch: MismatchInfo	
-CandidateError	sem/sigmatch.html#CandidateError	sigmatch: CandidateError	
-CandidateErrors	sem/sigmatch.html#CandidateErrors	sigmatch: CandidateErrors	
 csEmpty	sem/sigmatch.html#csEmpty	TCandidateState.csEmpty	
 csMatch	sem/sigmatch.html#csMatch	TCandidateState.csMatch	
 csNoMatch	sem/sigmatch.html#csNoMatch	TCandidateState.csNoMatch	

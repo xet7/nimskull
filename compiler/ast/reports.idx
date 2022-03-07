@@ -29,6 +29,7 @@ ssefParameterMutation	ast/reports.html#ssefParameterMutation	SemSideEffectCallKi
 SemSideEffectCallKind	ast/reports.html#SemSideEffectCallKind	reports: SemSideEffectCallKind	
 SemTypeMismatch	ast/reports.html#SemTypeMismatch	reports: SemTypeMismatch	
 SemDiagnostics	ast/reports.html#SemDiagnostics	reports: SemDiagnostics	
+MismatchInfo	ast/reports.html#MismatchInfo	reports: MismatchInfo	
 SemCallMismatch	ast/reports.html#SemCallMismatch	reports: SemCallMismatch	
 SemSpellCandidate	ast/reports.html#SemSpellCandidate	reports: SemSpellCandidate	
 SemNilHistory	ast/reports.html#SemNilHistory	reports: SemNilHistory	
