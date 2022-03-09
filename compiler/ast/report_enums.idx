@@ -683,3 +683,8 @@ rsemReportTwoSym	ast/report_enums.html#rsemReportTwoSym	report_enums: rsemReport
 rsemReportOneSym	ast/report_enums.html#rsemReportOneSym	report_enums: rsemReportOneSym	
 rsemReportListSym	ast/report_enums.html#rsemReportListSym	report_enums: rsemReportListSym	
 rsemReportCountMismatch	ast/report_enums.html#rsemReportCountMismatch	report_enums: rsemReportCountMismatch	
+repPerformanceHints	ast/report_enums.html#repPerformanceHints	report_enums: repPerformanceHints	
+repLinkingHints	ast/report_enums.html#repLinkingHints	report_enums: repLinkingHints	
+repStrictNotNilWarnings	ast/report_enums.html#repStrictNotNilWarnings	report_enums: repStrictNotNilWarnings	
+repHintGroups	ast/report_enums.html#repHintGroups	report_enums: repHintGroups	
+repWarningGroups	ast/report_enums.html#repWarningGroups	report_enums: repWarningGroups	

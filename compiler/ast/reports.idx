@@ -34,7 +34,6 @@ SemCallMismatch	ast/reports.html#SemCallMismatch	reports: SemCallMismatch
 SemSpellCandidate	ast/reports.html#SemSpellCandidate	reports: SemSpellCandidate	
 SemNilHistory	ast/reports.html#SemNilHistory	reports: SemNilHistory	
 SemReport	ast/reports.html#SemReport	reports: SemReport	
-rsemMultiNamed	ast/reports.html#rsemMultiNamed	reports: rsemMultiNamed	
 severity	ast/reports.html#severity,SemReport	reports: severity(report: SemReport): ReportSeverity	
 reportSymbols	ast/reports.html#reportSymbols,ReportKind,seq[PSym],PType,PNode	reports: reportSymbols(kind: ReportKind; symbols: seq[PSym]; typ: PType = nil;\n              ast: PNode = nil): SemReport	
 reportSem	ast/reports.html#reportSem,ReportKind	reports: reportSem(kind: ReportKind): SemReport	
