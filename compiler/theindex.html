@@ -343,19 +343,19 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="abstractInstOwned" href="#abstractInstOwned"><span>abstractInstOwned:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="types: abstractInstOwned" href="ast/types.html#abstractInstOwned">types: abstractInstOwned</a></li>
+          data-doc-search-tag="ast_types: abstractInstOwned" href="ast/ast_types.html#abstractInstOwned">ast_types: abstractInstOwned</a></li>
           </ul></dd>
 <dt><a name="abstractPtrs" href="#abstractPtrs"><span>abstractPtrs:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="types: abstractPtrs" href="ast/types.html#abstractPtrs">types: abstractPtrs</a></li>
+          data-doc-search-tag="ast_types: abstractPtrs" href="ast/ast_types.html#abstractPtrs">ast_types: abstractPtrs</a></li>
           </ul></dd>
 <dt><a name="abstractRange" href="#abstractRange"><span>abstractRange:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="types: abstractRange" href="ast/types.html#abstractRange">types: abstractRange</a></li>
+          data-doc-search-tag="ast_types: abstractRange" href="ast/ast_types.html#abstractRange">ast_types: abstractRange</a></li>
           </ul></dd>
 <dt><a name="abstractVar" href="#abstractVar"><span>abstractVar:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="types: abstractVar" href="ast/types.html#abstractVar">types: abstractVar</a></li>
+          data-doc-search-tag="ast_types: abstractVar" href="ast/ast_types.html#abstractVar">ast_types: abstractVar</a></li>
           </ul></dd>
 <dt><a name="abstractVarRange" href="#abstractVarRange"><span>abstractVarRange:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -696,12 +696,6 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="addUniqueSym" href="#addUniqueSym"><span>addUniqueSym:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="lookups: addUniqueSym(scope: PScope; s: PSym): PSym" href="sem/lookups.html#addUniqueSym%2CPScope%2CPSym">lookups: addUniqueSym(scope: PScope; s: PSym): PSym</a></li>
-          </ul></dd>
-<dt><a name="addVar" href="#addVar"><span>addVar:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="lowerings: addVar(father, v: PNode)" href="sem/lowerings.html#addVar%2CPNode%2CPNode">lowerings: addVar(father, v: PNode)</a></li>
-          <li><a class="reference external"
-          data-doc-search-tag="lowerings: addVar(father, v, value: PNode)" href="sem/lowerings.html#addVar%2CPNode%2CPNode%2CPNode">lowerings: addVar(father, v, value: PNode)</a></li>
           </ul></dd>
 <dt><a name="aliases" href="#aliases"><span>aliases:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -5139,7 +5133,11 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="internalAssert" href="#internalAssert"><span>internalAssert:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="msgs: internalAssert(conf: ConfigRef; e: bool; failMsg: string = &quot;&quot;)" href="front/msgs.html#internalAssert.t%2CConfigRef%2Cbool%2Cstring">msgs: internalAssert(conf: ConfigRef; e: bool; failMsg: string = &quot;&quot;)</a></li>
+          data-doc-search-tag="msgs: internalAssert(conf: ConfigRef; condition: bool; failMsg: string = &quot;&quot;)" href="front/msgs.html#internalAssert.t%2CConfigRef%2Cbool%2Cstring">msgs: internalAssert(conf: ConfigRef; condition: bool; failMsg: string = &quot;&quot;)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="msgs: internalAssert(conf: ConfigRef; condition: bool; info: TLineInfo;
+               failMsg: string = &quot;&quot;)" href="front/msgs.html#internalAssert.t%2CConfigRef%2Cbool%2CTLineInfo%2Cstring">msgs: internalAssert(conf: ConfigRef; condition: bool; info: TLineInfo;
+               failMsg: string = &quot;&quot;)</a></li>
           </ul></dd>
 <dt><a name="InternalCliData" href="#InternalCliData"><span>InternalCliData:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -7793,6 +7791,12 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="idents: newIdentCache(): IdentCache" href="ast/idents.html#newIdentCache">idents: newIdentCache(): IdentCache</a></li>
           </ul></dd>
+<dt><a name="newIdentDefs" href="#newIdentDefs"><span>newIdentDefs:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="lowerings: newIdentDefs(v: PNode): PNode" href="sem/lowerings.html#newIdentDefs%2CPNode">lowerings: newIdentDefs(v: PNode): PNode</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="lowerings: newIdentDefs(v, value: PNode): PNode" href="sem/lowerings.html#newIdentDefs%2CPNode%2CPNode">lowerings: newIdentDefs(v, value: PNode): PNode</a></li>
+          </ul></dd>
 <dt><a name="newIdentNode" href="#newIdentNode"><span>newIdentNode:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="ast: newIdentNode(ident: PIdent; info: TLineInfo): PNode" href="ast/ast.html#newIdentNode%2CPIdent%2CTLineInfo">ast: newIdentNode(ident: PIdent; info: TLineInfo): PNode</a></li>
@@ -7800,6 +7804,10 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="newIdentNodeP" href="#newIdentNodeP"><span>newIdentNodeP:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="parser: newIdentNodeP(ident: PIdent; p: Parser): PNode" href="ast/parser.html#newIdentNodeP%2CPIdent%2CParser">parser: newIdentNodeP(ident: PIdent; p: Parser): PNode</a></li>
+          </ul></dd>
+<dt><a name="newIdNodeTable" href="#newIdNodeTable"><span>newIdNodeTable:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="ast: newIdNodeTable(): TIdNodeTable" href="ast/ast.html#newIdNodeTable">ast: newIdNodeTable(): TIdNodeTable</a></li>
           </ul></dd>
 <dt><a name="newIdTable" href="#newIdTable"><span>newIdTable:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -7872,6 +7880,8 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="newNodeIT" href="#newNodeIT"><span>newNodeIT:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="ast: newNodeIT(kind: TNodeKind; info: TLineInfo; typ: PType): PNode" href="ast/ast.html#newNodeIT%2CTNodeKind%2CTLineInfo%2CPType">ast: newNodeIT(kind: TNodeKind; info: TLineInfo; typ: PType): PNode</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="ast: newNodeIT(kind: TNodeKind; info: TLineInfo; typ: PType; children: int): PNode" href="ast/ast.html#newNodeIT%2CTNodeKind%2CTLineInfo%2CPType%2Cint">ast: newNodeIT(kind: TNodeKind; info: TLineInfo; typ: PType; children: int): PNode</a></li>
           </ul></dd>
 <dt><a name="newNodeP" href="#newNodeP"><span>newNodeP:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -15443,7 +15453,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="skipPtrs" href="#skipPtrs"><span>skipPtrs:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="types: skipPtrs" href="ast/types.html#skipPtrs">types: skipPtrs</a></li>
+          data-doc-search-tag="ast_types: skipPtrs" href="ast/ast_types.html#skipPtrs">ast_types: skipPtrs</a></li>
           </ul></dd>
 <dt><a name="skipStmtList" href="#skipStmtList"><span>skipStmtList:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -18115,11 +18125,11 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="typedescInst" href="#typedescInst"><span>typedescInst:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="types: typedescInst" href="ast/types.html#typedescInst">types: typedescInst</a></li>
+          data-doc-search-tag="ast_types: typedescInst" href="ast/ast_types.html#typedescInst">ast_types: typedescInst</a></li>
           </ul></dd>
 <dt><a name="typedescPtrs" href="#typedescPtrs"><span>typedescPtrs:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="types: typedescPtrs" href="ast/types.html#typedescPtrs">types: typedescPtrs</a></li>
+          data-doc-search-tag="ast_types: typedescPtrs" href="ast/ast_types.html#typedescPtrs">ast_types: typedescPtrs</a></li>
           </ul></dd>
 <dt><a name="typeInfoSection" href="#typeInfoSection"><span>typeInfoSection:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -19796,7 +19806,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-03-12 00:00:00 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-03-13 00:00:00 UTC</small>
       </div>
     </div>
   </div>

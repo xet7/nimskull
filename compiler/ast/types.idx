@@ -15,13 +15,6 @@ paramsNotEqual	ast/types.html#paramsNotEqual	TParamsEquality.paramsNotEqual
 paramsEqual	ast/types.html#paramsEqual	TParamsEquality.paramsEqual	
 paramsIncompatible	ast/types.html#paramsIncompatible	TParamsEquality.paramsIncompatible	
 TParamsEquality	ast/types.html#TParamsEquality	types: TParamsEquality	
-abstractPtrs	ast/types.html#abstractPtrs	types: abstractPtrs	
-abstractVar	ast/types.html#abstractVar	types: abstractVar	
-abstractRange	ast/types.html#abstractRange	types: abstractRange	
-abstractInstOwned	ast/types.html#abstractInstOwned	types: abstractInstOwned	
-skipPtrs	ast/types.html#skipPtrs	types: skipPtrs	
-typedescPtrs	ast/types.html#typedescPtrs	types: typedescPtrs	
-typedescInst	ast/types.html#typedescInst	types: typedescInst	
 invalidGenericInst	ast/types.html#invalidGenericInst,PType	types: invalidGenericInst(f: PType): bool	
 isPureObject	ast/types.html#isPureObject,PType	types: isPureObject(typ: PType): bool	
 isUnsigned	ast/types.html#isUnsigned,PType	types: isUnsigned(t: PType): bool	

@@ -63,10 +63,11 @@ addAllowNil	ast/ast.html#addAllowNil,Indexable,Indexable	ast: addAllowNil(father
 `[]`	ast/ast.html#[].t,Indexable,BackwardsIndex	ast: `[]`(n: Indexable; i: BackwardsIndex): Indexable	
 `[]=`	ast/ast.html#[]=.t,Indexable,BackwardsIndex,Indexable	ast: `[]=`(n: Indexable; i: BackwardsIndex; x: Indexable)	
 getDeclPragma	ast/ast.html#getDeclPragma,PNode	ast: getDeclPragma(n: PNode): PNode	
-newNode	ast/ast.html#newNode,TNodeKind	ast: newNode(kind: TNodeKind): PNode	
 newNodeI	ast/ast.html#newNodeI,TNodeKind,TLineInfo	ast: newNodeI(kind: TNodeKind; info: TLineInfo): PNode	
+newNode	ast/ast.html#newNode,TNodeKind	ast: newNode(kind: TNodeKind): PNode	
 newNodeI	ast/ast.html#newNodeI,TNodeKind,TLineInfo,int	ast: newNodeI(kind: TNodeKind; info: TLineInfo; children: int): PNode	
 newNodeIT	ast/ast.html#newNodeIT,TNodeKind,TLineInfo,PType	ast: newNodeIT(kind: TNodeKind; info: TLineInfo; typ: PType): PNode	
+newNodeIT	ast/ast.html#newNodeIT,TNodeKind,TLineInfo,PType,int	ast: newNodeIT(kind: TNodeKind; info: TLineInfo; typ: PType; children: int): PNode	
 newTree	ast/ast.html#newTree,TNodeKind,varargs[PNode]	ast: newTree(kind: TNodeKind; children: varargs[PNode]): PNode	
 newTreeI	ast/ast.html#newTreeI,TNodeKind,TLineInfo,varargs[PNode]	ast: newTreeI(kind: TNodeKind; info: TLineInfo; children: varargs[PNode]): PNode	
 newTreeIT	ast/ast.html#newTreeIT,TNodeKind,TLineInfo,PType,varargs[PNode]	ast: newTreeIT(kind: TNodeKind; info: TLineInfo; typ: PType; children: varargs[PNode]): PNode	
@@ -121,6 +122,7 @@ newIdTable	ast/ast.html#newIdTable	ast: newIdTable(): TIdTable
 resetIdTable	ast/ast.html#resetIdTable,TIdTable	ast: resetIdTable(x: var TIdTable)	
 initObjectSet	ast/ast.html#initObjectSet,TObjectSet	ast: initObjectSet(x: var TObjectSet)	
 initIdNodeTable	ast/ast.html#initIdNodeTable,TIdNodeTable	ast: initIdNodeTable(x: var TIdNodeTable)	
+newIdNodeTable	ast/ast.html#newIdNodeTable	ast: newIdNodeTable(): TIdNodeTable	
 initNodeTable	ast/ast.html#initNodeTable,TNodeTable	ast: initNodeTable(x: var TNodeTable)	
 skipTypes	ast/ast.html#skipTypes,PType,TTypeKinds,int	ast: skipTypes(t: PType; kinds: TTypeKinds; maxIters: int): PType	
 skipTypesOrNil	ast/ast.html#skipTypesOrNil,PType,TTypeKinds	ast: skipTypesOrNil(t: PType; kinds: TTypeKinds): PType	

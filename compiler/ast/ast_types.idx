@@ -326,8 +326,15 @@ tyUnknownTypes	ast/ast_types.html#tyUnknownTypes	ast_types: tyUnknownTypes
 tyTypeClasses	ast/ast_types.html#tyTypeClasses	ast_types: tyTypeClasses	
 tyMetaTypes	ast/ast_types.html#tyMetaTypes	ast_types: tyMetaTypes	
 tyUserTypeClasses	ast/ast_types.html#tyUserTypeClasses	ast_types: tyUserTypeClasses	
-abstractVarRange	ast/ast_types.html#abstractVarRange	ast_types: abstractVarRange	
 abstractInst	ast/ast_types.html#abstractInst	ast_types: abstractInst	
+abstractPtrs	ast/ast_types.html#abstractPtrs	ast_types: abstractPtrs	
+abstractVar	ast/ast_types.html#abstractVar	ast_types: abstractVar	
+abstractRange	ast/ast_types.html#abstractRange	ast_types: abstractRange	
+abstractVarRange	ast/ast_types.html#abstractVarRange	ast_types: abstractVarRange	
+abstractInstOwned	ast/ast_types.html#abstractInstOwned	ast_types: abstractInstOwned	
+skipPtrs	ast/ast_types.html#skipPtrs	ast_types: skipPtrs	
+typedescPtrs	ast/ast_types.html#typedescPtrs	ast_types: typedescPtrs	
+typedescInst	ast/ast_types.html#typedescInst	ast_types: typedescInst	
 TTypeKinds	ast/ast_types.html#TTypeKinds	ast_types: TTypeKinds	
 nfNone	ast/ast_types.html#nfNone	TNodeFlag.nfNone	
 nfBase2	ast/ast_types.html#nfBase2	TNodeFlag.nfBase2	

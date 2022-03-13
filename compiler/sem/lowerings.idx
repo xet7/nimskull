@@ -1,14 +1,14 @@
 genPrefix	sem/lowerings.html#genPrefix	lowerings: genPrefix	
 newDeref	sem/lowerings.html#newDeref,PNode	lowerings: newDeref(n: PNode): PNode	
+newTupleAccessRaw	sem/lowerings.html#newTupleAccessRaw,PNode,int	lowerings: newTupleAccessRaw(tup: PNode; i: int): PNode	
 newTupleAccess	sem/lowerings.html#newTupleAccess,ModuleGraph,PNode,int	lowerings: newTupleAccess(g: ModuleGraph; tup: PNode; i: int): PNode	
-addVar	sem/lowerings.html#addVar,PNode,PNode	lowerings: addVar(father, v: PNode)	
-addVar	sem/lowerings.html#addVar,PNode,PNode,PNode	lowerings: addVar(father, v, value: PNode)	
+newIdentDefs	sem/lowerings.html#newIdentDefs,PNode	lowerings: newIdentDefs(v: PNode): PNode	
+newIdentDefs	sem/lowerings.html#newIdentDefs,PNode,PNode	lowerings: newIdentDefs(v, value: PNode): PNode	
 newAsgnStmt	sem/lowerings.html#newAsgnStmt,PNode,PNode	lowerings: newAsgnStmt(le, ri: PNode): PNode	
 newFastAsgnStmt	sem/lowerings.html#newFastAsgnStmt,PNode,PNode	lowerings: newFastAsgnStmt(le, ri: PNode): PNode	
 newFastMoveStmt	sem/lowerings.html#newFastMoveStmt,ModuleGraph,PNode,PNode	lowerings: newFastMoveStmt(g: ModuleGraph; le, ri: PNode): PNode	
 lowerTupleUnpacking	sem/lowerings.html#lowerTupleUnpacking,ModuleGraph,PNode,IdGenerator,PSym	lowerings: lowerTupleUnpacking(g: ModuleGraph; n: PNode; idgen: IdGenerator; owner: PSym): PNode	
 evalOnce	sem/lowerings.html#evalOnce,ModuleGraph,PNode,IdGenerator,PSym	lowerings: evalOnce(g: ModuleGraph; value: PNode; idgen: IdGenerator; owner: PSym): PNode	
-newTupleAccessRaw	sem/lowerings.html#newTupleAccessRaw,PNode,int	lowerings: newTupleAccessRaw(tup: PNode; i: int): PNode	
 newTryFinally	sem/lowerings.html#newTryFinally,PNode,PNode	lowerings: newTryFinally(body, final: PNode): PNode	
 lowerTupleUnpackingForAsgn	sem/lowerings.html#lowerTupleUnpackingForAsgn,ModuleGraph,PNode,IdGenerator,PSym	lowerings: lowerTupleUnpackingForAsgn(g: ModuleGraph; n: PNode; idgen: IdGenerator;\n                           owner: PSym): PNode	
 lowerSwap	sem/lowerings.html#lowerSwap,ModuleGraph,PNode,IdGenerator,PSym	lowerings: lowerSwap(g: ModuleGraph; n: PNode; idgen: IdGenerator; owner: PSym): PNode	
