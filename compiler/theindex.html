@@ -1819,7 +1819,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="codeListing" href="#codeListing"><span>codeListing:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vmgen: codeListing(c: PCtx; prc: PSym; ast: PNode; start = 0; last = -1)" href="vm/vmgen.html#codeListing%2CPCtx%2CPSym%2CPNode%2Cint%2Cint">vmgen: codeListing(c: PCtx; prc: PSym; ast: PNode; start = 0; last = -1)</a></li>
+          data-doc-search-tag="vmgen: codeListing(c: TCtx; prc: PSym; ast: PNode; start = 0; last = -1)" href="vm/vmgen.html#codeListing%2CTCtx%2CPSym%2CPNode%2Cint%2Cint">vmgen: codeListing(c: TCtx; prc: PSym; ast: PNode; start = 0; last = -1)</a></li>
           </ul></dd>
 <dt><a name="codeReordering" href="#codeReordering"><span>codeReordering:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -3101,7 +3101,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="enter" href="#enter"><span>enter:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vmprofiler: enter(prof: var Profiler; c: PCtx; tos: PStackFrame)" href="vm/vmprofiler.html#enter%2CProfiler%2CPCtx%2CPStackFrame">vmprofiler: enter(prof: var Profiler; c: PCtx; tos: PStackFrame)</a></li>
+          data-doc-search-tag="vmprofiler: enter(prof: var Profiler; c: var TCtx; tos: PStackFrame)" href="vm/vmprofiler.html#enter%2CProfiler%2CTCtx%2CPStackFrame">vmprofiler: enter(prof: var Profiler; c: var TCtx; tos: PStackFrame)</a></li>
           </ul></dd>
 <dt><a name="enumFieldPragmas" href="#enumFieldPragmas"><span>enumFieldPragmas:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -3211,7 +3211,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="evalExpr" href="#evalExpr"><span>evalExpr:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: evalExpr(c: PCtx; n: PNode): PNode" href="vm/vm.html#evalExpr%2CPCtx%2CPNode">vm: evalExpr(c: PCtx; n: PNode): PNode</a></li>
+          data-doc-search-tag="vm: evalExpr(c: var TCtx; n: PNode): PNode" href="vm/vm.html#evalExpr%2CTCtx%2CPNode">vm: evalExpr(c: var TCtx; n: PNode): PNode</a></li>
           </ul></dd>
 <dt><a name="evalFrom" href="#evalFrom"><span>evalFrom:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -3257,7 +3257,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="evalStmt" href="#evalStmt"><span>evalStmt:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: evalStmt(c: PCtx; n: PNode)" href="vm/vm.html#evalStmt%2CPCtx%2CPNode">vm: evalStmt(c: PCtx; n: PNode)</a></li>
+          data-doc-search-tag="vm: evalStmt(c: var TCtx; n: PNode)" href="vm/vm.html#evalStmt%2CTCtx%2CPNode">vm: evalStmt(c: var TCtx; n: PNode)</a></li>
           </ul></dd>
 <dt><a name="evalTemplate" href="#evalTemplate"><span>evalTemplate:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -3349,7 +3349,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="execProc" href="#execProc"><span>execProc:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: execProc(c: PCtx; sym: PSym; args: openArray[PNode]): PNode" href="vm/vm.html#execProc%2CPCtx%2CPSym%2CopenArray%5BPNode%5D">vm: execProc(c: PCtx; sym: PSym; args: openArray[PNode]): PNode</a></li>
+          data-doc-search-tag="vm: execProc(c: var TCtx; sym: PSym; args: openArray[PNode]): PNode" href="vm/vm.html#execProc%2CTCtx%2CPSym%2CopenArray%5BPNode%5D">vm: execProc(c: var TCtx; sym: PSym; args: openArray[PNode]): PNode</a></li>
           </ul></dd>
 <dt><a name="existsConfigVar" href="#existsConfigVar"><span>existsConfigVar:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -3889,7 +3889,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="genExpr" href="#genExpr"><span>genExpr:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vmgen: genExpr(c: PCtx; n: PNode; requiresValue = true): int" href="vm/vmgen.html#genExpr%2CPCtx%2CPNode">vmgen: genExpr(c: PCtx; n: PNode; requiresValue = true): int</a></li>
+          data-doc-search-tag="vmgen: genExpr(c: var TCtx; n: PNode; requiresValue = true): int" href="vm/vmgen.html#genExpr%2CTCtx%2CPNode">vmgen: genExpr(c: var TCtx; n: PNode; requiresValue = true): int</a></li>
           </ul></dd>
 <dt><a name="genFieldDefect" href="#genFieldDefect"><span>genFieldDefect:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -3909,7 +3909,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="genProc" href="#genProc"><span>genProc:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vmgen: genProc(c: PCtx; s: PSym): int" href="vm/vmgen.html#genProc%2CPCtx%2CPSym">vmgen: genProc(c: PCtx; s: PSym): int</a></li>
+          data-doc-search-tag="vmgen: genProc(c: var TCtx; s: PSym): int" href="vm/vmgen.html#genProc%2CTCtx%2CPSym">vmgen: genProc(c: var TCtx; s: PSym): int</a></li>
           </ul></dd>
 <dt><a name="genSourceMap" href="#genSourceMap"><span>genSourceMap:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -3917,7 +3917,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="genStmt" href="#genStmt"><span>genStmt:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vmgen: genStmt(c: PCtx; n: PNode): int" href="vm/vmgen.html#genStmt%2CPCtx%2CPNode">vmgen: genStmt(c: PCtx; n: PNode): int</a></li>
+          data-doc-search-tag="vmgen: genStmt(c: var TCtx; n: PNode): int" href="vm/vmgen.html#genStmt%2CTCtx%2CPNode">vmgen: genStmt(c: var TCtx; n: PNode): int</a></li>
           </ul></dd>
 <dt><a name="genSubDir" href="#genSubDir"><span>genSubDir:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -4049,7 +4049,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="getGlobalValue" href="#getGlobalValue"><span>getGlobalValue:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: getGlobalValue(c: PCtx; s: PSym): PNode" href="vm/vm.html#getGlobalValue%2CPCtx%2CPSym">vm: getGlobalValue(c: PCtx; s: PSym): PNode</a></li>
+          data-doc-search-tag="vm: getGlobalValue(c: TCtx; s: PSym): PNode" href="vm/vm.html#getGlobalValue%2CTCtx%2CPSym">vm: getGlobalValue(c: TCtx; s: PSym): PNode</a></li>
           </ul></dd>
 <dt><a name="getHash" href="#getHash"><span>getHash:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -4807,7 +4807,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="importcCond" href="#importcCond"><span>importcCond:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vmgen: importcCond(c: PCtx; s: PSym): bool" href="vm/vmgen.html#importcCond%2CPCtx%2CPSym">vmgen: importcCond(c: PCtx; s: PSym): bool</a></li>
+          data-doc-search-tag="vmgen: importcCond(c: var TCtx; s: PSym): bool" href="vm/vmgen.html#importcCond%2CTCtx%2CPSym">vmgen: importcCond(c: var TCtx; s: PSym): bool</a></li>
           </ul></dd>
 <dt><a name="importcCondVar" href="#importcCondVar"><span>importcCondVar:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -5723,7 +5723,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="leave" href="#leave"><span>leave:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vmprofiler: leave(prof: var Profiler; c: PCtx)" href="vm/vmprofiler.html#leave%2CProfiler%2CPCtx">vmprofiler: leave(prof: var Profiler; c: PCtx)</a></li>
+          data-doc-search-tag="vmprofiler: leave(prof: var Profiler; c: TCtx)" href="vm/vmprofiler.html#leave%2CProfiler%2CTCtx">vmprofiler: leave(prof: var Profiler; c: TCtx)</a></li>
           </ul></dd>
 <dt><a name="leaves" href="#leaves"><span>leaves:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -11417,19 +11417,19 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="recordAdd" href="#recordAdd"><span>recordAdd:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="macrocacheimpl: recordAdd(c: PCtx; info: TLineInfo; key: string; val: PNode)" href="sem/macrocacheimpl.html#recordAdd%2CPCtx%2CTLineInfo%2Cstring%2CPNode">macrocacheimpl: recordAdd(c: PCtx; info: TLineInfo; key: string; val: PNode)</a></li>
+          data-doc-search-tag="macrocacheimpl: recordAdd(c: var TCtx; info: TLineInfo; key: string; val: PNode)" href="sem/macrocacheimpl.html#recordAdd%2CTCtx%2CTLineInfo%2Cstring%2CPNode">macrocacheimpl: recordAdd(c: var TCtx; info: TLineInfo; key: string; val: PNode)</a></li>
           </ul></dd>
 <dt><a name="recordInc" href="#recordInc"><span>recordInc:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="macrocacheimpl: recordInc(c: PCtx; info: TLineInfo; key: string; by: BiggestInt)" href="sem/macrocacheimpl.html#recordInc%2CPCtx%2CTLineInfo%2Cstring%2CBiggestInt">macrocacheimpl: recordInc(c: PCtx; info: TLineInfo; key: string; by: BiggestInt)</a></li>
+          data-doc-search-tag="macrocacheimpl: recordInc(c: var TCtx; info: TLineInfo; key: string; by: BiggestInt)" href="sem/macrocacheimpl.html#recordInc%2CTCtx%2CTLineInfo%2Cstring%2CBiggestInt">macrocacheimpl: recordInc(c: var TCtx; info: TLineInfo; key: string; by: BiggestInt)</a></li>
           </ul></dd>
 <dt><a name="recordIncl" href="#recordIncl"><span>recordIncl:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="macrocacheimpl: recordIncl(c: PCtx; info: TLineInfo; key: string; val: PNode)" href="sem/macrocacheimpl.html#recordIncl%2CPCtx%2CTLineInfo%2Cstring%2CPNode">macrocacheimpl: recordIncl(c: PCtx; info: TLineInfo; key: string; val: PNode)</a></li>
+          data-doc-search-tag="macrocacheimpl: recordIncl(c: var TCtx; info: TLineInfo; key: string; val: PNode)" href="sem/macrocacheimpl.html#recordIncl%2CTCtx%2CTLineInfo%2Cstring%2CPNode">macrocacheimpl: recordIncl(c: var TCtx; info: TLineInfo; key: string; val: PNode)</a></li>
           </ul></dd>
 <dt><a name="recordPut" href="#recordPut"><span>recordPut:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="macrocacheimpl: recordPut(c: PCtx; info: TLineInfo; key: string; k: string; val: PNode)" href="sem/macrocacheimpl.html#recordPut%2CPCtx%2CTLineInfo%2Cstring%2Cstring%2CPNode">macrocacheimpl: recordPut(c: PCtx; info: TLineInfo; key: string; k: string; val: PNode)</a></li>
+          data-doc-search-tag="macrocacheimpl: recordPut(c: var TCtx; info: TLineInfo; key: string; k: string; val: PNode)" href="sem/macrocacheimpl.html#recordPut%2CTCtx%2CTLineInfo%2Cstring%2Cstring%2CPNode">macrocacheimpl: recordPut(c: var TCtx; info: TLineInfo; key: string; k: string; val: PNode)</a></li>
           </ul></dd>
 <dt><a name="reexportsSection" href="#reexportsSection"><span>reexportsSection:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -11441,7 +11441,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="refresh" href="#refresh"><span>refresh:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vmdef: refresh(c: PCtx; module: PSym; idgen: IdGenerator)" href="vm/vmdef.html#refresh%2CPCtx%2CPSym%2CIdGenerator">vmdef: refresh(c: PCtx; module: PSym; idgen: IdGenerator)</a></li>
+          data-doc-search-tag="vmdef: refresh(c: var TCtx; module: PSym; idgen: IdGenerator)" href="vm/vmdef.html#refresh%2CTCtx%2CPSym%2CIdGenerator">vmdef: refresh(c: var TCtx; module: PSym; idgen: IdGenerator)</a></li>
           </ul></dd>
 <dt><a name="regA" href="#regA"><span>regA:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -11505,7 +11505,9 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="registerCallback" href="#registerCallback"><span>registerCallback:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vmdef: registerCallback(c: PCtx; name: string; callback: VmCallback): int" href="vm/vmdef.html#registerCallback%2CPCtx%2Cstring%2CVmCallback">vmdef: registerCallback(c: PCtx; name: string; callback: VmCallback): int</a></li>
+          data-doc-search-tag="vmdef: registerCallback(c: var TCtx; name: string; callback: VmCallback): int" href="vm/vmdef.html#registerCallback%2CTCtx%2Cstring%2CVmCallback">vmdef: registerCallback(c: var TCtx; name: string; callback: VmCallback): int</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="vmdef: registerCallback(c: PCtx; name: string; callback: VmCallback): int" href="vm/vmdef.html#registerCallback.t%2CPCtx%2Cstring%2CVmCallback">vmdef: registerCallback(c: PCtx; name: string; callback: VmCallback): int</a></li>
           </ul></dd>
 <dt><a name="registerCompilerProc" href="#registerCompilerProc"><span>registerCompilerProc:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -14873,7 +14875,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="setGlobalValue" href="#setGlobalValue"><span>setGlobalValue:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: setGlobalValue(c: PCtx; s: PSym; val: PNode)" href="vm/vm.html#setGlobalValue%2CPCtx%2CPSym%2CPNode">vm: setGlobalValue(c: PCtx; s: PSym; val: PNode)</a></li>
+          data-doc-search-tag="vm: setGlobalValue(c: var TCtx; s: PSym; val: PNode)" href="vm/vm.html#setGlobalValue%2CTCtx%2CPSym%2CPNode">vm: setGlobalValue(c: var TCtx; s: PSym; val: PNode)</a></li>
           </ul></dd>
 <dt><a name="setHash" href="#setHash"><span>setHash:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -19806,7 +19808,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-03-13 00:00:00 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-03-14 00:00:00 UTC</small>
       </div>
     </div>
   </div>

@@ -13,11 +13,11 @@ getNode	vm/vm.html#getNode,VmArgs,Natural	vm: getNode(a: VmArgs; i: Natural): PN
 getString	vm/vm.html#getString,VmArgs,Natural	vm: getString(a: VmArgs; i: Natural): string	
 getVar	vm/vm.html#getVar,VmArgs,Natural	vm: getVar(a: VmArgs; i: Natural): PNode	
 getNodeAddr	vm/vm.html#getNodeAddr,VmArgs,Natural	vm: getNodeAddr(a: VmArgs; i: Natural): PNode	
-execProc	vm/vm.html#execProc,PCtx,PSym,openArray[PNode]	vm: execProc(c: PCtx; sym: PSym; args: openArray[PNode]): PNode	
-evalStmt	vm/vm.html#evalStmt,PCtx,PNode	vm: evalStmt(c: PCtx; n: PNode)	
-evalExpr	vm/vm.html#evalExpr,PCtx,PNode	vm: evalExpr(c: PCtx; n: PNode): PNode	
-getGlobalValue	vm/vm.html#getGlobalValue,PCtx,PSym	vm: getGlobalValue(c: PCtx; s: PSym): PNode	
-setGlobalValue	vm/vm.html#setGlobalValue,PCtx,PSym,PNode	vm: setGlobalValue(c: PCtx; s: PSym; val: PNode)	
+execProc	vm/vm.html#execProc,TCtx,PSym,openArray[PNode]	vm: execProc(c: var TCtx; sym: PSym; args: openArray[PNode]): PNode	
+evalStmt	vm/vm.html#evalStmt,TCtx,PNode	vm: evalStmt(c: var TCtx; n: PNode)	
+evalExpr	vm/vm.html#evalExpr,TCtx,PNode	vm: evalExpr(c: var TCtx; n: PNode): PNode	
+getGlobalValue	vm/vm.html#getGlobalValue,TCtx,PSym	vm: getGlobalValue(c: TCtx; s: PSym): PNode	
+setGlobalValue	vm/vm.html#setGlobalValue,TCtx,PSym,PNode	vm: setGlobalValue(c: var TCtx; s: PSym; val: PNode)	
 registerAdditionalOps	vm/vm.html#registerAdditionalOps,PCtx	vm: registerAdditionalOps(c: PCtx)	
 setupGlobalCtx	vm/vm.html#setupGlobalCtx,PSym,ModuleGraph,IdGenerator	vm: setupGlobalCtx(module: PSym; graph: ModuleGraph; idgen: IdGenerator)	
 evalPass	vm/vm.html#evalPass	vm: evalPass	

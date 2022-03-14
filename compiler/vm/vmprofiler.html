@@ -110,13 +110,13 @@ window.addEventListener('DOMContentLoaded', main);
 
   </ul>
   <ul class="simple nested-toc-section">enter
-      <li><a class="reference" href="#enter%2CProfiler%2CPCtx%2CPStackFrame"
-    title="enter(prof: var Profiler; c: PCtx; tos: PStackFrame)">enter(prof: var Profiler; c: PCtx; tos: PStackFrame)</a></li>
+      <li><a class="reference" href="#enter%2CProfiler%2CTCtx%2CPStackFrame"
+    title="enter(prof: var Profiler; c: var TCtx; tos: PStackFrame)">enter(prof: var Profiler; c: var TCtx; tos: PStackFrame)</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">leave
-      <li><a class="reference" href="#leave%2CProfiler%2CPCtx"
-    title="leave(prof: var Profiler; c: PCtx)">leave(prof: var Profiler; c: PCtx)</a></li>
+      <li><a class="reference" href="#leave%2CProfiler%2CTCtx"
+    title="leave(prof: var Profiler; c: TCtx)">leave(prof: var Profiler; c: TCtx)</a></li>
 
   </ul>
 
@@ -127,7 +127,7 @@ window.addEventListener('DOMContentLoaded', main);
 
   </div>
   &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e541ed77d2e9bede21966ec38473aa178c161cd/compiler/vm/vmprofiler.nim#L1"
+href="https://github.com/nim-works/nimskull/tree/ce383f5da0e96f74b9615e869841888c4b5d722b/compiler/vm/vmprofiler.nim#L1"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmprofiler.nim#L1" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -150,33 +150,33 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e541ed77d2e9bede21966ec38473aa178c161cd/compiler/vm/vmprofiler.nim#L42"
+href="https://github.com/nim-works/nimskull/tree/ce383f5da0e96f74b9615e869841888c4b5d722b/compiler/vm/vmprofiler.nim#L42"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmprofiler.nim#L42" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
-<div id="enter,Profiler,PCtx,PStackFrame">
-<dt><pre><span class="Keyword">proc</span> <a href="#enter%2CProfiler%2CPCtx%2CPStackFrame"><span class="Identifier">enter</span></a><span class="Other">(</span><span class="Identifier">prof</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="vmdef.html#Profiler"><span class="Identifier">Profiler</span></a><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <a href="vmdef.html#PCtx"><span class="Identifier">PCtx</span></a><span class="Other">;</span> <span class="Identifier">tos</span><span class="Other">:</span> <a href="vmdef.html#PStackFrame"><span class="Identifier">PStackFrame</span></a><span class="Other">)</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">TimeEffect</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="enter,Profiler,TCtx,PStackFrame">
+<dt><pre><span class="Keyword">proc</span> <a href="#enter%2CProfiler%2CTCtx%2CPStackFrame"><span class="Identifier">enter</span></a><span class="Other">(</span><span class="Identifier">prof</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="vmdef.html#Profiler"><span class="Identifier">Profiler</span></a><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="vmdef.html#TCtx"><span class="Identifier">TCtx</span></a><span class="Other">;</span> <span class="Identifier">tos</span><span class="Other">:</span> <a href="vmdef.html#PStackFrame"><span class="Identifier">PStackFrame</span></a><span class="Other">)</span> {.<span class="Identifier">inline</span><span class="Other">,</span>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">TimeEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e541ed77d2e9bede21966ec38473aa178c161cd/compiler/vm/vmprofiler.nim#L19"
+href="https://github.com/nim-works/nimskull/tree/ce383f5da0e96f74b9615e869841888c4b5d722b/compiler/vm/vmprofiler.nim#L19"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmprofiler.nim#L19" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
-<div id="leave,Profiler,PCtx">
-<dt><pre><span class="Keyword">proc</span> <a href="#leave%2CProfiler%2CPCtx"><span class="Identifier">leave</span></a><span class="Other">(</span><span class="Identifier">prof</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="vmdef.html#Profiler"><span class="Identifier">Profiler</span></a><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <a href="vmdef.html#PCtx"><span class="Identifier">PCtx</span></a><span class="Other">)</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span>
+<div id="leave,Profiler,TCtx">
+<dt><pre><span class="Keyword">proc</span> <a href="#leave%2CProfiler%2CTCtx"><span class="Identifier">leave</span></a><span class="Other">(</span><span class="Identifier">prof</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="vmdef.html#Profiler"><span class="Identifier">Profiler</span></a><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <a href="vmdef.html#TCtx"><span class="Identifier">TCtx</span></a><span class="Other">)</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">TimeEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e541ed77d2e9bede21966ec38473aa178c161cd/compiler/vm/vmprofiler.nim#L38"
+href="https://github.com/nim-works/nimskull/tree/ce383f5da0e96f74b9615e869841888c4b5d722b/compiler/vm/vmprofiler.nim#L38"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmprofiler.nim#L38" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -192,7 +192,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-03-13 00:00:00 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-03-14 00:00:00 UTC</small>
       </div>
     </div>
   </div>
