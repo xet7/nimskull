@@ -110,8 +110,8 @@ window.addEventListener('DOMContentLoaded', main);
 
   </ul>
   <ul class="simple nested-toc-section">enter
-      <li><a class="reference" href="#enter%2CProfiler%2CTCtx%2CPStackFrame"
-    title="enter(prof: var Profiler; c: var TCtx; tos: PStackFrame)">enter(prof: var Profiler; c: var TCtx; tos: PStackFrame)</a></li>
+      <li><a class="reference" href="#enter%2CProfiler%2CTCtx%2CStackFrameIndex"
+    title="enter(prof: var Profiler; c: TCtx; sframe: StackFrameIndex)">enter(prof: var Profiler; c: TCtx; sframe: StackFrameIndex)</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">leave
@@ -127,7 +127,7 @@ window.addEventListener('DOMContentLoaded', main);
 
   </div>
   &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/122f725870d694ecda7e1acdce0ee22f57a8eee6/compiler/vm/vmprofiler.nim#L1"
+href="https://github.com/nim-works/nimskull/tree/f9a6578b9a6a92e001fe1271d938351fa136124d/compiler/vm/vmprofiler.nim#L1"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmprofiler.nim#L1" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -150,20 +150,20 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/122f725870d694ecda7e1acdce0ee22f57a8eee6/compiler/vm/vmprofiler.nim#L42"
+href="https://github.com/nim-works/nimskull/tree/f9a6578b9a6a92e001fe1271d938351fa136124d/compiler/vm/vmprofiler.nim#L43"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmprofiler.nim#L42" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmprofiler.nim#L43" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
-<div id="enter,Profiler,TCtx,PStackFrame">
-<dt><pre><span class="Keyword">proc</span> <a href="#enter%2CProfiler%2CTCtx%2CPStackFrame"><span class="Identifier">enter</span></a><span class="Other">(</span><span class="Identifier">prof</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="vmdef.html#Profiler"><span class="Identifier">Profiler</span></a><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="vmdef.html#TCtx"><span class="Identifier">TCtx</span></a><span class="Other">;</span> <span class="Identifier">tos</span><span class="Other">:</span> <a href="vmdef.html#PStackFrame"><span class="Identifier">PStackFrame</span></a><span class="Other">)</span> {.<span class="Identifier">inline</span><span class="Other">,</span>
+<div id="enter,Profiler,TCtx,StackFrameIndex">
+<dt><pre><span class="Keyword">proc</span> <a href="#enter%2CProfiler%2CTCtx%2CStackFrameIndex"><span class="Identifier">enter</span></a><span class="Other">(</span><span class="Identifier">prof</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="vmdef.html#Profiler"><span class="Identifier">Profiler</span></a><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <a href="vmdef.html#TCtx"><span class="Identifier">TCtx</span></a><span class="Other">;</span> <span class="Identifier">sframe</span><span class="Other">:</span> <a href="vmdef.html#StackFrameIndex"><span class="Identifier">StackFrameIndex</span></a><span class="Other">)</span> {.<span class="Identifier">inline</span><span class="Other">,</span>
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">TimeEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/122f725870d694ecda7e1acdce0ee22f57a8eee6/compiler/vm/vmprofiler.nim#L19"
+href="https://github.com/nim-works/nimskull/tree/f9a6578b9a6a92e001fe1271d938351fa136124d/compiler/vm/vmprofiler.nim#L19"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmprofiler.nim#L19" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -176,9 +176,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/122f725870d694ecda7e1acdce0ee22f57a8eee6/compiler/vm/vmprofiler.nim#L38"
+href="https://github.com/nim-works/nimskull/tree/f9a6578b9a6a92e001fe1271d938351fa136124d/compiler/vm/vmprofiler.nim#L39"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmprofiler.nim#L38" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmprofiler.nim#L39" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -192,7 +192,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-03-18 00:00:00 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-03-22 00:00:00 UTC</small>
       </div>
     </div>
   </div>

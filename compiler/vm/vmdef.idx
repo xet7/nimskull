@@ -43,7 +43,7 @@ VmArgs	vm/vmdef.html#VmArgs	vmdef: VmArgs
 VmCallback	vm/vmdef.html#VmCallback	vmdef: VmCallback	
 PCtx	vm/vmdef.html#PCtx	vmdef: PCtx	
 TCtx	vm/vmdef.html#TCtx	vmdef: TCtx	
-PStackFrame	vm/vmdef.html#PStackFrame	vmdef: PStackFrame	
+StackFrameIndex	vm/vmdef.html#StackFrameIndex	vmdef: StackFrameIndex	
 TStackFrame	vm/vmdef.html#TStackFrame	vmdef: TStackFrame	
 Profiler	vm/vmdef.html#Profiler	vmdef: Profiler	
 TPosition	vm/vmdef.html#TPosition	vmdef: TPosition	
