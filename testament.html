@@ -105,7 +105,6 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference" id="test-files-location_toc" href="#test-files-location">Test files location</a></li>
 <li><a class="reference" id="options_toc" href="#options">Options</a></li>
 <li><a class="reference" id="running-a-single-test_toc" href="#running-a-single-test">Running a single test</a></li>
-<li><a class="reference" id="running-all-tests-from-a-directory_toc" href="#running-all-tests-from-a-directory">Running all tests from a directory</a></li>
 <li><a class="reference" id="html-reports_toc" href="#html-reports">HTML Reports</a></li>
 <li><a class="reference" id="writing-tests_toc" href="#writing-tests">Writing Tests</a></li>
 <ul class="simple"><li><a class="reference" id="writing-tests-test-execution-options_toc" href="#writing-tests-test-execution-options">Test execution options</a></li>
@@ -121,16 +120,16 @@ window.addEventListener('DOMContentLoaded', main);
 
   </div>
   &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/doc/testament.rst#L1"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/doc/testament.rst#L1"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/doc/testament.rst#L1" class="link-seesrc" target="_blank" >Edit</a>
 
   <div class="nine columns" id="content">
   <div id="tocRoot"></div>
   
-  <p class="module-desc"><p>Testament is a test runner for running tests in the development of  NimSkull itself. It offers process isolation for tests, it can generate statistics about test cases, supports multiple targets (C, C++, ObjectiveC, JavaScript, etc), simulated <a class="reference external" href="https://en.wikipedia.org/wiki/Dry_run_(testing)">Dry-Runs</a>, has logging, can generate HTML reports, skip tests from a file, and more, so can be useful to run tests, even the most complex ones.</p>
+  <p class="module-desc"><p>Testament is a test runner for running tests in the development of  NimSkull itself. It offers process isolation for tests, it can generate statistics about test cases, supports multiple targets (C, C++, ObjectiveC, JavaScript, etc), simulated <a class="reference external" href="https://en.wikipedia.org/wiki/Dry_run_(testing)">Dry-Runs</a>, has logging, can generate HTML reports, skip tests from a file, and more.</p>
 
-<h1><a class="toc-backref" id="test-files-location" href="#test-files-location">Test files location</a></h1><p>By default Testament looks for test files on <tt class="docutils literal"><span class="pre">&quot;./tests/*.nim&quot;</span></tt>. You can overwrite this pattern glob using <tt class="docutils literal"><span class="pre option">pattern &lt;glob&gt;</span></tt>. The default working directory path can be changed using <tt class="docutils literal"><span class="pre option">--directory:&quot;folder/subfolder/&quot;</span></tt>.</p>
+<h1><a class="toc-backref" id="test-files-location" href="#test-files-location">Test files location</a></h1><p>By default Testament looks for test files on <tt class="docutils literal"><span class="pre">&quot;./tests/**/*.nim&quot;</span></tt>. The default working directory path can be changed using <tt class="docutils literal"><span class="pre option">--directory:&quot;folder/subfolder/&quot;</span></tt>.</p>
 <p>Testament uses the <tt class="docutils literal"><span class="pre"><span class="program">nim</span></span></tt> compiler on <tt class="docutils literal"><span class="pre"><span class="Identifier">PATH</span></span></tt>. You can change that using <tt class="docutils literal"><span class="pre option">--nim:&quot;folder/subfolder/nim&quot;</span></tt>. Running JavaScript tests with <tt class="docutils literal"><span class="pre option">--targets:&quot;js&quot;</span></tt> requires a working NodeJS on <tt class="docutils literal"><span class="pre"><span class="Identifier">PATH</span></span></tt>.</p>
 
 <h1><a class="toc-backref" id="options" href="#options">Options</a></h1><div class="option-list"><div class="option-list-item odd"><div class="option-list-label"><tt><span class="option">--print</span></tt></div><div class="option-list-description">Also print results to the console</div></div>
@@ -150,9 +149,6 @@ class="link-seesrc" target="_blank">Source</a>
 <span class="ProgramOutput">PASS: tests/test0.nim C                                    ( 0.2 sec)</span>
 <span class="Prompt">$ </span><span class="program">testament</span> <span class="option">r</span> <span class="option">test0</span>
 <span class="ProgramOutput">PASS: tests/test0.nim C                                    ( 0.2 sec)</span></pre>
-<h1><a class="toc-backref" id="running-all-tests-from-a-directory" href="#running-all-tests-from-a-directory">Running all tests from a directory</a></h1><pre class="listing"><span class="Prompt">$ </span><span class="program">testament</span> <span class="option">pattern</span> <span class="option">&quot;tests/*.nim&quot;</span></pre><p>To search for tests deeper in a directory, use</p>
-<pre class="listing"><span class="Prompt">$ </span><span class="program">testament</span> <span class="option">pattern</span> <span class="option">&quot;tests/**/*.nim&quot;</span>    <span class="Comment"># one level deeper</span>
-<span class="Prompt">$ </span><span class="program">testament</span> <span class="option">pattern</span> <span class="option">&quot;tests/**/**/*.nim&quot;</span> <span class="Comment"># two levels deeper</span></pre>
 <h1><a class="toc-backref" id="html-reports" href="#html-reports">HTML Reports</a></h1><p>Generate HTML Reports <tt class="docutils literal"><span class="pre">testresults.html</span></tt> from tests, you have to run at least 1 test <em>before</em> generating a report:</p>
 <pre class="listing"><span class="Prompt">$ </span><span class="program">testament</span> <span class="option">html</span></pre>
 <h1><a class="toc-backref" id="writing-tests" href="#writing-tests">Writing Tests</a></h1><p><tt class="docutils literal"><span class="pre">description</span></tt> - textual description of the test. <strong>Highly</strong> recomended to add one - in the future testament might use this to provide better teardown reports, or notify about <tt class="docutils literal"><span class="pre">knownIssue</span></tt> state transitions.</p>
@@ -316,7 +312,7 @@ nimout: '''
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-03-26 00:00:00 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-03-27 00:00:00 UTC</small>
       </div>
     </div>
   </div>

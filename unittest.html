@@ -95,7 +95,6 @@ window.addEventListener('DOMContentLoaded', main);
   </div>
   
   <ul class="simple simple-toc" id="toc-list">
-<li><a class="reference" id="testament_toc" href="#testament">Testament</a></li>
 <li><a class="reference" id="running-a-single-test_toc" href="#running-a-single-test">Running a single test</a></li>
 <li><a class="reference" id="running-a-single-test-suite_toc" href="#running-a-single-test-suite">Running a single test suite</a></li>
 <li><a class="reference" id="selecting-tests-by-pattern_toc" href="#selecting-tests-by-pattern">Selecting tests by pattern</a></li>
@@ -322,7 +321,7 @@ window.addEventListener('DOMContentLoaded', main);
 
   </div>
   &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L1"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L1"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L1" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -334,9 +333,6 @@ class="link-seesrc" target="_blank">Source</a>
 <p>The test status and name is printed after any output or traceback.</p>
 <p>Tests can be nested, however failure of a nested test will not mark the parent test as failed. Setup and teardown are inherited. Setup can be overridden locally.</p>
 <p>Compiled test files as well as <tt class="docutils literal"><span class="pre"><span class="Identifier">nim</span> <span class="Identifier">c</span> <span class="Operator">-</span><span class="Identifier">r</span> <span class="Operator">&lt;</span><span class="Identifier">testfile</span><span class="Operator">.</span><span class="Identifier">nim</span><span class="Operator">&gt;</span></span></tt> exit with 0 for success (no failed tests) or 1 for failure.</p>
-
-<h1><a class="toc-backref" id="testament" href="#testament">Testament</a></h1><p>Instead of <tt class="docutils literal"><span class="pre"><span class="Identifier">unittest</span></span></tt>, please consider using <a class="reference external" href="testament.html">the Testament tool</a> which offers process isolation for your tests.</p>
-<p>Alternatively using <tt class="docutils literal"><span class="pre"><span class="Keyword">when</span> <span class="Identifier">isMainModule</span><span class="Punctuation">:</span> <span class="Identifier">doAssert</span> <span class="Identifier">conditionHere</span></span></tt> is usually a much simpler solution for testing purposes.</p>
 
 <h1><a class="toc-backref" id="running-a-single-test" href="#running-a-single-test">Running a single test</a></h1><p>Specify the test name as a command line argument.</p>
 <pre class="listing">nim c -r test &quot;my test name&quot; &quot;another test&quot;</pre><p>Multiple arguments can be used.</p>
@@ -408,9 +404,9 @@ nim c -r test 'bug #*::' '::#*'</pre>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L142"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L133"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L142" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L133" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -425,9 +421,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L161"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L152"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L161" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L152" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -437,9 +433,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L140"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L131"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L140" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L131" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -452,9 +448,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 The output verbosity of the tests.
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L127"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L118"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L127" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L118" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -469,9 +465,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L132"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L123"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L132" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L123" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -482,9 +478,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 The status of a test when it is done.
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L122"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L113"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L122" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L113" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -501,9 +497,9 @@ class="link-seesrc" target="_blank">Source</a>
 <p>Deprecated: can also override depending on whether <tt class="docutils literal"><span class="pre"><span class="Identifier">NIMTEST_ABORT_ON_ERROR</span></span></tt> environment variable is set.</p>
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L168"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L159"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L168" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L159" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -518,9 +514,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L210"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L201"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L210" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L201" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -533,9 +529,9 @@ Set a checkpoint identified by <tt class="docutils literal"><span class="pre"><s
 <span class="Identifier">checkpoint</span><span class="Punctuation">(</span><span class="StringLit">&quot;Checkpoint B&quot;</span><span class="Punctuation">)</span></pre><p>outputs &quot;Checkpoint A&quot; once it fails.</p>
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L606"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L597"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L606" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L597" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -546,9 +542,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 Completes the report and closes the underlying stream.
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L333"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L324"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L333" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L324" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -559,9 +555,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L249"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L240"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L249" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L240" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -571,9 +567,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L213"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L204"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L213" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L204" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -583,9 +579,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 disables filtering tests with the command line params
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L828"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L819"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L828" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L819" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -597,9 +593,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L220"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L211"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L220" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L211" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -610,9 +606,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 Creates a formatter that writes report to the specified stream in JUnit format. The <tt class="docutils literal"><span class="pre">stream</span></tt> is NOT closed automatically when the test are finished, because the formatter has no way to know when all tests are finished. You should invoke formatter.close() to finalize the report.
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L318"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L309"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L318" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L309" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -622,9 +618,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L217"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L208"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L217" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L208" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -641,9 +637,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L271"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L262"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L271" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L262" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -655,9 +651,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 <tt class="docutils literal"><span class="pre">stackTrace</span></tt> is provided only if the failure occurred due to an exception. <tt class="docutils literal"><span class="pre">checkpoints</span></tt> is never <tt class="docutils literal"><span class="pre">nil</span></tt>.
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L346"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L337"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L346" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L337" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -668,9 +664,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 <tt class="docutils literal"><span class="pre">stackTrace</span></tt> is provided only if the failure occurred due to an exception. <tt class="docutils literal"><span class="pre">checkpoints</span></tt> is never <tt class="docutils literal"><span class="pre">nil</span></tt>.
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L200"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L191"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L200" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L191" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -680,9 +676,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L300"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L291"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L300" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L291" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -693,9 +689,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L395"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L386"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L395" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L386" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -706,9 +702,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L207"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L198"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L207" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L198" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -719,9 +715,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L259"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L250"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L259" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L250" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -732,9 +728,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L338"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L329"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L338" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L329" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -745,9 +741,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L196"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L187"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L196" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L187" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -758,9 +754,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L279"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L270"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L279" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L270" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -771,9 +767,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L354"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L345"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L354" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L345" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -784,9 +780,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L205"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L196"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L205" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L196" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -797,9 +793,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L268"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L259"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L268" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L259" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -810,9 +806,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L341"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L332"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L341" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L332" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -823,9 +819,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L198"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L189"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L198" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L189" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -850,9 +846,9 @@ Verify if a statement or a list of statements is true. A helpful error message a
   <span class="StringLit">&quot;AKB48&quot;</span><span class="Operator">.</span><span class="Identifier">toLowerAscii</span><span class="Punctuation">(</span><span class="Punctuation">)</span> <span class="Operator">==</span> <span class="StringLit">&quot;akb48&quot;</span>
   <span class="CharLit">'C'</span> <span class="Keyword">notin</span> <span class="Identifier">teams</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L695"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L686"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L695" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L686" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -874,9 +870,9 @@ Test if <tt class="docutils literal"><span class="pre"><span class="Identifier">
 <span class="Identifier">expect</span> <span class="Identifier">IOError</span><span class="Punctuation">,</span> <span class="Identifier">OSError</span><span class="Punctuation">,</span> <span class="Identifier">ValueError</span><span class="Punctuation">,</span> <span class="Identifier">AssertionDefect</span><span class="Punctuation">:</span>
   <span class="Identifier">defectiveRobot</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L787"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L778"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L787" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L778" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -901,9 +897,9 @@ class="link-seesrc" target="_blank">Source</a>
   <span class="Punctuation">[</span><span class="Identifier">OK</span><span class="Punctuation">]</span> <span class="DecNumber">2</span> <span class="Operator">+</span> <span class="DecNumber">2</span> <span class="Operator">=</span> <span class="DecNumber">4</span>
   <span class="Punctuation">[</span><span class="Identifier">OK</span><span class="Punctuation">]</span> <span class="Punctuation">(</span><span class="DecNumber">2</span> <span class="Operator">+</span> <span class="Operator">-</span><span class="DecNumber">2</span><span class="Punctuation">)</span> <span class="Operator">!=</span> <span class="DecNumber">4</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L508"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L499"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L508" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L499" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -921,9 +917,9 @@ Print out the checkpoints encountered so far and quit if <tt class="docutils lit
 <span class="Identifier">fail</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre><p>outputs &quot;Checkpoint A&quot; before quitting.</p>
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L620"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L611"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L620" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L611" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -933,9 +929,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 Same as <tt class="docutils literal"><span class="pre"><span class="Identifier">check</span></span></tt> except any failed test causes the program to quit immediately. Any teardown statements are not executed and the failed test output is not generated.
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L777"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L768"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L777" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L768" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -946,9 +942,9 @@ class="link-seesrc" target="_blank">Source</a>
 Mark the test as skipped. Should be used directly in case when it is not possible to perform test for reasons depending on outer environment, or certain application logic conditions or configurations. The test code is still executed.<pre class="listing"><span class="Keyword">if</span> <span class="Keyword">not</span> <span class="Identifier">isGLContextCreated</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Punctuation">:</span>
   <span class="Identifier">skip</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L652"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L643"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L652" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L643" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -961,9 +957,9 @@ Define a single test case identified by <tt class="docutils literal"><span class
   <span class="Identifier">check</span><span class="Punctuation">(</span><span class="Identifier">roses</span> <span class="Operator">==</span> <span class="StringLit">&quot;red&quot;</span><span class="Punctuation">)</span></pre><p>The above code outputs:</p>
 <pre class="listing"><span class="Punctuation">[</span><span class="Identifier">OK</span><span class="Punctuation">]</span> <span class="Identifier">roses</span> <span class="Identifier">are</span> <span class="Identifier">red</span></pre>
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/af6eaf400fd18c082168402bdb38574e7d25ec0d/lib/pure/unittest.nim#L589"
+href="https://github.com/nim-works/nimskull/tree/8a1331ae86f02156789adedcbd86c1cb236e15cb/lib/pure/unittest.nim#L580"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L589" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/lib/pure/unittest.nim#L580" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -977,7 +973,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-03-26 00:00:00 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-03-27 00:00:00 UTC</small>
       </div>
     </div>
   </div>
