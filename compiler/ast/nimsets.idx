@@ -1,8 +1,9 @@
 inSet	ast/nimsets.html#inSet,PNode,PNode	nimsets: inSet(s: PNode; elem: PNode): bool	
 overlap	ast/nimsets.html#overlap,PNode,PNode	nimsets: overlap(a, b: PNode): bool	
 someInSet	ast/nimsets.html#someInSet,PNode,PNode,PNode	nimsets: someInSet(s: PNode; a, b: PNode): bool	
+inclTreeSet	ast/nimsets.html#inclTreeSet,TBitSetView,ConfigRef,PNode	nimsets: inclTreeSet(result: var TBitSetView; conf: ConfigRef; s: PNode)	
 toBitSet	ast/nimsets.html#toBitSet,ConfigRef,PNode	nimsets: toBitSet(conf: ConfigRef; s: PNode): TBitSet	
-toTreeSet	ast/nimsets.html#toTreeSet,ConfigRef,TBitSet,PType,TLineInfo	nimsets: toTreeSet(conf: ConfigRef; s: TBitSet; settype: PType; info: TLineInfo): PNode	
+toTreeSet	ast/nimsets.html#toTreeSet,ConfigRef,TBitSetView,PType,TLineInfo	nimsets: toTreeSet(conf: ConfigRef; s: TBitSetView; settype: PType; info: TLineInfo): PNode	
 unionSets	ast/nimsets.html#unionSets,ConfigRef,PNode,PNode	nimsets: unionSets(conf: ConfigRef; a, b: PNode): PNode	
 diffSets	ast/nimsets.html#diffSets,ConfigRef,PNode,PNode	nimsets: diffSets(conf: ConfigRef; a, b: PNode): PNode	
 intersectSets	ast/nimsets.html#intersectSets,ConfigRef,PNode,PNode	nimsets: intersectSets(conf: ConfigRef; a, b: PNode): PNode	
