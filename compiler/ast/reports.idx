@@ -104,7 +104,7 @@ ReportList	ast/reports.html#ReportList	reports: ReportList
 ReportSet	ast/reports.html#ReportSet	reports: ReportSet	
 incl	ast/reports.html#incl,ReportSet,ReportId	reports: incl(s: var ReportSet; id: ReportId)	
 contains	ast/reports.html#contains,ReportSet,ReportId	reports: contains(s: var ReportSet; id: ReportId): bool	
-addReport	ast/reports.html#addReport,ReportList,Report	reports: addReport(list: var ReportList; report: Report): ReportId	
+addReport	ast/reports.html#addReport,ReportList,sinkReport	reports: addReport(list: var ReportList; report: sink Report): ReportId	
 addReport	ast/reports.html#addReport,ReportList,R	reports: addReport[R: ReportTypes](list: var ReportList; report: R): ReportId	
 getReport	ast/reports.html#getReport,ReportList,ReportId	reports: getReport(list: ReportList; id: ReportId): Report	
 actualType	ast/reports.html#actualType,SemReport	reports: actualType(r: SemReport): PType	

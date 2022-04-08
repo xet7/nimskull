@@ -14,7 +14,6 @@ getString	vm/vm.html#getString,VmArgs,Natural	vm: getString(a: VmArgs; i: Natura
 getVar	vm/vm.html#getVar,VmArgs,Natural	vm: getVar(a: VmArgs; i: Natural): PNode	
 getNodeAddr	vm/vm.html#getNodeAddr,VmArgs,Natural	vm: getNodeAddr(a: VmArgs; i: Natural): PNode	
 execProc	vm/vm.html#execProc,TCtx,PSym,openArray[PNode]	vm: execProc(c: var TCtx; sym: PSym; args: openArray[PNode]): PNode	
-evalStmt	vm/vm.html#evalStmt,TCtx,PNode	vm: evalStmt(c: var TCtx; n: PNode)	
 evalExpr	vm/vm.html#evalExpr,TCtx,PNode	vm: evalExpr(c: var TCtx; n: PNode): PNode	
 getGlobalValue	vm/vm.html#getGlobalValue,TCtx,PSym	vm: getGlobalValue(c: TCtx; s: PSym): PNode	
 setGlobalValue	vm/vm.html#setGlobalValue,TCtx,PSym,PNode	vm: setGlobalValue(c: var TCtx; s: PSym; val: PNode)	
