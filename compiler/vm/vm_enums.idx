@@ -125,7 +125,6 @@ opcNSetIntVal	vm/vm_enums.html#opcNSetIntVal	TOpcode.opcNSetIntVal
 opcNSetFloatVal	vm/vm_enums.html#opcNSetFloatVal	TOpcode.opcNSetFloatVal	
 opcNSetSymbol	vm/vm_enums.html#opcNSetSymbol	TOpcode.opcNSetSymbol	
 opcNSetIdent	vm/vm_enums.html#opcNSetIdent	TOpcode.opcNSetIdent	
-opcNSetType	vm/vm_enums.html#opcNSetType	TOpcode.opcNSetType	
 opcNSetStrVal	vm/vm_enums.html#opcNSetStrVal	TOpcode.opcNSetStrVal	
 opcNNewNimNode	vm/vm_enums.html#opcNNewNimNode	TOpcode.opcNNewNimNode	
 opcNCopyNimNode	vm/vm_enums.html#opcNCopyNimNode	TOpcode.opcNCopyNimNode	

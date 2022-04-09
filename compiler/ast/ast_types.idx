@@ -682,7 +682,6 @@ mNSetIntVal	ast/ast_types.html#mNSetIntVal	TMagic.mNSetIntVal
 mNSetFloatVal	ast/ast_types.html#mNSetFloatVal	TMagic.mNSetFloatVal	
 mNSetSymbol	ast/ast_types.html#mNSetSymbol	TMagic.mNSetSymbol	
 mNSetIdent	ast/ast_types.html#mNSetIdent	TMagic.mNSetIdent	
-mNSetType	ast/ast_types.html#mNSetType	TMagic.mNSetType	
 mNSetStrVal	ast/ast_types.html#mNSetStrVal	TMagic.mNSetStrVal	
 mNLineInfo	ast/ast_types.html#mNLineInfo	TMagic.mNLineInfo	
 mNNewNimNode	ast/ast_types.html#mNNewNimNode	TMagic.mNNewNimNode	
