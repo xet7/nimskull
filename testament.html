@@ -120,7 +120,7 @@ window.addEventListener('DOMContentLoaded', main);
 
   </div>
   &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/33db4eb893332a68100b65c94e894dc1cb022938/doc/testament.rst#L1"
+href="https://github.com/nim-works/nimskull/tree/54a273b3fb922862580e75bfbfe780d07750df85/doc/testament.rst#L1"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/doc/testament.rst#L1" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -164,7 +164,7 @@ class="link-seesrc" target="_blank">Source</a>
 <li><p><tt class="docutils literal"><span class="pre">cmd</span></tt>: Command used to run the test. If left out or an empty string is provided, the command is taken to be: <tt class="docutils literal"><span class="pre">&quot;nim $target --hints:on -d:testing --nimblePath:build/deps/pkgs $options $file&quot;</span></tt> You can use the <tt class="docutils literal"><span class="pre">$target</span></tt>, <tt class="docutils literal"><span class="pre">$options</span></tt>, and <tt class="docutils literal"><span class="pre">$file</span></tt> placeholders in your own command, too.</p>
 <p>example: <tt class="docutils literal"><span class="pre">&quot;nim c -r $file&quot;</span></tt></p>
 </li>
-<li><tt class="docutils literal"><span class="pre">targets</span></tt> supported backend compilation targets for test into (c, cpp, objc, js).</li>
+<li><tt class="docutils literal"><span class="pre">targets</span></tt> supported backend compilation targets for test into (c, cpp, objc, js). Targets can be excluded via a <tt class="docutils literal"><span class="pre"><span class="Operator">!</span></span></tt>, eg: <tt class="docutils literal"><span class="pre"><span class="Operator">!</span><span class="Identifier">js</span></span></tt> to exclude js. Additionally, a <tt class="docutils literal"><span class="pre"><span class="Identifier">native</span></span></tt> target is supported in order to use the same target used for the compiler itself.</li>
 <li><tt class="docutils literal"><span class="pre">matrix</span></tt> flags with which to run the test, delimited by <tt class="docutils literal"><span class="pre"><span class="Punctuation">;</span></span></tt></li>
 <li><tt class="docutils literal"><span class="pre">disabled</span></tt> Conditions that will skip this test. Use of multiple &quot;disabled&quot; clauses is permitted.<pre class="listing"><span class="Identifier">disabled</span><span class="Punctuation">:</span> <span class="StringLit">&quot;bsd&quot;</span>   <span class="Comment"># Can disable OSes...</span>
 <span class="Identifier">disabled</span><span class="Punctuation">:</span> <span class="StringLit">&quot;win&quot;</span>
