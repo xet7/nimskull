@@ -7350,9 +7350,11 @@ window.addEventListener('DOMContentLoaded', main);
           data-doc-search-tag="osproc: execProcesses(cmds: openArray[string];
               options = {poStdErrToStdOut, poParentStreams};
               n = countProcessors(); beforeRunEvent: proc (idx: int) = nil;
-              afterRunEvent: proc (idx: int; p: Process) = nil): int" href="osproc.html#execProcesses%2CopenArray%5Bstring%5D%2Cproc%28int%29%2Cproc%28int%2CProcess%29">osproc: execProcesses(cmds: openArray[string];
+              startRunEvent: proc (idx: int; p: Process) = nil;
+              afterRunEvent: proc (idx: int; p: Process) = nil): int" href="osproc.html#execProcesses%2CopenArray%5Bstring%5D%2Cproc%28int%29%2Cproc%28int%2CProcess%29%2Cproc%28int%2CProcess%29">osproc: execProcesses(cmds: openArray[string];
               options = {poStdErrToStdOut, poParentStreams};
               n = countProcessors(); beforeRunEvent: proc (idx: int) = nil;
+              startRunEvent: proc (idx: int; p: Process) = nil;
               afterRunEvent: proc (idx: int; p: Process) = nil): int</a></li>
           </ul></dd>
 <dt><a name="execShellCmd" href="#execShellCmd"><span>execShellCmd:</span></a></dt><dd><ul class="simple">
