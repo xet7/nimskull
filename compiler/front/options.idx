@@ -1,7 +1,6 @@
 hasTinyCBackend	front/options.html#hasTinyCBackend	options: hasTinyCBackend	
 useEffectSystem	front/options.html#useEffectSystem	options: useEffectSystem	
 useWriteTracking	front/options.html#useWriteTracking	options: useWriteTracking	
-hasFFI	front/options.html#hasFFI	options: hasFFI	
 copyrightYear	front/options.html#copyrightYear	options: copyrightYear	
 nimEnableCovariance	front/options.html#nimEnableCovariance	options: nimEnableCovariance	
 harmlessOptions	front/options.html#harmlessOptions	options: harmlessOptions	

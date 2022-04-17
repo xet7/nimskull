@@ -146,7 +146,6 @@ dynamicBindSym	front/in_options.html#dynamicBindSym	Feature.dynamicBindSym
 forLoopMacros	front/in_options.html#forLoopMacros	Feature.forLoopMacros	
 caseStmtMacros	front/in_options.html#caseStmtMacros	Feature.caseStmtMacros	
 codeReordering	front/in_options.html#codeReordering	Feature.codeReordering	
-compiletimeFFI	front/in_options.html#compiletimeFFI	Feature.compiletimeFFI	
 vmopsDanger	front/in_options.html#vmopsDanger	Feature.vmopsDanger	
 strictFuncs	front/in_options.html#strictFuncs	Feature.strictFuncs	
 views	front/in_options.html#views	Feature.views	
