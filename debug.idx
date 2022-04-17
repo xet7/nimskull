@@ -1,4 +1,8 @@
-Special defines	debug.html#special-defines	  Special defines	
-Debug helper modules	debug.html#debug-helper-modules	  Debug helper modules	
-Semantic analysis	debug.html#semantic-analysis	  Semantic analysis	
-VM codegen and execution	debug.html#vm-codegen-and-execution	  VM codegen and execution	
+Debugging Defines - Quick Reference	debug.html#debugging-defines-minus-quick-reference	  Debugging Defines - Quick Reference	
+Simplest / All Apsects - Debug Helper Modules	debug.html#simplest-slash-all-apsects-minus-debug-helper-modules	   Simplest / All Apsects - Debug Helper Modules	
+Semantic Analysis - Execution Tracing	debug.html#semantic-analysis-minus-execution-tracing	   Semantic Analysis - Execution Tracing	
+Execution Tracing a Fragment	debug.html#execution-tracing-a-fragment	  Execution Tracing a Fragment	
+Anatomy of a Trace Entry	debug.html#anatomy-of-a-trace-entry	  Anatomy of a Trace Entry	
+Missing Trace Entries	debug.html#missing-trace-entries	  Missing Trace Entries	
+Comparing/Logging Traces: Differential Debugging	debug.html#comparingslashlogging-tracescolon-differential-debugging	  Comparing/Logging Traces: Differential Debugging	
+VM Codegen and Execution	debug.html#vm-codegen-and-execution	   VM Codegen and Execution	
