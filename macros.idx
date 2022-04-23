@@ -254,14 +254,9 @@ nskLabel	macros.html#nskLabel	NimSymKind.nskLabel
 nskStub	macros.html#nskStub	NimSymKind.nskStub	
 NimSymKind	macros.html#NimSymKind	macros: NimSymKind	
 TNimSymKinds	macros.html#TNimSymKinds	macros: TNimSymKinds	
-NimIdent	macros.html#NimIdent	macros: NimIdent	
-NimSym	macros.html#NimSym	macros: NimSym	
 nnkLiterals	macros.html#nnkLiterals	macros: nnkLiterals	
 nnkCallKinds	macros.html#nnkCallKinds	macros: nnkCallKinds	
-toNimIdent	macros.html#toNimIdent,string	macros: toNimIdent(s: string): NimIdent	
-`==`	macros.html#==,NimIdent,NimIdent	macros: `==`(a, b: NimIdent): bool	
 `==`	macros.html#==,NimNode,NimNode	macros: `==`(a, b: NimNode): bool	
-`==`	macros.html#==,NimSym,NimSym	macros: `==`(a, b: NimSym): bool	
 sameType	macros.html#sameType,NimNode,NimNode	macros: sameType(a, b: NimNode): bool	
 len	macros.html#len,NimNode	macros: len(n: NimNode): int	
 `[]`	macros.html#[],NimNode,int	macros: `[]`(n: NimNode; i: int): NimNode	
@@ -279,11 +274,6 @@ floatVal	macros.html#floatVal,NimNode	macros: floatVal(n: NimNode): BiggestFloat
 symKind	macros.html#symKind,NimNode	macros: symKind(symbol: NimNode): NimSymKind	
 getImpl	macros.html#getImpl,NimNode	macros: getImpl(symbol: NimNode): NimNode	
 strVal	macros.html#strVal,NimNode	macros: strVal(n: NimNode): string	
-ident	macros.html#ident,NimNode	macros: ident(n: NimNode): NimIdent	
-symbol	macros.html#symbol,NimNode	macros: symbol(n: NimNode): NimSym	
-getImpl	macros.html#getImpl,NimSym	macros: getImpl(s: NimSym): NimNode	
-`$`	macros.html#$,NimIdent	macros: `$`(i: NimIdent): string	
-`$`	macros.html#$,NimSym	macros: `$`(s: NimSym): string	
 getImplTransformed	macros.html#getImplTransformed,NimNode	macros: getImplTransformed(symbol: NimNode): NimNode	
 owner	macros.html#owner,NimNode	macros: owner(sym: NimNode): NimNode	
 isInstantiationOf	macros.html#isInstantiationOf,NimNode,NimNode	macros: isInstantiationOf(instanceProcSym, genProcSym: NimNode): bool	
@@ -298,8 +288,6 @@ symBodyHash	macros.html#symBodyHash,NimNode	macros: symBodyHash(s: NimNode): str
 getTypeImpl	macros.html#getTypeImpl,typedesc	macros: getTypeImpl(n: typedesc): NimNode	
 intVal=	macros.html#intVal=,NimNode,BiggestInt	macros: intVal=(n: NimNode; val: BiggestInt)	
 floatVal=	macros.html#floatVal=,NimNode,BiggestFloat	macros: floatVal=(n: NimNode; val: BiggestFloat)	
-symbol=	macros.html#symbol=,NimNode,NimSym	macros: symbol=(n: NimNode; val: NimSym)	
-ident=	macros.html#ident=,NimNode,NimIdent	macros: ident=(n: NimNode; val: NimIdent)	
 strVal=	macros.html#strVal=,NimNode,string	macros: strVal=(n: NimNode; val: string)	
 newNimNode	macros.html#newNimNode,NimNodeKind,NimNode	macros: newNimNode(kind: NimNodeKind; lineInfoFrom: NimNode = nil): NimNode	
 copyNimNode	macros.html#copyNimNode,NimNode	macros: copyNimNode(n: NimNode): NimNode	
@@ -311,7 +299,6 @@ newStrLitNode	macros.html#newStrLitNode,string	macros: newStrLitNode(s: string):
 newCommentStmtNode	macros.html#newCommentStmtNode,string	macros: newCommentStmtNode(s: string): NimNode	
 newIntLitNode	macros.html#newIntLitNode,BiggestInt	macros: newIntLitNode(i: BiggestInt): NimNode	
 newFloatLitNode	macros.html#newFloatLitNode,BiggestFloat	macros: newFloatLitNode(f: BiggestFloat): NimNode	
-newIdentNode	macros.html#newIdentNode,NimIdent	macros: newIdentNode(i: NimIdent): NimNode	
 newIdentNode	macros.html#newIdentNode,string	macros: newIdentNode(i: string): NimNode	
 ident	macros.html#ident,string	macros: ident(name: string): NimNode	
 brClosed	macros.html#brClosed	BindSymRule.brClosed	
@@ -338,7 +325,6 @@ expectLen	macros.html#expectLen,NimNode,int	macros: expectLen(n: NimNode; len: i
 expectLen	macros.html#expectLen,NimNode,int,int	macros: expectLen(n: NimNode; min, max: int)	
 newTree	macros.html#newTree,NimNodeKind,varargs[NimNode]	macros: newTree(kind: NimNodeKind; children: varargs[NimNode]): NimNode	
 newCall	macros.html#newCall,NimNode,varargs[NimNode]	macros: newCall(theProc: NimNode; args: varargs[NimNode]): NimNode	
-newCall	macros.html#newCall,NimIdent,varargs[NimNode]	macros: newCall(theProc: NimIdent; args: varargs[NimNode]): NimNode	
 newCall	macros.html#newCall,string,varargs[NimNode]	macros: newCall(theProc: string; args: varargs[NimNode]): NimNode	
 newLit	macros.html#newLit,char	macros: newLit(c: char): NimNode	
 newLit	macros.html#newLit,int	macros: newLit(i: int): NimNode	

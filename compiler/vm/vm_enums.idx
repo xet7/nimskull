@@ -115,16 +115,12 @@ opcNKind	vm/vm_enums.html#opcNKind	TOpcode.opcNKind
 opcNSymKind	vm/vm_enums.html#opcNSymKind	TOpcode.opcNSymKind	
 opcNIntVal	vm/vm_enums.html#opcNIntVal	TOpcode.opcNIntVal	
 opcNFloatVal	vm/vm_enums.html#opcNFloatVal	TOpcode.opcNFloatVal	
-opcNSymbol	vm/vm_enums.html#opcNSymbol	TOpcode.opcNSymbol	
-opcNIdent	vm/vm_enums.html#opcNIdent	TOpcode.opcNIdent	
 opcNGetType	vm/vm_enums.html#opcNGetType	TOpcode.opcNGetType	
 opcNStrVal	vm/vm_enums.html#opcNStrVal	TOpcode.opcNStrVal	
 opcNSigHash	vm/vm_enums.html#opcNSigHash	TOpcode.opcNSigHash	
 opcNGetSize	vm/vm_enums.html#opcNGetSize	TOpcode.opcNGetSize	
 opcNSetIntVal	vm/vm_enums.html#opcNSetIntVal	TOpcode.opcNSetIntVal	
 opcNSetFloatVal	vm/vm_enums.html#opcNSetFloatVal	TOpcode.opcNSetFloatVal	
-opcNSetSymbol	vm/vm_enums.html#opcNSetSymbol	TOpcode.opcNSetSymbol	
-opcNSetIdent	vm/vm_enums.html#opcNSetIdent	TOpcode.opcNSetIdent	
 opcNSetStrVal	vm/vm_enums.html#opcNSetStrVal	TOpcode.opcNSetStrVal	
 opcNNewNimNode	vm/vm_enums.html#opcNNewNimNode	TOpcode.opcNNewNimNode	
 opcNCopyNimNode	vm/vm_enums.html#opcNCopyNimNode	TOpcode.opcNCopyNimNode	
