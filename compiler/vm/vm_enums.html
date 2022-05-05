@@ -115,11 +115,11 @@ window.addEventListener('DOMContentLoaded', main);
   opcUnaryMinusInt, opcUnaryMinusFloat, opcBitnotInt, opcEqStr, opcLeStr,
   opcLtStr, opcEqSet, opcLeSet, opcLtSet, opcMulSet, opcPlusSet, opcMinusSet,
   opcConcatStr, opcContainsSet, opcRepr, opcSetLenStr, opcSetLenSeq, opcIsNil,
-  opcOf, opcIs, opcSubStr, opcParseFloat, opcConv, opcCast, opcQuit,
-  opcInvalidField, opcNarrowS, opcNarrowU, opcSignExtend, opcAddStrCh,
-  opcAddStrStr, opcAddSeqElem, opcRangeChck, opcNAdd, opcNAddMultiple, opcNKind,
-  opcNSymKind, opcNIntVal, opcNFloatVal, opcNGetType, opcNStrVal, opcNSigHash,
-  opcNGetSize, opcNSetIntVal, opcNSetFloatVal, opcNSetStrVal, opcNNewNimNode,
+  opcOf, opcIs, opcParseFloat, opcConv, opcCast, opcQuit, opcInvalidField,
+  opcNarrowS, opcNarrowU, opcSignExtend, opcAddStrCh, opcAddStrStr,
+  opcAddSeqElem, opcRangeChck, opcNAdd, opcNAddMultiple, opcNKind, opcNSymKind,
+  opcNIntVal, opcNFloatVal, opcNGetType, opcNStrVal, opcNSigHash, opcNGetSize,
+  opcNSetIntVal, opcNSetFloatVal, opcNSetStrVal, opcNNewNimNode,
   opcNCopyNimNode, opcNCopyNimTree, opcNDel, opcGenSym, opcNccValue, opcNccInc,
   opcNcsAdd, opcNcsIncl, opcNcsLen, opcNcsAt, opcNctPut, opcNctLen, opcNctGet,
   opcNctHasNext, opcNctNext, opcNodeId, opcSlurp, opcGorge, opcParseExprToAst,
@@ -143,7 +143,7 @@ window.addEventListener('DOMContentLoaded', main);
       <li><a class="reference" href="#firstABxInstr"
     title="firstABxInstr = opcTJmp">firstABxInstr</a></li>
   <li><a class="reference" href="#largeInstrs"
-    title="largeInstrs = {opcSubStr, opcConv, opcCast, opcNewSeq, opcOf}">largeInstrs</a></li>
+    title="largeInstrs = {opcConv, opcCast, opcNewSeq, opcOf}">largeInstrs</a></li>
   <li><a class="reference" href="#relativeJumps"
     title="relativeJumps = {opcTJmp, opcFJmp, opcJmp, opcJmpBack}">relativeJumps</a></li>
 
@@ -154,7 +154,7 @@ window.addEventListener('DOMContentLoaded', main);
 
   </div>
   &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/64f4636d0cb38773cf5cd40494c7a906b2b27054/compiler/vm/vm_enums.nim#L1"
+href="https://github.com/nim-works/nimskull/tree/69e36a28a7f3e535c9b5b32ea376aeb0c36b7fa5/compiler/vm/vm_enums.nim#L1"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vm_enums.nim#L1" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -182,11 +182,11 @@ class="link-seesrc" target="_blank">Source</a>
   <span class="Identifier">opcUnaryMinusInt</span><span class="Other">,</span> <span class="Identifier">opcUnaryMinusFloat</span><span class="Other">,</span> <span class="Identifier">opcBitnotInt</span><span class="Other">,</span> <span class="Identifier">opcEqStr</span><span class="Other">,</span> <span class="Identifier">opcLeStr</span><span class="Other">,</span>
   <span class="Identifier">opcLtStr</span><span class="Other">,</span> <span class="Identifier">opcEqSet</span><span class="Other">,</span> <span class="Identifier">opcLeSet</span><span class="Other">,</span> <span class="Identifier">opcLtSet</span><span class="Other">,</span> <span class="Identifier">opcMulSet</span><span class="Other">,</span> <span class="Identifier">opcPlusSet</span><span class="Other">,</span> <span class="Identifier">opcMinusSet</span><span class="Other">,</span>
   <span class="Identifier">opcConcatStr</span><span class="Other">,</span> <span class="Identifier">opcContainsSet</span><span class="Other">,</span> <span class="Identifier">opcRepr</span><span class="Other">,</span> <span class="Identifier">opcSetLenStr</span><span class="Other">,</span> <span class="Identifier">opcSetLenSeq</span><span class="Other">,</span> <span class="Identifier">opcIsNil</span><span class="Other">,</span>
-  <span class="Identifier">opcOf</span><span class="Other">,</span> <span class="Identifier">opcIs</span><span class="Other">,</span> <span class="Identifier">opcSubStr</span><span class="Other">,</span> <span class="Identifier">opcParseFloat</span><span class="Other">,</span> <span class="Identifier">opcConv</span><span class="Other">,</span> <span class="Identifier">opcCast</span><span class="Other">,</span> <span class="Identifier">opcQuit</span><span class="Other">,</span>
-  <span class="Identifier">opcInvalidField</span><span class="Other">,</span> <span class="Identifier">opcNarrowS</span><span class="Other">,</span> <span class="Identifier">opcNarrowU</span><span class="Other">,</span> <span class="Identifier">opcSignExtend</span><span class="Other">,</span> <span class="Identifier">opcAddStrCh</span><span class="Other">,</span>
-  <span class="Identifier">opcAddStrStr</span><span class="Other">,</span> <span class="Identifier">opcAddSeqElem</span><span class="Other">,</span> <span class="Identifier">opcRangeChck</span><span class="Other">,</span> <span class="Identifier">opcNAdd</span><span class="Other">,</span> <span class="Identifier">opcNAddMultiple</span><span class="Other">,</span> <span class="Identifier">opcNKind</span><span class="Other">,</span>
-  <span class="Identifier">opcNSymKind</span><span class="Other">,</span> <span class="Identifier">opcNIntVal</span><span class="Other">,</span> <span class="Identifier">opcNFloatVal</span><span class="Other">,</span> <span class="Identifier">opcNGetType</span><span class="Other">,</span> <span class="Identifier">opcNStrVal</span><span class="Other">,</span> <span class="Identifier">opcNSigHash</span><span class="Other">,</span>
-  <span class="Identifier">opcNGetSize</span><span class="Other">,</span> <span class="Identifier">opcNSetIntVal</span><span class="Other">,</span> <span class="Identifier">opcNSetFloatVal</span><span class="Other">,</span> <span class="Identifier">opcNSetStrVal</span><span class="Other">,</span> <span class="Identifier">opcNNewNimNode</span><span class="Other">,</span>
+  <span class="Identifier">opcOf</span><span class="Other">,</span> <span class="Identifier">opcIs</span><span class="Other">,</span> <span class="Identifier">opcParseFloat</span><span class="Other">,</span> <span class="Identifier">opcConv</span><span class="Other">,</span> <span class="Identifier">opcCast</span><span class="Other">,</span> <span class="Identifier">opcQuit</span><span class="Other">,</span> <span class="Identifier">opcInvalidField</span><span class="Other">,</span>
+  <span class="Identifier">opcNarrowS</span><span class="Other">,</span> <span class="Identifier">opcNarrowU</span><span class="Other">,</span> <span class="Identifier">opcSignExtend</span><span class="Other">,</span> <span class="Identifier">opcAddStrCh</span><span class="Other">,</span> <span class="Identifier">opcAddStrStr</span><span class="Other">,</span>
+  <span class="Identifier">opcAddSeqElem</span><span class="Other">,</span> <span class="Identifier">opcRangeChck</span><span class="Other">,</span> <span class="Identifier">opcNAdd</span><span class="Other">,</span> <span class="Identifier">opcNAddMultiple</span><span class="Other">,</span> <span class="Identifier">opcNKind</span><span class="Other">,</span> <span class="Identifier">opcNSymKind</span><span class="Other">,</span>
+  <span class="Identifier">opcNIntVal</span><span class="Other">,</span> <span class="Identifier">opcNFloatVal</span><span class="Other">,</span> <span class="Identifier">opcNGetType</span><span class="Other">,</span> <span class="Identifier">opcNStrVal</span><span class="Other">,</span> <span class="Identifier">opcNSigHash</span><span class="Other">,</span> <span class="Identifier">opcNGetSize</span><span class="Other">,</span>
+  <span class="Identifier">opcNSetIntVal</span><span class="Other">,</span> <span class="Identifier">opcNSetFloatVal</span><span class="Other">,</span> <span class="Identifier">opcNSetStrVal</span><span class="Other">,</span> <span class="Identifier">opcNNewNimNode</span><span class="Other">,</span>
   <span class="Identifier">opcNCopyNimNode</span><span class="Other">,</span> <span class="Identifier">opcNCopyNimTree</span><span class="Other">,</span> <span class="Identifier">opcNDel</span><span class="Other">,</span> <span class="Identifier">opcGenSym</span><span class="Other">,</span> <span class="Identifier">opcNccValue</span><span class="Other">,</span> <span class="Identifier">opcNccInc</span><span class="Other">,</span>
   <span class="Identifier">opcNcsAdd</span><span class="Other">,</span> <span class="Identifier">opcNcsIncl</span><span class="Other">,</span> <span class="Identifier">opcNcsLen</span><span class="Other">,</span> <span class="Identifier">opcNcsAt</span><span class="Other">,</span> <span class="Identifier">opcNctPut</span><span class="Other">,</span> <span class="Identifier">opcNctLen</span><span class="Other">,</span> <span class="Identifier">opcNctGet</span><span class="Other">,</span>
   <span class="Identifier">opcNctHasNext</span><span class="Other">,</span> <span class="Identifier">opcNctNext</span><span class="Other">,</span> <span class="Identifier">opcNodeId</span><span class="Other">,</span> <span class="Identifier">opcSlurp</span><span class="Other">,</span> <span class="Identifier">opcGorge</span><span class="Other">,</span> <span class="Identifier">opcParseExprToAst</span><span class="Other">,</span>
@@ -202,7 +202,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/64f4636d0cb38773cf5cd40494c7a906b2b27054/compiler/vm/vm_enums.nim#L10"
+href="https://github.com/nim-works/nimskull/tree/69e36a28a7f3e535c9b5b32ea376aeb0c36b7fa5/compiler/vm/vm_enums.nim#L10"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vm_enums.nim#L10" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -215,7 +215,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/64f4636d0cb38773cf5cd40494c7a906b2b27054/compiler/vm/vm_enums.nim#L2"
+href="https://github.com/nim-works/nimskull/tree/69e36a28a7f3e535c9b5b32ea376aeb0c36b7fa5/compiler/vm/vm_enums.nim#L2"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vm_enums.nim#L2" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -232,19 +232,19 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/64f4636d0cb38773cf5cd40494c7a906b2b27054/compiler/vm/vm_enums.nim#L143"
+href="https://github.com/nim-works/nimskull/tree/69e36a28a7f3e535c9b5b32ea376aeb0c36b7fa5/compiler/vm/vm_enums.nim#L143"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vm_enums.nim#L143" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="largeInstrs">
-<dt><pre><a href="vm_enums.html#largeInstrs"><span class="Identifier">largeInstrs</span></a> <span class="Other">=</span> <span class="Other">{</span><span class="DecNumber">opcSubStr</span><span class="Other">,</span> <span class="DecNumber">opcConv</span><span class="Other">,</span> <span class="DecNumber">opcCast</span><span class="Other">,</span> <span class="DecNumber">opcNewSeq</span><span class="Other">,</span> <span class="DecNumber">opcOf</span><span class="Other">}</span></pre></dt>
+<dt><pre><a href="vm_enums.html#largeInstrs"><span class="Identifier">largeInstrs</span></a> <span class="Other">=</span> <span class="Other">{</span><span class="DecNumber">opcConv</span><span class="Other">,</span> <span class="DecNumber">opcCast</span><span class="Other">,</span> <span class="DecNumber">opcNewSeq</span><span class="Other">,</span> <span class="DecNumber">opcOf</span><span class="Other">}</span></pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/64f4636d0cb38773cf5cd40494c7a906b2b27054/compiler/vm/vm_enums.nim#L144"
+href="https://github.com/nim-works/nimskull/tree/69e36a28a7f3e535c9b5b32ea376aeb0c36b7fa5/compiler/vm/vm_enums.nim#L144"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vm_enums.nim#L144" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -256,7 +256,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/64f4636d0cb38773cf5cd40494c7a906b2b27054/compiler/vm/vm_enums.nim#L146"
+href="https://github.com/nim-works/nimskull/tree/69e36a28a7f3e535c9b5b32ea376aeb0c36b7fa5/compiler/vm/vm_enums.nim#L146"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vm_enums.nim#L146" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -272,7 +272,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-05-04 00:00:00 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-05-05 00:00:00 UTC</small>
       </div>
     </div>
   </div>

@@ -96,7 +96,6 @@ opcSetLenSeq	vm/vm_enums.html#opcSetLenSeq	TOpcode.opcSetLenSeq
 opcIsNil	vm/vm_enums.html#opcIsNil	TOpcode.opcIsNil	
 opcOf	vm/vm_enums.html#opcOf	TOpcode.opcOf	
 opcIs	vm/vm_enums.html#opcIs	TOpcode.opcIs	
-opcSubStr	vm/vm_enums.html#opcSubStr	TOpcode.opcSubStr	
 opcParseFloat	vm/vm_enums.html#opcParseFloat	TOpcode.opcParseFloat	
 opcConv	vm/vm_enums.html#opcConv	TOpcode.opcConv	
 opcCast	vm/vm_enums.html#opcCast	TOpcode.opcCast	
