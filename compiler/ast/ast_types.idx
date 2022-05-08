@@ -234,7 +234,6 @@ sfAllUntyped	ast/ast_types.html#sfAllUntyped	ast_types: sfAllUntyped
 sfDirty	ast/ast_types.html#sfDirty	ast_types: sfDirty	
 sfAnon	ast/ast_types.html#sfAnon	ast_types: sfAnon	
 sfNoForward	ast/ast_types.html#sfNoForward	ast_types: sfNoForward	
-sfReorder	ast/ast_types.html#sfReorder	ast_types: sfReorder	
 sfCompileToCpp	ast/ast_types.html#sfCompileToCpp	ast_types: sfCompileToCpp	
 sfCompileToObjc	ast/ast_types.html#sfCompileToObjc	ast_types: sfCompileToObjc	
 sfExperimental	ast/ast_types.html#sfExperimental	ast_types: sfExperimental	

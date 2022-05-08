@@ -389,7 +389,6 @@ rsemIntLiteralExpected	ast/report_enums.html#rsemIntLiteralExpected	ReportKind.r
 rsemStringLiteralExpected	ast/report_enums.html#rsemStringLiteralExpected	ReportKind.rsemStringLiteralExpected	
 rsemOnOrOffExpected	ast/report_enums.html#rsemOnOrOffExpected	ReportKind.rsemOnOrOffExpected	
 rsemCallconvExpected	ast/report_enums.html#rsemCallconvExpected	ReportKind.rsemCallconvExpected	
-rsemInnerCodeReordering	ast/report_enums.html#rsemInnerCodeReordering	ReportKind.rsemInnerCodeReordering	
 rsemUnknownExperimental	ast/report_enums.html#rsemUnknownExperimental	ReportKind.rsemUnknownExperimental	
 rsemDuplicateCaseLabel	ast/report_enums.html#rsemDuplicateCaseLabel	ReportKind.rsemDuplicateCaseLabel	
 rsemExpressionIsNotAPath	ast/report_enums.html#rsemExpressionIsNotAPath	ReportKind.rsemExpressionIsNotAPath	
@@ -519,7 +518,6 @@ rsemLockLevelMismatch	ast/report_enums.html#rsemLockLevelMismatch	ReportKind.rse
 rsemTypelessParam	ast/report_enums.html#rsemTypelessParam	ReportKind.rsemTypelessParam	
 rsemWarnUnlistedRaises	ast/report_enums.html#rsemWarnUnlistedRaises	ReportKind.rsemWarnUnlistedRaises	
 rsemDotForModuleImport	ast/report_enums.html#rsemDotForModuleImport	ReportKind.rsemDotForModuleImport	
-rsemReorderingFail	ast/report_enums.html#rsemReorderingFail	ReportKind.rsemReorderingFail	
 rsemProveField	ast/report_enums.html#rsemProveField	ReportKind.rsemProveField	
 rsemStrictNotNilExpr	ast/report_enums.html#rsemStrictNotNilExpr	ReportKind.rsemStrictNotNilExpr	
 rsemStrictNotNilResult	ast/report_enums.html#rsemStrictNotNilResult	ReportKind.rsemStrictNotNilResult	

@@ -183,7 +183,6 @@ wDeadCodeElimUnused	ast/wordrecg.html#wDeadCodeElimUnused	TSpecialWord.wDeadCode
 wSafecode	ast/wordrecg.html#wSafecode	TSpecialWord.wSafecode	
 wPackage	ast/wordrecg.html#wPackage	TSpecialWord.wPackage	
 wNoForward	ast/wordrecg.html#wNoForward	TSpecialWord.wNoForward	
-wReorder	ast/wordrecg.html#wReorder	TSpecialWord.wReorder	
 wNoRewrite	ast/wordrecg.html#wNoRewrite	TSpecialWord.wNoRewrite	
 wNoDestroy	ast/wordrecg.html#wNoDestroy	TSpecialWord.wNoDestroy	
 wPragma	ast/wordrecg.html#wPragma	TSpecialWord.wPragma	
