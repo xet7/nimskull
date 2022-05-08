@@ -113,12 +113,10 @@ cmdParse	front/in_options.html#cmdParse	Command.cmdParse
 cmdRod	front/in_options.html#cmdRod	Command.cmdRod	
 cmdIdeTools	front/in_options.html#cmdIdeTools	Command.cmdIdeTools	
 cmdNimscript	front/in_options.html#cmdNimscript	Command.cmdNimscript	
-cmdDoc0	front/in_options.html#cmdDoc0	Command.cmdDoc0	
 cmdDoc	front/in_options.html#cmdDoc	Command.cmdDoc	
 cmdDoc2tex	front/in_options.html#cmdDoc2tex	Command.cmdDoc2tex	
 cmdRst2html	front/in_options.html#cmdRst2html	Command.cmdRst2html	
 cmdRst2tex	front/in_options.html#cmdRst2tex	Command.cmdRst2tex	
-cmdJsondoc0	front/in_options.html#cmdJsondoc0	Command.cmdJsondoc0	
 cmdJsondoc	front/in_options.html#cmdJsondoc	Command.cmdJsondoc	
 cmdCtags	front/in_options.html#cmdCtags	Command.cmdCtags	
 cmdBuildindex	front/in_options.html#cmdBuildindex	Command.cmdBuildindex	
