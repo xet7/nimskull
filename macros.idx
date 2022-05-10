@@ -22,7 +22,6 @@ nnkStrLit	macros.html#nnkStrLit	NimNodeKind.nnkStrLit
 nnkRStrLit	macros.html#nnkRStrLit	NimNodeKind.nnkRStrLit	
 nnkTripleStrLit	macros.html#nnkTripleStrLit	NimNodeKind.nnkTripleStrLit	
 nnkNilLit	macros.html#nnkNilLit	NimNodeKind.nnkNilLit	
-nnkComesFrom	macros.html#nnkComesFrom	NimNodeKind.nnkComesFrom	
 nnkDotCall	macros.html#nnkDotCall	NimNodeKind.nnkDotCall	
 nnkCommand	macros.html#nnkCommand	NimNodeKind.nnkCommand	
 nnkCall	macros.html#nnkCall	NimNodeKind.nnkCall	

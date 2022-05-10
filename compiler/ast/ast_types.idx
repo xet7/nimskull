@@ -36,7 +36,6 @@ nkStrLit	ast/ast_types.html#nkStrLit	TNodeKind.nkStrLit
 nkRStrLit	ast/ast_types.html#nkRStrLit	TNodeKind.nkRStrLit	
 nkTripleStrLit	ast/ast_types.html#nkTripleStrLit	TNodeKind.nkTripleStrLit	
 nkNilLit	ast/ast_types.html#nkNilLit	TNodeKind.nkNilLit	
-nkComesFrom	ast/ast_types.html#nkComesFrom	TNodeKind.nkComesFrom	
 nkDotCall	ast/ast_types.html#nkDotCall	TNodeKind.nkDotCall	
 nkCommand	ast/ast_types.html#nkCommand	TNodeKind.nkCommand	
 nkCall	ast/ast_types.html#nkCall	TNodeKind.nkCall	
