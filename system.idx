@@ -756,7 +756,6 @@ rangeCheck	system.html#rangeCheck.t	system: rangeCheck(cond)
 shallow	system.html#shallow,seq[T]	system: shallow[T](s: var seq[T])	
 shallow	system.html#shallow,string	system: shallow(s: var string)	
 NimNode	system.html#NimNode	system: NimNode	
-varargsLen	system.html#varargsLen.m,varargs[untyped]	system: varargsLen(x: varargs[untyped]): int	
 insert	system.html#insert,string,string	system: insert(x: var string; item: string; i = 0.Natural)	
 addEscapedChar	system.html#addEscapedChar,string,char	system: addEscapedChar(s: var string; c: char)	
 addQuoted	system.html#addQuoted,string,T	system: addQuoted[T](s: var string; x: T)	
