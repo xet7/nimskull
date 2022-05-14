@@ -182,7 +182,6 @@ wAssert	ast/wordrecg.html#wAssert	TSpecialWord.wAssert
 wDeadCodeElimUnused	ast/wordrecg.html#wDeadCodeElimUnused	TSpecialWord.wDeadCodeElimUnused	
 wSafecode	ast/wordrecg.html#wSafecode	TSpecialWord.wSafecode	
 wPackage	ast/wordrecg.html#wPackage	TSpecialWord.wPackage	
-wNoForward	ast/wordrecg.html#wNoForward	TSpecialWord.wNoForward	
 wNoRewrite	ast/wordrecg.html#wNoRewrite	TSpecialWord.wNoRewrite	
 wNoDestroy	ast/wordrecg.html#wNoDestroy	TSpecialWord.wNoDestroy	
 wPragma	ast/wordrecg.html#wPragma	TSpecialWord.wPragma	
