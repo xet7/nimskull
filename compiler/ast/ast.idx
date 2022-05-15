@@ -63,6 +63,7 @@ addAllowNil	ast/ast.html#addAllowNil,Indexable,Indexable	ast: addAllowNil(father
 `[]`	ast/ast.html#[].t,Indexable,BackwardsIndex	ast: `[]`(n: Indexable; i: BackwardsIndex): Indexable	
 `[]=`	ast/ast.html#[]=.t,Indexable,BackwardsIndex,Indexable	ast: `[]=`(n: Indexable; i: BackwardsIndex; x: Indexable)	
 getDeclPragma	ast/ast.html#getDeclPragma,PNode	ast: getDeclPragma(n: PNode): PNode	
+invalidNodeId	ast/ast.html#invalidNodeId	ast: invalidNodeId	
 newNodeI	ast/ast.html#newNodeI,TNodeKind,TLineInfo	ast: newNodeI(kind: TNodeKind; info: TLineInfo): PNode	
 newNode	ast/ast.html#newNode,TNodeKind	ast: newNode(kind: TNodeKind): PNode	
 newNodeI	ast/ast.html#newNodeI,TNodeKind,TLineInfo,int	ast: newNodeI(kind: TNodeKind; info: TLineInfo; children: int): PNode	

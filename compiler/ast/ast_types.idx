@@ -377,7 +377,6 @@ tfCapturesEnv	ast/ast_types.html#tfCapturesEnv	TTypeFlag.tfCapturesEnv
 tfByCopy	ast/ast_types.html#tfByCopy	TTypeFlag.tfByCopy	
 tfByRef	ast/ast_types.html#tfByRef	TTypeFlag.tfByRef	
 tfIterator	ast/ast_types.html#tfIterator	TTypeFlag.tfIterator	
-tfPartial	ast/ast_types.html#tfPartial	TTypeFlag.tfPartial	
 tfNotNil	ast/ast_types.html#tfNotNil	TTypeFlag.tfNotNil	
 tfRequiresInit	ast/ast_types.html#tfRequiresInit	TTypeFlag.tfRequiresInit	
 tfNeedsFullInit	ast/ast_types.html#tfNeedsFullInit	TTypeFlag.tfNeedsFullInit	

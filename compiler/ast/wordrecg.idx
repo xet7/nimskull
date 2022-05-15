@@ -214,9 +214,7 @@ wCodegenDecl	ast/wordrecg.html#wCodegenDecl	TSpecialWord.wCodegenDecl
 wUnchecked	ast/wordrecg.html#wUnchecked	TSpecialWord.wUnchecked	
 wGuard	ast/wordrecg.html#wGuard	TSpecialWord.wGuard	
 wLocks	ast/wordrecg.html#wLocks	TSpecialWord.wLocks	
-wPartial	ast/wordrecg.html#wPartial	TSpecialWord.wPartial	
 wExplain	ast/wordrecg.html#wExplain	TSpecialWord.wExplain	
-wLiftLocals	ast/wordrecg.html#wLiftLocals	TSpecialWord.wLiftLocals	
 wEnforceNoRaises	ast/wordrecg.html#wEnforceNoRaises	TSpecialWord.wEnforceNoRaises	
 wAuto	ast/wordrecg.html#wAuto	TSpecialWord.wAuto	
 wBool	ast/wordrecg.html#wBool	TSpecialWord.wBool	

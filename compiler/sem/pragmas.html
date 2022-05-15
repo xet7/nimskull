@@ -112,7 +112,7 @@ window.addEventListener('DOMContentLoaded', main);
                      wNimcall..wNoconv, wNonReloadable, wRaises, wTags,
                      wNoDestroy, wCompileTime..wNoInit, wBorrow..wDiscardable,
                      wGensym..wInject, wAsmNoStackFrame, wCodegenDecl, wLocks,
-                     wLiftLocals..wEnforceNoRaises, wExtern}">allRoutinePragmas</a></li>
+                     wEnforceNoRaises, wExtern}">allRoutinePragmas</a></li>
   <li><a class="reference" href="#constPragmas"
     title="constPragmas = {wMagic, wIntDefine..wBoolDefine, wImportCpp, wImportObjC,
                 wImportc..wExportNims, wNodecl, wHeader, wCompilerProc..wCore,
@@ -125,7 +125,7 @@ window.addEventListener('DOMContentLoaded', main);
                     wNimcall..wNoconv, wNonReloadable, wRaises, wTags,
                     wNoDestroy, wCompileTime..wNoInit, wBorrow..wDiscardable,
                     wGensym..wInject, wAsmNoStackFrame, wCodegenDecl, wLocks,
-                    wLiftLocals..wEnforceNoRaises, wExtern}">converterPragmas</a></li>
+                    wEnforceNoRaises, wExtern}">converterPragmas</a></li>
   <li><a class="reference" href="#enumFieldPragmas"
     title="enumFieldPragmas = {wDeprecated}">enumFieldPragmas</a></li>
   <li><a class="reference" href="#exprPragmas"
@@ -170,7 +170,7 @@ window.addEventListener('DOMContentLoaded', main);
                  wDeprecated..wVarargs, wNimcall..wNoconv, wNonReloadable,
                  wRaises, wTags, wNoDestroy, wCompileTime..wNoInit,
                  wBorrow..wDiscardable, wGensym..wInject, wAsmNoStackFrame,
-                 wCodegenDecl, wLocks, wLiftLocals..wEnforceNoRaises, wExtern}">methodPragmas</a></li>
+                 wCodegenDecl, wLocks, wEnforceNoRaises, wExtern}">methodPragmas</a></li>
   <li><a class="reference" href="#paramPragmas"
     title="paramPragmas = {wNoalias, wInject, wGensym}">paramPragmas</a></li>
   <li><a class="reference" href="#procPragmas"
@@ -180,8 +180,7 @@ window.addEventListener('DOMContentLoaded', main);
                wStackTrace..wLineTrace, wDeprecated..wVarargs,
                wNimcall..wNoconv, wNonReloadable, wRaises, wTags, wNoDestroy,
                wCompileTime..wNoInit, wBorrow..wDiscardable, wGensym..wInject,
-               wAsmNoStackFrame, wCodegenDecl, wLocks,
-               wLiftLocals..wEnforceNoRaises, wExtern}">procPragmas</a></li>
+               wAsmNoStackFrame, wCodegenDecl, wLocks, wEnforceNoRaises, wExtern}">procPragmas</a></li>
   <li><a class="reference" href="#procTypePragmas"
     title="procTypePragmas = {wNimcall..wNoconv, wVarargs, wNoSideEffect, wThread, wRaises,
                    wEffectsOf, wLocks, wTags, wGcSafe}">procTypePragmas</a></li>
@@ -203,7 +202,7 @@ window.addEventListener('DOMContentLoaded', main);
                wNodecl..wPure, wHeader, wGcSafe, wCompilerProc..wCore, wUsed,
                wError, wDeprecated, wSize, wPackage, wBorrow,
                wAcyclic..wShallow, wGensym..wInject, wInheritable, wUnchecked,
-               wPartial..wExplain, wExtern, wUnion..wPacked, wByCopy..wByRef}">typePragmas</a></li>
+               wExplain, wExtern, wUnion..wPacked, wByCopy..wByRef}">typePragmas</a></li>
   <li><a class="reference" href="#varPragmas"
     title="varPragmas = {wMagic, wCursor..wNoalias, wImportCpp, wImportObjC,
               wImportc..wExportNims, wAlign..wNodecl, wHeader, wDynlib..wCore,
@@ -273,7 +272,7 @@ window.addEventListener('DOMContentLoaded', main);
 
   </div>
   &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L1"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L1"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L1" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -297,12 +296,12 @@ class="link-seesrc" target="_blank">Source</a>
                      <span class="DecNumber">wNimcall</span><span class="Other">..</span><span class="DecNumber">wNoconv</span><span class="Other">,</span> <span class="DecNumber">wNonReloadable</span><span class="Other">,</span> <span class="DecNumber">wRaises</span><span class="Other">,</span> <span class="DecNumber">wTags</span><span class="Other">,</span>
                      <span class="DecNumber">wNoDestroy</span><span class="Other">,</span> <span class="DecNumber">wCompileTime</span><span class="Other">..</span><span class="DecNumber">wNoInit</span><span class="Other">,</span> <span class="DecNumber">wBorrow</span><span class="Other">..</span><span class="DecNumber">wDiscardable</span><span class="Other">,</span>
                      <span class="DecNumber">wGensym</span><span class="Other">..</span><span class="DecNumber">wInject</span><span class="Other">,</span> <span class="DecNumber">wAsmNoStackFrame</span><span class="Other">,</span> <span class="DecNumber">wCodegenDecl</span><span class="Other">,</span> <span class="DecNumber">wLocks</span><span class="Other">,</span>
-                     <span class="DecNumber">wLiftLocals</span><span class="Other">..</span><span class="DecNumber">wEnforceNoRaises</span><span class="Other">,</span> <span class="DecNumber">wExtern</span><span class="Other">}</span></pre></dt>
+                     <span class="DecNumber">wEnforceNoRaises</span><span class="Other">,</span> <span class="DecNumber">wExtern</span><span class="Other">}</span></pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L119"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L119"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L119" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -316,7 +315,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L111"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L111"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L111" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -330,12 +329,12 @@ class="link-seesrc" target="_blank">Source</a>
                     <span class="DecNumber">wNimcall</span><span class="Other">..</span><span class="DecNumber">wNoconv</span><span class="Other">,</span> <span class="DecNumber">wNonReloadable</span><span class="Other">,</span> <span class="DecNumber">wRaises</span><span class="Other">,</span> <span class="DecNumber">wTags</span><span class="Other">,</span>
                     <span class="DecNumber">wNoDestroy</span><span class="Other">,</span> <span class="DecNumber">wCompileTime</span><span class="Other">..</span><span class="DecNumber">wNoInit</span><span class="Other">,</span> <span class="DecNumber">wBorrow</span><span class="Other">..</span><span class="DecNumber">wDiscardable</span><span class="Other">,</span>
                     <span class="DecNumber">wGensym</span><span class="Other">..</span><span class="DecNumber">wInject</span><span class="Other">,</span> <span class="DecNumber">wAsmNoStackFrame</span><span class="Other">,</span> <span class="DecNumber">wCodegenDecl</span><span class="Other">,</span> <span class="DecNumber">wLocks</span><span class="Other">,</span>
-                    <span class="DecNumber">wLiftLocals</span><span class="Other">..</span><span class="DecNumber">wEnforceNoRaises</span><span class="Other">,</span> <span class="DecNumber">wExtern</span><span class="Other">}</span></pre></dt>
+                    <span class="DecNumber">wEnforceNoRaises</span><span class="Other">,</span> <span class="DecNumber">wExtern</span><span class="Other">}</span></pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L70"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L70"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L70" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -347,7 +346,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L120"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L120"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L120" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -359,7 +358,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L81"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L81"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L81" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -373,7 +372,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L104"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L104"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L104" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -385,7 +384,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L55"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L55"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L55" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -397,7 +396,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L118"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L118"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L118" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -413,7 +412,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L77"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L77"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L77" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -428,7 +427,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L94"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L94"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L94" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -440,7 +439,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L56"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L56"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L56" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -456,7 +455,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L115"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L115"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L115" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -472,7 +471,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L74"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L74"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L74" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -485,12 +484,12 @@ class="link-seesrc" target="_blank">Source</a>
                  <span class="DecNumber">wDeprecated</span><span class="Other">..</span><span class="DecNumber">wVarargs</span><span class="Other">,</span> <span class="DecNumber">wNimcall</span><span class="Other">..</span><span class="DecNumber">wNoconv</span><span class="Other">,</span> <span class="DecNumber">wNonReloadable</span><span class="Other">,</span>
                  <span class="DecNumber">wRaises</span><span class="Other">,</span> <span class="DecNumber">wTags</span><span class="Other">,</span> <span class="DecNumber">wNoDestroy</span><span class="Other">,</span> <span class="DecNumber">wCompileTime</span><span class="Other">..</span><span class="DecNumber">wNoInit</span><span class="Other">,</span>
                  <span class="DecNumber">wBorrow</span><span class="Other">..</span><span class="DecNumber">wDiscardable</span><span class="Other">,</span> <span class="DecNumber">wGensym</span><span class="Other">..</span><span class="DecNumber">wInject</span><span class="Other">,</span> <span class="DecNumber">wAsmNoStackFrame</span><span class="Other">,</span>
-                 <span class="DecNumber">wCodegenDecl</span><span class="Other">,</span> <span class="DecNumber">wLocks</span><span class="Other">,</span> <span class="DecNumber">wLiftLocals</span><span class="Other">..</span><span class="DecNumber">wEnforceNoRaises</span><span class="Other">,</span> <span class="DecNumber">wExtern</span><span class="Other">}</span></pre></dt>
+                 <span class="DecNumber">wCodegenDecl</span><span class="Other">,</span> <span class="DecNumber">wLocks</span><span class="Other">,</span> <span class="DecNumber">wEnforceNoRaises</span><span class="Other">,</span> <span class="DecNumber">wExtern</span><span class="Other">}</span></pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L71"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L71"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L71" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -502,7 +501,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L114"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L114"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L114" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -515,13 +514,12 @@ class="link-seesrc" target="_blank">Source</a>
                <span class="DecNumber">wStackTrace</span><span class="Other">..</span><span class="DecNumber">wLineTrace</span><span class="Other">,</span> <span class="DecNumber">wDeprecated</span><span class="Other">..</span><span class="DecNumber">wVarargs</span><span class="Other">,</span>
                <span class="DecNumber">wNimcall</span><span class="Other">..</span><span class="DecNumber">wNoconv</span><span class="Other">,</span> <span class="DecNumber">wNonReloadable</span><span class="Other">,</span> <span class="DecNumber">wRaises</span><span class="Other">,</span> <span class="DecNumber">wTags</span><span class="Other">,</span> <span class="DecNumber">wNoDestroy</span><span class="Other">,</span>
                <span class="DecNumber">wCompileTime</span><span class="Other">..</span><span class="DecNumber">wNoInit</span><span class="Other">,</span> <span class="DecNumber">wBorrow</span><span class="Other">..</span><span class="DecNumber">wDiscardable</span><span class="Other">,</span> <span class="DecNumber">wGensym</span><span class="Other">..</span><span class="DecNumber">wInject</span><span class="Other">,</span>
-               <span class="DecNumber">wAsmNoStackFrame</span><span class="Other">,</span> <span class="DecNumber">wCodegenDecl</span><span class="Other">,</span> <span class="DecNumber">wLocks</span><span class="Other">,</span>
-               <span class="DecNumber">wLiftLocals</span><span class="Other">..</span><span class="DecNumber">wEnforceNoRaises</span><span class="Other">,</span> <span class="DecNumber">wExtern</span><span class="Other">}</span></pre></dt>
+               <span class="DecNumber">wAsmNoStackFrame</span><span class="Other">,</span> <span class="DecNumber">wCodegenDecl</span><span class="Other">,</span> <span class="DecNumber">wLocks</span><span class="Other">,</span> <span class="DecNumber">wEnforceNoRaises</span><span class="Other">,</span> <span class="DecNumber">wExtern</span><span class="Other">}</span></pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L62"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L62"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L62" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -534,7 +532,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L116"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L116"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L116" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -554,7 +552,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L82"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L82"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L82" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -567,7 +565,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L72"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L72"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L72" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -578,12 +576,12 @@ class="link-seesrc" target="_blank">Source</a>
                <span class="DecNumber">wNodecl</span><span class="Other">..</span><span class="DecNumber">wPure</span><span class="Other">,</span> <span class="DecNumber">wHeader</span><span class="Other">,</span> <span class="DecNumber">wGcSafe</span><span class="Other">,</span> <span class="DecNumber">wCompilerProc</span><span class="Other">..</span><span class="DecNumber">wCore</span><span class="Other">,</span> <span class="DecNumber">wUsed</span><span class="Other">,</span>
                <span class="DecNumber">wError</span><span class="Other">,</span> <span class="DecNumber">wDeprecated</span><span class="Other">,</span> <span class="DecNumber">wSize</span><span class="Other">,</span> <span class="DecNumber">wPackage</span><span class="Other">,</span> <span class="DecNumber">wBorrow</span><span class="Other">,</span>
                <span class="DecNumber">wAcyclic</span><span class="Other">..</span><span class="DecNumber">wShallow</span><span class="Other">,</span> <span class="DecNumber">wGensym</span><span class="Other">..</span><span class="DecNumber">wInject</span><span class="Other">,</span> <span class="DecNumber">wInheritable</span><span class="Other">,</span> <span class="DecNumber">wUnchecked</span><span class="Other">,</span>
-               <span class="DecNumber">wPartial</span><span class="Other">..</span><span class="DecNumber">wExplain</span><span class="Other">,</span> <span class="DecNumber">wExtern</span><span class="Other">,</span> <span class="DecNumber">wUnion</span><span class="Other">..</span><span class="DecNumber">wPacked</span><span class="Other">,</span> <span class="DecNumber">wByCopy</span><span class="Other">..</span><span class="DecNumber">wByRef</span><span class="Other">}</span></pre></dt>
+               <span class="DecNumber">wExplain</span><span class="Other">,</span> <span class="DecNumber">wExtern</span><span class="Other">,</span> <span class="DecNumber">wUnion</span><span class="Other">..</span><span class="DecNumber">wPacked</span><span class="Other">,</span> <span class="DecNumber">wByCopy</span><span class="Other">..</span><span class="DecNumber">wByRef</span><span class="Other">}</span></pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L99"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L99"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L99" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -599,7 +597,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L106"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L106"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L106" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -617,7 +615,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L122"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L122"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L122" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -629,9 +627,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 true if any of <tt class="docutils literal"><span class="pre"><span class="Identifier">n</span></span></tt>'s children are of <tt class="docutils literal"><span class="pre"><span class="Identifier">pragma</span></span></tt> special words
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L1847"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L1839"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L1847" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L1839" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -642,7 +640,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 create an error node (<tt class="docutils literal"><span class="pre"><span class="Identifier">nkError</span></span></tt>) for an illegal custom pragma error
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L143"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L143"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L143" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -658,9 +656,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L1859"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L1851"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L1859" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L1851" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -670,7 +668,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 create an error node (<tt class="docutils literal"><span class="pre"><span class="Identifier">nkError</span></span></tt>) for an invalid pragma error
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L139"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L139"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L139" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -686,9 +684,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L1894"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L1886"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L1894" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L1886" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -699,7 +697,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 Gets the marker out of an asm stmts pragma list Returns ` as the default marker if no other markers are found
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L152"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L152"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L152" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -715,9 +713,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L1906"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L1898"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L1906" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L1898" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -728,7 +726,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/5f9ca84f45402d13dc847be71b8ec9e151e51d7b/compiler/sem/pragmas.nim#L764"
+href="https://github.com/nim-works/nimskull/tree/32b16f90b38eef2260da0c64f66650d03fc47b66/compiler/sem/pragmas.nim#L764"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/pragmas.nim#L764" class="link-seesrc" target="_blank" >Edit</a>
 
