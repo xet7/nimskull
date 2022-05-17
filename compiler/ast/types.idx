@@ -26,6 +26,7 @@ elemType	ast/types.html#elemType,PType	types: elemType(t: PType): PType
 enumHasHoles	ast/types.html#enumHasHoles,PType	types: enumHasHoles(t: PType): bool	
 isOrdinalType	ast/types.html#isOrdinalType,PType,bool	types: isOrdinalType(t: PType; allowEnumWithHoles: bool = false): bool	
 iterOverType	ast/types.html#iterOverType,PType,TTypeIter,RootRef	types: iterOverType(t: PType; iter: TTypeIter; closure: RootRef): bool	
+searchTypeNodeFor	ast/types.html#searchTypeNodeFor,PNode,TTypePredicate	types: searchTypeNodeFor(n: PNode; predicate: TTypePredicate): bool	
 searchTypeFor	ast/types.html#searchTypeFor,PType,TTypePredicate	types: searchTypeFor(t: PType; predicate: TTypePredicate): bool	
 containsObject	ast/types.html#containsObject,PType	types: containsObject(t: PType): bool	
 frNone	ast/types.html#frNone	TTypeFieldResult.frNone	
