@@ -1,0 +1,28 @@
+dfcNil	vm/vmmemory.html#dfcNil	DerefFailureCode.dfcNil	
+dfcInvalid	vm/vmmemory.html#dfcInvalid	DerefFailureCode.dfcInvalid	
+dfcFreed	vm/vmmemory.html#dfcFreed	DerefFailureCode.dfcFreed	
+dfcTypeMismatch	vm/vmmemory.html#dfcTypeMismatch	DerefFailureCode.dfcTypeMismatch	
+DerefFailureCode	vm/vmmemory.html#DerefFailureCode	vmmemory: DerefFailureCode	
+FailureCodeToReport	vm/vmmemory.html#FailureCodeToReport	vmmemory: FailureCodeToReport	
+allocLocationMemory	vm/vmmemory.html#allocLocationMemory,VmAllocator,Natural	vmmemory: allocLocationMemory(a: var VmAllocator; len: Natural): MemRegionPtr	
+allocTypedLocations	vm/vmmemory.html#allocTypedLocations,VmAllocator,PVmType,Natural,Natural	vmmemory: allocTypedLocations(a: var VmAllocator; typ: PVmType; count, lenInBytes: Natural): MemRegionPtr	
+allocSingleLocation	vm/vmmemory.html#allocSingleLocation,VmAllocator,PVmType	vmmemory: allocSingleLocation(a: var VmAllocator; typ: PVmType): LocHandle	
+allocAtomLocation	vm/vmmemory.html#allocAtomLocation,VmAllocator,PVmType	vmmemory: allocAtomLocation(a: var VmAllocator; typ: PVmType): LocHandle	
+allocConstantLocation	vm/vmmemory.html#allocConstantLocation,VmAllocator,PVmType	vmmemory: allocConstantLocation(a: var VmAllocator; typ: PVmType): LocHandle	
+dealloc	vm/vmmemory.html#dealloc,VmAllocator,MemRegionPtr	vmmemory: dealloc(a: var VmAllocator; p: MemRegionPtr)	
+dealloc	vm/vmmemory.html#dealloc,VmAllocator,LocHandle	vmmemory: dealloc(a: var VmAllocator; handle: LocHandle)	
+subView	vm/vmmemory.html#subView.t,MemRegionPtr,Natural	vmmemory: subView(p: MemRegionPtr; len: Natural): VmMemoryRegion	
+subView	vm/vmmemory.html#subView.t,MemRegionPtr,Natural,Natural	vmmemory: subView(p: MemRegionPtr; offset, len: Natural): VmMemoryRegion	
+getSubHandle	vm/vmmemory.html#getSubHandle,MemRegionPtr,Natural	vmmemory: getSubHandle(h: MemRegionPtr; offset: Natural): MemRegionPtr	
+getSubHandle	vm/vmmemory.html#getSubHandle,LocHandle,Natural,PVmType	vmmemory: getSubHandle(h: LocHandle; offset: Natural; typ: PVmType): LocHandle	
+getFieldHandle	vm/vmmemory.html#getFieldHandle,LocHandle,FieldIndex	vmmemory: getFieldHandle(h: LocHandle; idx: FieldIndex): LocHandle	
+getFieldHandle	vm/vmmemory.html#getFieldHandle,LocHandle,FieldPosition	vmmemory: getFieldHandle(h: LocHandle; pos: FieldPosition): LocHandle	
+deref	vm/vmmemory.html#deref,LocHandle	vmmemory: deref(handle: LocHandle): ptr Atom	
+byteView	vm/vmmemory.html#byteView.t,LocHandle	vmmemory: byteView(handle: LocHandle): untyped	
+heapNew	vm/vmmemory.html#heapNew,VmHeap,VmAllocator,PVmType,PType	vmmemory: heapNew(heap: var VmHeap; a: var VmAllocator; typ: PVmType; nimTyp: PType): HeapSlotHandle	
+heapIncRef	vm/vmmemory.html#heapIncRef,VmHeap,HeapSlotHandle	vmmemory: heapIncRef(heap: var VmHeap; slot: HeapSlotHandle)	
+heapDecRef	vm/vmmemory.html#heapDecRef,VmHeap,VmAllocator,HeapSlotHandle	vmmemory: heapDecRef(heap: var VmHeap; a: var VmAllocator; slot: HeapSlotHandle)	
+isValid	vm/vmmemory.html#isValid,VmHeap,HeapSlotHandle	vmmemory: isValid(heap: VmHeap; slot: HeapSlotHandle): bool	
+unsafeDeref	vm/vmmemory.html#unsafeDeref,VmHeap,HeapSlotHandle	vmmemory: unsafeDeref(heap: VmHeap; slot: HeapSlotHandle): LocHandle	
+tryDeref	vm/vmmemory.html#tryDeref,VmHeap,HeapSlotHandle	vmmemory: tryDeref(heap: VmHeap; slot: HeapSlotHandle): Option[LocHandle]	
+tryDeref	vm/vmmemory.html#tryDeref,VmHeap,HeapSlotHandle,PVmType	vmmemory: tryDeref(heap: VmHeap; slot: HeapSlotHandle; typ: PVmType): Result[LocHandle,\n    DerefFailureCode]	

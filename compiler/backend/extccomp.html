@@ -158,8 +158,8 @@ window.addEventListener('DOMContentLoaded', main);
     includeCmd: &quot; -I&quot;, linkDirCmd: &quot; -L&quot;, linkLibCmd: &quot; -l$1&quot;, debug: &quot;&quot;,
     pic: &quot;-fPIC&quot;, asmStmtFrmt: &quot;asm($1);$n&quot;, structStmtFmt: &quot;$1 $3 $2 &quot;,
     produceAsm: &quot;-Wa,-acdl=$asmfile -g -fverbose-asm -masm=intel&quot;,
-    cppXsupport: &quot;-std=gnu++14 -funsigned-char&quot;, props: {hasSwitchRange,
-    hasComputedGoto, hasCpp, hasGcGuard, hasGnuAsm, hasAttribute}), (
+    cppXsupport: &quot;-std=gnu++14 -funsigned-char&quot;,
+    props: {hasSwitchRange..hasCpp, hasGcGuard..hasGnuAsm, hasAttribute}), (
     name: &quot;switch_gcc&quot;, objExt: &quot;o&quot;, optSpeed: &quot; -O3 &quot;, optSize: &quot; -Os &quot;,
     compilerExe: &quot;aarch64-none-elf-gcc&quot;, cppCompiler: &quot;aarch64-none-elf-g++&quot;, compileTmpl: &quot;-w -MMD -MP -MF $dfile -c $options $include -o $objfile $file&quot;,
     buildGui: &quot; -mwindows&quot;, buildDll: &quot; -shared&quot;,
@@ -168,8 +168,8 @@ window.addEventListener('DOMContentLoaded', main);
     includeCmd: &quot; -I&quot;, linkDirCmd: &quot; -L&quot;, linkLibCmd: &quot; -l$1&quot;, debug: &quot;&quot;,
     pic: &quot;-fPIE&quot;, asmStmtFrmt: &quot;asm($1);$n&quot;, structStmtFmt: &quot;$1 $3 $2 &quot;,
     produceAsm: &quot;-Wa,-acdl=$asmfile -g -fverbose-asm -masm=intel&quot;,
-    cppXsupport: &quot;-std=gnu++14 -funsigned-char&quot;, props: {hasSwitchRange,
-    hasComputedGoto, hasCpp, hasGcGuard, hasGnuAsm, hasAttribute}), (
+    cppXsupport: &quot;-std=gnu++14 -funsigned-char&quot;,
+    props: {hasSwitchRange..hasCpp, hasGcGuard..hasGnuAsm, hasAttribute}), (
     name: &quot;llvm_gcc&quot;, objExt: &quot;o&quot;, optSpeed: &quot; -O3 -fno-ident&quot;,
     optSize: &quot; -Os -fno-ident&quot;, compilerExe: &quot;llvm-gcc&quot;,
     cppCompiler: &quot;llvm-g++&quot;,
@@ -180,8 +180,8 @@ window.addEventListener('DOMContentLoaded', main);
     includeCmd: &quot; -I&quot;, linkDirCmd: &quot; -L&quot;, linkLibCmd: &quot; -l$1&quot;, debug: &quot;&quot;,
     pic: &quot;-fPIC&quot;, asmStmtFrmt: &quot;asm($1);$n&quot;, structStmtFmt: &quot;$1 $3 $2 &quot;,
     produceAsm: &quot;-Wa,-acdl=$asmfile -g -fverbose-asm -masm=intel&quot;,
-    cppXsupport: &quot;-std=gnu++14 -funsigned-char&quot;, props: {hasSwitchRange,
-    hasComputedGoto, hasCpp, hasGcGuard, hasGnuAsm, hasAttribute}), (
+    cppXsupport: &quot;-std=gnu++14 -funsigned-char&quot;,
+    props: {hasSwitchRange..hasCpp, hasGcGuard..hasGnuAsm, hasAttribute}), (
     name: &quot;clang&quot;, objExt: &quot;o&quot;, optSpeed: &quot; -O3 -fno-ident&quot;,
     optSize: &quot; -Os -fno-ident&quot;, compilerExe: &quot;clang&quot;, cppCompiler: &quot;clang++&quot;,
     compileTmpl: &quot;-c $options $include -o $objfile $file&quot;,
@@ -191,8 +191,8 @@ window.addEventListener('DOMContentLoaded', main);
     includeCmd: &quot; -I&quot;, linkDirCmd: &quot; -L&quot;, linkLibCmd: &quot; -l$1&quot;, debug: &quot;&quot;,
     pic: &quot;-fPIC&quot;, asmStmtFrmt: &quot;asm($1);$n&quot;, structStmtFmt: &quot;$1 $3 $2 &quot;,
     produceAsm: &quot;-Wa,-acdl=$asmfile -g -fverbose-asm -masm=intel&quot;,
-    cppXsupport: &quot;-std=gnu++14 -funsigned-char&quot;, props: {hasSwitchRange,
-    hasComputedGoto, hasCpp, hasGcGuard, hasGnuAsm, hasAttribute}), (
+    cppXsupport: &quot;-std=gnu++14 -funsigned-char&quot;,
+    props: {hasSwitchRange..hasCpp, hasGcGuard..hasGnuAsm, hasAttribute}), (
     name: &quot;bcc&quot;, objExt: &quot;obj&quot;, optSpeed: &quot; -O3 -6 &quot;, optSize: &quot; -O1 -6 &quot;,
     compilerExe: &quot;bcc32c&quot;, cppCompiler: &quot;cpp32c&quot;,
     compileTmpl: &quot;-c $options $include -o$objfile $file&quot;, buildGui: &quot; -tW&quot;,
@@ -200,8 +200,7 @@ window.addEventListener('DOMContentLoaded', main);
     linkTmpl: &quot;$options $buildgui $builddll -e$exefile $objfiles&quot;,
     includeCmd: &quot; -I&quot;, linkDirCmd: &quot;&quot;, linkLibCmd: &quot;&quot;, debug: &quot;&quot;, pic: &quot;&quot;,
     asmStmtFrmt: &quot;__asm{$n$1$n}$n&quot;, structStmtFmt: &quot;$1 $2&quot;, produceAsm: &quot;&quot;,
-    cppXsupport: &quot;&quot;,
-    props: {hasSwitchRange, hasComputedGoto, hasCpp, hasGcGuard, hasAttribute}), (
+    cppXsupport: &quot;&quot;, props: {hasSwitchRange..hasCpp, hasGcGuard, hasAttribute}), (
     name: &quot;vcc&quot;, objExt: &quot;obj&quot;, optSpeed: &quot; /Ogityb2 &quot;, optSize: &quot; /O1 &quot;,
     compilerExe: &quot;cl&quot;, cppCompiler: &quot;cl&quot;,
     compileTmpl: &quot;/c$vccplatform $options $include /nologo /Fo$objfile $file&quot;,
@@ -210,7 +209,7 @@ window.addEventListener('DOMContentLoaded', main);
     includeCmd: &quot; /I&quot;, linkDirCmd: &quot; /LIBPATH:&quot;, linkLibCmd: &quot; $1.lib&quot;,
     debug: &quot; /RTC1 /Z7 &quot;, pic: &quot;&quot;, asmStmtFrmt: &quot;__asm{$n$1$n}$n&quot;,
     structStmtFmt: &quot;$3$n$1 $2&quot;, produceAsm: &quot;/Fa$asmfile&quot;, cppXsupport: &quot;&quot;,
-    props: {hasCpp, hasAssume, hasDeclspec}), (name: &quot;tcc&quot;, objExt: &quot;o&quot;,
+    props: {hasCpp..hasAssume, hasDeclspec}), (name: &quot;tcc&quot;, objExt: &quot;o&quot;,
     optSpeed: &quot;&quot;, optSize: &quot;&quot;, compilerExe: &quot;tcc&quot;, cppCompiler: &quot;&quot;,
     compileTmpl: &quot;-c $options $include -o $objfile $file&quot;,
     buildGui: &quot;-Wl,-subsystem=gui&quot;, buildDll: &quot; -shared&quot;, buildLib: &quot;&quot;,
@@ -219,7 +218,7 @@ window.addEventListener('DOMContentLoaded', main);
     includeCmd: &quot; -I&quot;, linkDirCmd: &quot;&quot;, linkLibCmd: &quot;&quot;, debug: &quot; -g &quot;, pic: &quot;&quot;,
     asmStmtFrmt: &quot;asm($1);$n&quot;, structStmtFmt: &quot;$1 $2&quot;,
     produceAsm: &quot;-Wa,-acdl=$asmfile -g -fverbose-asm -masm=intel&quot;,
-    cppXsupport: &quot;&quot;, props: {hasSwitchRange, hasComputedGoto, hasGnuAsm}), (
+    cppXsupport: &quot;&quot;, props: {hasSwitchRange..hasComputedGoto, hasGnuAsm}), (
     name: &quot;env&quot;, objExt: &quot;o&quot;, optSpeed: &quot; -O3 &quot;, optSize: &quot; -O1 &quot;,
     compilerExe: &quot;&quot;, cppCompiler: &quot;&quot;,
     compileTmpl: &quot;-c $ccenvflags $options $include -o $objfile $file&quot;,
@@ -236,7 +235,7 @@ window.addEventListener('DOMContentLoaded', main);
     includeCmd: &quot; /I&quot;, linkDirCmd: &quot; /LIBPATH:&quot;, linkLibCmd: &quot; $1.lib&quot;,
     debug: &quot; /RTC1 /Z7 &quot;, pic: &quot;&quot;, asmStmtFrmt: &quot;__asm{$n$1$n}$n&quot;,
     structStmtFmt: &quot;$3$n$1 $2&quot;, produceAsm: &quot;/Fa$asmfile&quot;, cppXsupport: &quot;&quot;,
-    props: {hasCpp, hasAssume, hasDeclspec}), (name: &quot;icc&quot;, objExt: &quot;o&quot;,
+    props: {hasCpp..hasAssume, hasDeclspec}), (name: &quot;icc&quot;, objExt: &quot;o&quot;,
     optSpeed: &quot; -O3 -fno-ident&quot;, optSize: &quot; -Os -fno-ident&quot;, compilerExe: &quot;icc&quot;,
     cppCompiler: &quot;g++&quot;, compileTmpl: &quot;-c $options $include -o $objfile $file&quot;,
     buildGui: &quot; -mwindows&quot;, buildDll: &quot; -shared&quot;,
@@ -245,8 +244,8 @@ window.addEventListener('DOMContentLoaded', main);
     includeCmd: &quot; -I&quot;, linkDirCmd: &quot; -L&quot;, linkLibCmd: &quot; -l$1&quot;, debug: &quot;&quot;,
     pic: &quot;-fPIC&quot;, asmStmtFrmt: &quot;asm($1);$n&quot;, structStmtFmt: &quot;$1 $3 $2 &quot;,
     produceAsm: &quot;-Wa,-acdl=$asmfile -g -fverbose-asm -masm=intel&quot;,
-    cppXsupport: &quot;-std=gnu++14 -funsigned-char&quot;, props: {hasSwitchRange,
-    hasComputedGoto, hasCpp, hasGcGuard, hasGnuAsm, hasAttribute}), (
+    cppXsupport: &quot;-std=gnu++14 -funsigned-char&quot;,
+    props: {hasSwitchRange..hasCpp, hasGcGuard..hasGnuAsm, hasAttribute}), (
     name: &quot;clang_cl&quot;, objExt: &quot;obj&quot;, optSpeed: &quot; /Ogityb2 &quot;, optSize: &quot; /O1 &quot;,
     compilerExe: &quot;clang-cl&quot;, cppCompiler: &quot;clang-cl&quot;,
     compileTmpl: &quot;/c$vccplatform $options $include /nologo /Fo$objfile $file&quot;,
@@ -255,7 +254,7 @@ window.addEventListener('DOMContentLoaded', main);
     includeCmd: &quot; /I&quot;, linkDirCmd: &quot; /LIBPATH:&quot;, linkLibCmd: &quot; $1.lib&quot;,
     debug: &quot; /RTC1 /Z7 &quot;, pic: &quot;&quot;, asmStmtFrmt: &quot;__asm{$n$1$n}$n&quot;,
     structStmtFmt: &quot;$3$n$1 $2&quot;, produceAsm: &quot;/Fa$asmfile&quot;, cppXsupport: &quot;&quot;,
-    props: {hasCpp, hasAssume, hasDeclspec})]">CC</a></li>
+    props: {hasCpp..hasAssume, hasDeclspec})]">CC</a></li>
   <li><a class="reference" href="#hExt"
     title="hExt = &quot;.h&quot;">hExt</a></li>
 
@@ -398,7 +397,7 @@ window.addEventListener('DOMContentLoaded', main);
 
   </div>
   &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L1"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L1"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L1" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -444,7 +443,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L59"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L59"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L59" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -464,7 +463,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 properties of the C compiler:
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L48"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L48"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L48" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -476,7 +475,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L58"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L58"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L58" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -498,8 +497,8 @@ class="link-seesrc" target="_blank">Source</a>
     <span class="Identifier">includeCmd</span><span class="Other">:</span> <span class="StringLit">&quot; -I&quot;</span><span class="Other">,</span> <span class="Identifier">linkDirCmd</span><span class="Other">:</span> <span class="StringLit">&quot; -L&quot;</span><span class="Other">,</span> <span class="Identifier">linkLibCmd</span><span class="Other">:</span> <span class="StringLit">&quot; -l$1&quot;</span><span class="Other">,</span> <span class="Identifier">debug</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span>
     <span class="Identifier">pic</span><span class="Other">:</span> <span class="StringLit">&quot;-fPIC&quot;</span><span class="Other">,</span> <span class="Identifier">asmStmtFrmt</span><span class="Other">:</span> <span class="StringLit">&quot;asm($1);$n&quot;</span><span class="Other">,</span> <span class="Identifier">structStmtFmt</span><span class="Other">:</span> <span class="StringLit">&quot;$1 $3 $2 &quot;</span><span class="Other">,</span>
     <span class="Identifier">produceAsm</span><span class="Other">:</span> <span class="StringLit">&quot;-Wa,-acdl=$asmfile -g -fverbose-asm -masm=intel&quot;</span><span class="Other">,</span>
-    <span class="Identifier">cppXsupport</span><span class="Other">:</span> <span class="StringLit">&quot;-std=gnu++14 -funsigned-char&quot;</span><span class="Other">,</span> <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasSwitchRange</span><span class="Other">,</span>
-    <span class="DecNumber">hasComputedGoto</span><span class="Other">,</span> <span class="DecNumber">hasCpp</span><span class="Other">,</span> <span class="DecNumber">hasGcGuard</span><span class="Other">,</span> <span class="DecNumber">hasGnuAsm</span><span class="Other">,</span> <span class="DecNumber">hasAttribute</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span>
+    <span class="Identifier">cppXsupport</span><span class="Other">:</span> <span class="StringLit">&quot;-std=gnu++14 -funsigned-char&quot;</span><span class="Other">,</span>
+    <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasSwitchRange</span><span class="Other">..</span><span class="DecNumber">hasCpp</span><span class="Other">,</span> <span class="DecNumber">hasGcGuard</span><span class="Other">..</span><span class="DecNumber">hasGnuAsm</span><span class="Other">,</span> <span class="DecNumber">hasAttribute</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span>
     <span class="Identifier">name</span><span class="Other">:</span> <span class="StringLit">&quot;switch_gcc&quot;</span><span class="Other">,</span> <span class="Identifier">objExt</span><span class="Other">:</span> <span class="StringLit">&quot;o&quot;</span><span class="Other">,</span> <span class="Identifier">optSpeed</span><span class="Other">:</span> <span class="StringLit">&quot; -O3 &quot;</span><span class="Other">,</span> <span class="Identifier">optSize</span><span class="Other">:</span> <span class="StringLit">&quot; -Os &quot;</span><span class="Other">,</span>
     <span class="Identifier">compilerExe</span><span class="Other">:</span> <span class="StringLit">&quot;aarch64-none-elf-gcc&quot;</span><span class="Other">,</span> <span class="Identifier">cppCompiler</span><span class="Other">:</span> <span class="StringLit">&quot;aarch64-none-elf-g++&quot;</span><span class="Other">,</span> <span class="Identifier">compileTmpl</span><span class="Other">:</span> <span class="StringLit">&quot;-w -MMD -MP -MF $dfile -c $options $include -o $objfile $file&quot;</span><span class="Other">,</span>
     <span class="Identifier">buildGui</span><span class="Other">:</span> <span class="StringLit">&quot; -mwindows&quot;</span><span class="Other">,</span> <span class="Identifier">buildDll</span><span class="Other">:</span> <span class="StringLit">&quot; -shared&quot;</span><span class="Other">,</span>
@@ -508,8 +507,8 @@ class="link-seesrc" target="_blank">Source</a>
     <span class="Identifier">includeCmd</span><span class="Other">:</span> <span class="StringLit">&quot; -I&quot;</span><span class="Other">,</span> <span class="Identifier">linkDirCmd</span><span class="Other">:</span> <span class="StringLit">&quot; -L&quot;</span><span class="Other">,</span> <span class="Identifier">linkLibCmd</span><span class="Other">:</span> <span class="StringLit">&quot; -l$1&quot;</span><span class="Other">,</span> <span class="Identifier">debug</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span>
     <span class="Identifier">pic</span><span class="Other">:</span> <span class="StringLit">&quot;-fPIE&quot;</span><span class="Other">,</span> <span class="Identifier">asmStmtFrmt</span><span class="Other">:</span> <span class="StringLit">&quot;asm($1);$n&quot;</span><span class="Other">,</span> <span class="Identifier">structStmtFmt</span><span class="Other">:</span> <span class="StringLit">&quot;$1 $3 $2 &quot;</span><span class="Other">,</span>
     <span class="Identifier">produceAsm</span><span class="Other">:</span> <span class="StringLit">&quot;-Wa,-acdl=$asmfile -g -fverbose-asm -masm=intel&quot;</span><span class="Other">,</span>
-    <span class="Identifier">cppXsupport</span><span class="Other">:</span> <span class="StringLit">&quot;-std=gnu++14 -funsigned-char&quot;</span><span class="Other">,</span> <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasSwitchRange</span><span class="Other">,</span>
-    <span class="DecNumber">hasComputedGoto</span><span class="Other">,</span> <span class="DecNumber">hasCpp</span><span class="Other">,</span> <span class="DecNumber">hasGcGuard</span><span class="Other">,</span> <span class="DecNumber">hasGnuAsm</span><span class="Other">,</span> <span class="DecNumber">hasAttribute</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span>
+    <span class="Identifier">cppXsupport</span><span class="Other">:</span> <span class="StringLit">&quot;-std=gnu++14 -funsigned-char&quot;</span><span class="Other">,</span>
+    <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasSwitchRange</span><span class="Other">..</span><span class="DecNumber">hasCpp</span><span class="Other">,</span> <span class="DecNumber">hasGcGuard</span><span class="Other">..</span><span class="DecNumber">hasGnuAsm</span><span class="Other">,</span> <span class="DecNumber">hasAttribute</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span>
     <span class="Identifier">name</span><span class="Other">:</span> <span class="StringLit">&quot;llvm_gcc&quot;</span><span class="Other">,</span> <span class="Identifier">objExt</span><span class="Other">:</span> <span class="StringLit">&quot;o&quot;</span><span class="Other">,</span> <span class="Identifier">optSpeed</span><span class="Other">:</span> <span class="StringLit">&quot; -O3 -fno-ident&quot;</span><span class="Other">,</span>
     <span class="Identifier">optSize</span><span class="Other">:</span> <span class="StringLit">&quot; -Os -fno-ident&quot;</span><span class="Other">,</span> <span class="Identifier">compilerExe</span><span class="Other">:</span> <span class="StringLit">&quot;llvm-gcc&quot;</span><span class="Other">,</span>
     <span class="Identifier">cppCompiler</span><span class="Other">:</span> <span class="StringLit">&quot;llvm-g++&quot;</span><span class="Other">,</span>
@@ -520,8 +519,8 @@ class="link-seesrc" target="_blank">Source</a>
     <span class="Identifier">includeCmd</span><span class="Other">:</span> <span class="StringLit">&quot; -I&quot;</span><span class="Other">,</span> <span class="Identifier">linkDirCmd</span><span class="Other">:</span> <span class="StringLit">&quot; -L&quot;</span><span class="Other">,</span> <span class="Identifier">linkLibCmd</span><span class="Other">:</span> <span class="StringLit">&quot; -l$1&quot;</span><span class="Other">,</span> <span class="Identifier">debug</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span>
     <span class="Identifier">pic</span><span class="Other">:</span> <span class="StringLit">&quot;-fPIC&quot;</span><span class="Other">,</span> <span class="Identifier">asmStmtFrmt</span><span class="Other">:</span> <span class="StringLit">&quot;asm($1);$n&quot;</span><span class="Other">,</span> <span class="Identifier">structStmtFmt</span><span class="Other">:</span> <span class="StringLit">&quot;$1 $3 $2 &quot;</span><span class="Other">,</span>
     <span class="Identifier">produceAsm</span><span class="Other">:</span> <span class="StringLit">&quot;-Wa,-acdl=$asmfile -g -fverbose-asm -masm=intel&quot;</span><span class="Other">,</span>
-    <span class="Identifier">cppXsupport</span><span class="Other">:</span> <span class="StringLit">&quot;-std=gnu++14 -funsigned-char&quot;</span><span class="Other">,</span> <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasSwitchRange</span><span class="Other">,</span>
-    <span class="DecNumber">hasComputedGoto</span><span class="Other">,</span> <span class="DecNumber">hasCpp</span><span class="Other">,</span> <span class="DecNumber">hasGcGuard</span><span class="Other">,</span> <span class="DecNumber">hasGnuAsm</span><span class="Other">,</span> <span class="DecNumber">hasAttribute</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span>
+    <span class="Identifier">cppXsupport</span><span class="Other">:</span> <span class="StringLit">&quot;-std=gnu++14 -funsigned-char&quot;</span><span class="Other">,</span>
+    <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasSwitchRange</span><span class="Other">..</span><span class="DecNumber">hasCpp</span><span class="Other">,</span> <span class="DecNumber">hasGcGuard</span><span class="Other">..</span><span class="DecNumber">hasGnuAsm</span><span class="Other">,</span> <span class="DecNumber">hasAttribute</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span>
     <span class="Identifier">name</span><span class="Other">:</span> <span class="StringLit">&quot;clang&quot;</span><span class="Other">,</span> <span class="Identifier">objExt</span><span class="Other">:</span> <span class="StringLit">&quot;o&quot;</span><span class="Other">,</span> <span class="Identifier">optSpeed</span><span class="Other">:</span> <span class="StringLit">&quot; -O3 -fno-ident&quot;</span><span class="Other">,</span>
     <span class="Identifier">optSize</span><span class="Other">:</span> <span class="StringLit">&quot; -Os -fno-ident&quot;</span><span class="Other">,</span> <span class="Identifier">compilerExe</span><span class="Other">:</span> <span class="StringLit">&quot;clang&quot;</span><span class="Other">,</span> <span class="Identifier">cppCompiler</span><span class="Other">:</span> <span class="StringLit">&quot;clang++&quot;</span><span class="Other">,</span>
     <span class="Identifier">compileTmpl</span><span class="Other">:</span> <span class="StringLit">&quot;-c $options $include -o $objfile $file&quot;</span><span class="Other">,</span>
@@ -531,8 +530,8 @@ class="link-seesrc" target="_blank">Source</a>
     <span class="Identifier">includeCmd</span><span class="Other">:</span> <span class="StringLit">&quot; -I&quot;</span><span class="Other">,</span> <span class="Identifier">linkDirCmd</span><span class="Other">:</span> <span class="StringLit">&quot; -L&quot;</span><span class="Other">,</span> <span class="Identifier">linkLibCmd</span><span class="Other">:</span> <span class="StringLit">&quot; -l$1&quot;</span><span class="Other">,</span> <span class="Identifier">debug</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span>
     <span class="Identifier">pic</span><span class="Other">:</span> <span class="StringLit">&quot;-fPIC&quot;</span><span class="Other">,</span> <span class="Identifier">asmStmtFrmt</span><span class="Other">:</span> <span class="StringLit">&quot;asm($1);$n&quot;</span><span class="Other">,</span> <span class="Identifier">structStmtFmt</span><span class="Other">:</span> <span class="StringLit">&quot;$1 $3 $2 &quot;</span><span class="Other">,</span>
     <span class="Identifier">produceAsm</span><span class="Other">:</span> <span class="StringLit">&quot;-Wa,-acdl=$asmfile -g -fverbose-asm -masm=intel&quot;</span><span class="Other">,</span>
-    <span class="Identifier">cppXsupport</span><span class="Other">:</span> <span class="StringLit">&quot;-std=gnu++14 -funsigned-char&quot;</span><span class="Other">,</span> <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasSwitchRange</span><span class="Other">,</span>
-    <span class="DecNumber">hasComputedGoto</span><span class="Other">,</span> <span class="DecNumber">hasCpp</span><span class="Other">,</span> <span class="DecNumber">hasGcGuard</span><span class="Other">,</span> <span class="DecNumber">hasGnuAsm</span><span class="Other">,</span> <span class="DecNumber">hasAttribute</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span>
+    <span class="Identifier">cppXsupport</span><span class="Other">:</span> <span class="StringLit">&quot;-std=gnu++14 -funsigned-char&quot;</span><span class="Other">,</span>
+    <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasSwitchRange</span><span class="Other">..</span><span class="DecNumber">hasCpp</span><span class="Other">,</span> <span class="DecNumber">hasGcGuard</span><span class="Other">..</span><span class="DecNumber">hasGnuAsm</span><span class="Other">,</span> <span class="DecNumber">hasAttribute</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span>
     <span class="Identifier">name</span><span class="Other">:</span> <span class="StringLit">&quot;bcc&quot;</span><span class="Other">,</span> <span class="Identifier">objExt</span><span class="Other">:</span> <span class="StringLit">&quot;obj&quot;</span><span class="Other">,</span> <span class="Identifier">optSpeed</span><span class="Other">:</span> <span class="StringLit">&quot; -O3 -6 &quot;</span><span class="Other">,</span> <span class="Identifier">optSize</span><span class="Other">:</span> <span class="StringLit">&quot; -O1 -6 &quot;</span><span class="Other">,</span>
     <span class="Identifier">compilerExe</span><span class="Other">:</span> <span class="StringLit">&quot;bcc32c&quot;</span><span class="Other">,</span> <span class="Identifier">cppCompiler</span><span class="Other">:</span> <span class="StringLit">&quot;cpp32c&quot;</span><span class="Other">,</span>
     <span class="Identifier">compileTmpl</span><span class="Other">:</span> <span class="StringLit">&quot;-c $options $include -o$objfile $file&quot;</span><span class="Other">,</span> <span class="Identifier">buildGui</span><span class="Other">:</span> <span class="StringLit">&quot; -tW&quot;</span><span class="Other">,</span>
@@ -540,8 +539,7 @@ class="link-seesrc" target="_blank">Source</a>
     <span class="Identifier">linkTmpl</span><span class="Other">:</span> <span class="StringLit">&quot;$options $buildgui $builddll -e$exefile $objfiles&quot;</span><span class="Other">,</span>
     <span class="Identifier">includeCmd</span><span class="Other">:</span> <span class="StringLit">&quot; -I&quot;</span><span class="Other">,</span> <span class="Identifier">linkDirCmd</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span> <span class="Identifier">linkLibCmd</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span> <span class="Identifier">debug</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span> <span class="Identifier">pic</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span>
     <span class="Identifier">asmStmtFrmt</span><span class="Other">:</span> <span class="StringLit">&quot;__asm{$n$1$n}$n&quot;</span><span class="Other">,</span> <span class="Identifier">structStmtFmt</span><span class="Other">:</span> <span class="StringLit">&quot;$1 $2&quot;</span><span class="Other">,</span> <span class="Identifier">produceAsm</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span>
-    <span class="Identifier">cppXsupport</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span>
-    <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasSwitchRange</span><span class="Other">,</span> <span class="DecNumber">hasComputedGoto</span><span class="Other">,</span> <span class="DecNumber">hasCpp</span><span class="Other">,</span> <span class="DecNumber">hasGcGuard</span><span class="Other">,</span> <span class="DecNumber">hasAttribute</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span>
+    <span class="Identifier">cppXsupport</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span> <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasSwitchRange</span><span class="Other">..</span><span class="DecNumber">hasCpp</span><span class="Other">,</span> <span class="DecNumber">hasGcGuard</span><span class="Other">,</span> <span class="DecNumber">hasAttribute</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span>
     <span class="Identifier">name</span><span class="Other">:</span> <span class="StringLit">&quot;vcc&quot;</span><span class="Other">,</span> <span class="Identifier">objExt</span><span class="Other">:</span> <span class="StringLit">&quot;obj&quot;</span><span class="Other">,</span> <span class="Identifier">optSpeed</span><span class="Other">:</span> <span class="StringLit">&quot; /Ogityb2 &quot;</span><span class="Other">,</span> <span class="Identifier">optSize</span><span class="Other">:</span> <span class="StringLit">&quot; /O1 &quot;</span><span class="Other">,</span>
     <span class="Identifier">compilerExe</span><span class="Other">:</span> <span class="StringLit">&quot;cl&quot;</span><span class="Other">,</span> <span class="Identifier">cppCompiler</span><span class="Other">:</span> <span class="StringLit">&quot;cl&quot;</span><span class="Other">,</span>
     <span class="Identifier">compileTmpl</span><span class="Other">:</span> <span class="StringLit">&quot;/c$vccplatform $options $include /nologo /Fo$objfile $file&quot;</span><span class="Other">,</span>
@@ -550,7 +548,7 @@ class="link-seesrc" target="_blank">Source</a>
     <span class="Identifier">includeCmd</span><span class="Other">:</span> <span class="StringLit">&quot; /I&quot;</span><span class="Other">,</span> <span class="Identifier">linkDirCmd</span><span class="Other">:</span> <span class="StringLit">&quot; /LIBPATH:&quot;</span><span class="Other">,</span> <span class="Identifier">linkLibCmd</span><span class="Other">:</span> <span class="StringLit">&quot; $1.lib&quot;</span><span class="Other">,</span>
     <span class="Identifier">debug</span><span class="Other">:</span> <span class="StringLit">&quot; /RTC1 /Z7 &quot;</span><span class="Other">,</span> <span class="Identifier">pic</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span> <span class="Identifier">asmStmtFrmt</span><span class="Other">:</span> <span class="StringLit">&quot;__asm{$n$1$n}$n&quot;</span><span class="Other">,</span>
     <span class="Identifier">structStmtFmt</span><span class="Other">:</span> <span class="StringLit">&quot;$3$n$1 $2&quot;</span><span class="Other">,</span> <span class="Identifier">produceAsm</span><span class="Other">:</span> <span class="StringLit">&quot;/Fa$asmfile&quot;</span><span class="Other">,</span> <span class="Identifier">cppXsupport</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span>
-    <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasCpp</span><span class="Other">,</span> <span class="DecNumber">hasAssume</span><span class="Other">,</span> <span class="DecNumber">hasDeclspec</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span><span class="Identifier">name</span><span class="Other">:</span> <span class="StringLit">&quot;tcc&quot;</span><span class="Other">,</span> <span class="Identifier">objExt</span><span class="Other">:</span> <span class="StringLit">&quot;o&quot;</span><span class="Other">,</span>
+    <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasCpp</span><span class="Other">..</span><span class="DecNumber">hasAssume</span><span class="Other">,</span> <span class="DecNumber">hasDeclspec</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span><span class="Identifier">name</span><span class="Other">:</span> <span class="StringLit">&quot;tcc&quot;</span><span class="Other">,</span> <span class="Identifier">objExt</span><span class="Other">:</span> <span class="StringLit">&quot;o&quot;</span><span class="Other">,</span>
     <span class="Identifier">optSpeed</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span> <span class="Identifier">optSize</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span> <span class="Identifier">compilerExe</span><span class="Other">:</span> <span class="StringLit">&quot;tcc&quot;</span><span class="Other">,</span> <span class="Identifier">cppCompiler</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span>
     <span class="Identifier">compileTmpl</span><span class="Other">:</span> <span class="StringLit">&quot;-c $options $include -o $objfile $file&quot;</span><span class="Other">,</span>
     <span class="Identifier">buildGui</span><span class="Other">:</span> <span class="StringLit">&quot;-Wl,-subsystem=gui&quot;</span><span class="Other">,</span> <span class="Identifier">buildDll</span><span class="Other">:</span> <span class="StringLit">&quot; -shared&quot;</span><span class="Other">,</span> <span class="Identifier">buildLib</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span>
@@ -559,7 +557,7 @@ class="link-seesrc" target="_blank">Source</a>
     <span class="Identifier">includeCmd</span><span class="Other">:</span> <span class="StringLit">&quot; -I&quot;</span><span class="Other">,</span> <span class="Identifier">linkDirCmd</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span> <span class="Identifier">linkLibCmd</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span> <span class="Identifier">debug</span><span class="Other">:</span> <span class="StringLit">&quot; -g &quot;</span><span class="Other">,</span> <span class="Identifier">pic</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span>
     <span class="Identifier">asmStmtFrmt</span><span class="Other">:</span> <span class="StringLit">&quot;asm($1);$n&quot;</span><span class="Other">,</span> <span class="Identifier">structStmtFmt</span><span class="Other">:</span> <span class="StringLit">&quot;$1 $2&quot;</span><span class="Other">,</span>
     <span class="Identifier">produceAsm</span><span class="Other">:</span> <span class="StringLit">&quot;-Wa,-acdl=$asmfile -g -fverbose-asm -masm=intel&quot;</span><span class="Other">,</span>
-    <span class="Identifier">cppXsupport</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span> <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasSwitchRange</span><span class="Other">,</span> <span class="DecNumber">hasComputedGoto</span><span class="Other">,</span> <span class="DecNumber">hasGnuAsm</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span>
+    <span class="Identifier">cppXsupport</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span> <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasSwitchRange</span><span class="Other">..</span><span class="DecNumber">hasComputedGoto</span><span class="Other">,</span> <span class="DecNumber">hasGnuAsm</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span>
     <span class="Identifier">name</span><span class="Other">:</span> <span class="StringLit">&quot;env&quot;</span><span class="Other">,</span> <span class="Identifier">objExt</span><span class="Other">:</span> <span class="StringLit">&quot;o&quot;</span><span class="Other">,</span> <span class="Identifier">optSpeed</span><span class="Other">:</span> <span class="StringLit">&quot; -O3 &quot;</span><span class="Other">,</span> <span class="Identifier">optSize</span><span class="Other">:</span> <span class="StringLit">&quot; -O1 &quot;</span><span class="Other">,</span>
     <span class="Identifier">compilerExe</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span> <span class="Identifier">cppCompiler</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span>
     <span class="Identifier">compileTmpl</span><span class="Other">:</span> <span class="StringLit">&quot;-c $ccenvflags $options $include -o $objfile $file&quot;</span><span class="Other">,</span>
@@ -576,7 +574,7 @@ class="link-seesrc" target="_blank">Source</a>
     <span class="Identifier">includeCmd</span><span class="Other">:</span> <span class="StringLit">&quot; /I&quot;</span><span class="Other">,</span> <span class="Identifier">linkDirCmd</span><span class="Other">:</span> <span class="StringLit">&quot; /LIBPATH:&quot;</span><span class="Other">,</span> <span class="Identifier">linkLibCmd</span><span class="Other">:</span> <span class="StringLit">&quot; $1.lib&quot;</span><span class="Other">,</span>
     <span class="Identifier">debug</span><span class="Other">:</span> <span class="StringLit">&quot; /RTC1 /Z7 &quot;</span><span class="Other">,</span> <span class="Identifier">pic</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span> <span class="Identifier">asmStmtFrmt</span><span class="Other">:</span> <span class="StringLit">&quot;__asm{$n$1$n}$n&quot;</span><span class="Other">,</span>
     <span class="Identifier">structStmtFmt</span><span class="Other">:</span> <span class="StringLit">&quot;$3$n$1 $2&quot;</span><span class="Other">,</span> <span class="Identifier">produceAsm</span><span class="Other">:</span> <span class="StringLit">&quot;/Fa$asmfile&quot;</span><span class="Other">,</span> <span class="Identifier">cppXsupport</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span>
-    <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasCpp</span><span class="Other">,</span> <span class="DecNumber">hasAssume</span><span class="Other">,</span> <span class="DecNumber">hasDeclspec</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span><span class="Identifier">name</span><span class="Other">:</span> <span class="StringLit">&quot;icc&quot;</span><span class="Other">,</span> <span class="Identifier">objExt</span><span class="Other">:</span> <span class="StringLit">&quot;o&quot;</span><span class="Other">,</span>
+    <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasCpp</span><span class="Other">..</span><span class="DecNumber">hasAssume</span><span class="Other">,</span> <span class="DecNumber">hasDeclspec</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span><span class="Identifier">name</span><span class="Other">:</span> <span class="StringLit">&quot;icc&quot;</span><span class="Other">,</span> <span class="Identifier">objExt</span><span class="Other">:</span> <span class="StringLit">&quot;o&quot;</span><span class="Other">,</span>
     <span class="Identifier">optSpeed</span><span class="Other">:</span> <span class="StringLit">&quot; -O3 -fno-ident&quot;</span><span class="Other">,</span> <span class="Identifier">optSize</span><span class="Other">:</span> <span class="StringLit">&quot; -Os -fno-ident&quot;</span><span class="Other">,</span> <span class="Identifier">compilerExe</span><span class="Other">:</span> <span class="StringLit">&quot;icc&quot;</span><span class="Other">,</span>
     <span class="Identifier">cppCompiler</span><span class="Other">:</span> <span class="StringLit">&quot;g++&quot;</span><span class="Other">,</span> <span class="Identifier">compileTmpl</span><span class="Other">:</span> <span class="StringLit">&quot;-c $options $include -o $objfile $file&quot;</span><span class="Other">,</span>
     <span class="Identifier">buildGui</span><span class="Other">:</span> <span class="StringLit">&quot; -mwindows&quot;</span><span class="Other">,</span> <span class="Identifier">buildDll</span><span class="Other">:</span> <span class="StringLit">&quot; -shared&quot;</span><span class="Other">,</span>
@@ -585,8 +583,8 @@ class="link-seesrc" target="_blank">Source</a>
     <span class="Identifier">includeCmd</span><span class="Other">:</span> <span class="StringLit">&quot; -I&quot;</span><span class="Other">,</span> <span class="Identifier">linkDirCmd</span><span class="Other">:</span> <span class="StringLit">&quot; -L&quot;</span><span class="Other">,</span> <span class="Identifier">linkLibCmd</span><span class="Other">:</span> <span class="StringLit">&quot; -l$1&quot;</span><span class="Other">,</span> <span class="Identifier">debug</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span>
     <span class="Identifier">pic</span><span class="Other">:</span> <span class="StringLit">&quot;-fPIC&quot;</span><span class="Other">,</span> <span class="Identifier">asmStmtFrmt</span><span class="Other">:</span> <span class="StringLit">&quot;asm($1);$n&quot;</span><span class="Other">,</span> <span class="Identifier">structStmtFmt</span><span class="Other">:</span> <span class="StringLit">&quot;$1 $3 $2 &quot;</span><span class="Other">,</span>
     <span class="Identifier">produceAsm</span><span class="Other">:</span> <span class="StringLit">&quot;-Wa,-acdl=$asmfile -g -fverbose-asm -masm=intel&quot;</span><span class="Other">,</span>
-    <span class="Identifier">cppXsupport</span><span class="Other">:</span> <span class="StringLit">&quot;-std=gnu++14 -funsigned-char&quot;</span><span class="Other">,</span> <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasSwitchRange</span><span class="Other">,</span>
-    <span class="DecNumber">hasComputedGoto</span><span class="Other">,</span> <span class="DecNumber">hasCpp</span><span class="Other">,</span> <span class="DecNumber">hasGcGuard</span><span class="Other">,</span> <span class="DecNumber">hasGnuAsm</span><span class="Other">,</span> <span class="DecNumber">hasAttribute</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span>
+    <span class="Identifier">cppXsupport</span><span class="Other">:</span> <span class="StringLit">&quot;-std=gnu++14 -funsigned-char&quot;</span><span class="Other">,</span>
+    <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasSwitchRange</span><span class="Other">..</span><span class="DecNumber">hasCpp</span><span class="Other">,</span> <span class="DecNumber">hasGcGuard</span><span class="Other">..</span><span class="DecNumber">hasGnuAsm</span><span class="Other">,</span> <span class="DecNumber">hasAttribute</span><span class="Other">}</span><span class="Other">)</span><span class="Other">,</span> <span class="Other">(</span>
     <span class="Identifier">name</span><span class="Other">:</span> <span class="StringLit">&quot;clang_cl&quot;</span><span class="Other">,</span> <span class="Identifier">objExt</span><span class="Other">:</span> <span class="StringLit">&quot;obj&quot;</span><span class="Other">,</span> <span class="Identifier">optSpeed</span><span class="Other">:</span> <span class="StringLit">&quot; /Ogityb2 &quot;</span><span class="Other">,</span> <span class="Identifier">optSize</span><span class="Other">:</span> <span class="StringLit">&quot; /O1 &quot;</span><span class="Other">,</span>
     <span class="Identifier">compilerExe</span><span class="Other">:</span> <span class="StringLit">&quot;clang-cl&quot;</span><span class="Other">,</span> <span class="Identifier">cppCompiler</span><span class="Other">:</span> <span class="StringLit">&quot;clang-cl&quot;</span><span class="Other">,</span>
     <span class="Identifier">compileTmpl</span><span class="Other">:</span> <span class="StringLit">&quot;/c$vccplatform $options $include /nologo /Fo$objfile $file&quot;</span><span class="Other">,</span>
@@ -595,12 +593,12 @@ class="link-seesrc" target="_blank">Source</a>
     <span class="Identifier">includeCmd</span><span class="Other">:</span> <span class="StringLit">&quot; /I&quot;</span><span class="Other">,</span> <span class="Identifier">linkDirCmd</span><span class="Other">:</span> <span class="StringLit">&quot; /LIBPATH:&quot;</span><span class="Other">,</span> <span class="Identifier">linkLibCmd</span><span class="Other">:</span> <span class="StringLit">&quot; $1.lib&quot;</span><span class="Other">,</span>
     <span class="Identifier">debug</span><span class="Other">:</span> <span class="StringLit">&quot; /RTC1 /Z7 &quot;</span><span class="Other">,</span> <span class="Identifier">pic</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span> <span class="Identifier">asmStmtFrmt</span><span class="Other">:</span> <span class="StringLit">&quot;__asm{$n$1$n}$n&quot;</span><span class="Other">,</span>
     <span class="Identifier">structStmtFmt</span><span class="Other">:</span> <span class="StringLit">&quot;$3$n$1 $2&quot;</span><span class="Other">,</span> <span class="Identifier">produceAsm</span><span class="Other">:</span> <span class="StringLit">&quot;/Fa$asmfile&quot;</span><span class="Other">,</span> <span class="Identifier">cppXsupport</span><span class="Other">:</span> <span class="StringLit">&quot;&quot;</span><span class="Other">,</span>
-    <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasCpp</span><span class="Other">,</span> <span class="DecNumber">hasAssume</span><span class="Other">,</span> <span class="DecNumber">hasDeclspec</span><span class="Other">}</span><span class="Other">)</span><span class="Other">]</span></pre></dt>
+    <span class="Identifier">props</span><span class="Other">:</span> <span class="Other">{</span><span class="DecNumber">hasCpp</span><span class="Other">..</span><span class="DecNumber">hasAssume</span><span class="Other">,</span> <span class="DecNumber">hasDeclspec</span><span class="Other">}</span><span class="Other">)</span><span class="Other">]</span></pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L298"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L298"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L298" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -612,7 +610,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L311"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L311"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L311" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -629,7 +627,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L383"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L383"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L383" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -641,7 +639,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L390"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L390"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L390" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -656,7 +654,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L703"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L703"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L703" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -671,7 +669,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L715"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L715"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L715" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -684,7 +682,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 Add new file to be linked with every compiled target.
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L430"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L430"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L430" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -696,7 +694,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L412"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L412"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L412" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -708,7 +706,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L380"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L380"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L380" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -720,7 +718,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L387"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L387"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L387" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -735,7 +733,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L415"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L415"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L415" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -750,7 +748,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L907"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L907"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L907" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -763,7 +761,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L560"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L560"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L560" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -777,7 +775,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L1056"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L1056"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L1056" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -792,7 +790,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L404"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L404"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L404" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -806,7 +804,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L438"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L438"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L438" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -821,7 +819,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L593"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L593"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L593" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -833,7 +831,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L393"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L393"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L393" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -845,7 +843,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L330"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L330"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L330" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -858,7 +856,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L1004"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L1004"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L1004" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -870,7 +868,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 Returns the kind of compiler referred to by <tt class="docutils literal"><span class="pre"><span class="Identifier">name</span></span></tt>, or ccNone if the name doesn't refer to any known compiler.
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L318"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L318"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L318" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -882,7 +880,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L422"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L422"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L422" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -897,7 +895,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L1073"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L1073"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L1073" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -910,7 +908,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L359"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L359"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L359" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -923,7 +921,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L408"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L408"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L408" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -938,7 +936,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L1027"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L1027"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L1027" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -952,7 +950,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/backend/extccomp.nim#L1104"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/backend/extccomp.nim#L1104"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/backend/extccomp.nim#L1104" class="link-seesrc" target="_blank" >Edit</a>
 

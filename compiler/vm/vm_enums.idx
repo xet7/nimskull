@@ -1,9 +1,11 @@
 rkNone	vm/vm_enums.html#rkNone	TRegisterKind.rkNone	
-rkNode	vm/vm_enums.html#rkNode	TRegisterKind.rkNode	
 rkInt	vm/vm_enums.html#rkInt	TRegisterKind.rkInt	
 rkFloat	vm/vm_enums.html#rkFloat	TRegisterKind.rkFloat	
-rkRegisterAddr	vm/vm_enums.html#rkRegisterAddr	TRegisterKind.rkRegisterAddr	
-rkNodeAddr	vm/vm_enums.html#rkNodeAddr	TRegisterKind.rkNodeAddr	
+rkAddress	vm/vm_enums.html#rkAddress	TRegisterKind.rkAddress	
+rkLocation	vm/vm_enums.html#rkLocation	TRegisterKind.rkLocation	
+rkHandle	vm/vm_enums.html#rkHandle	TRegisterKind.rkHandle	
+rkNimNode	vm/vm_enums.html#rkNimNode	TRegisterKind.rkNimNode	
+rkRegAddr	vm/vm_enums.html#rkRegAddr	TRegisterKind.rkRegAddr	
 TRegisterKind	vm/vm_enums.html#TRegisterKind	vm_enums: TRegisterKind	
 opcEof	vm/vm_enums.html#opcEof	TOpcode.opcEof	
 opcRet	vm/vm_enums.html#opcRet	TOpcode.opcRet	
@@ -11,7 +13,6 @@ opcYldYoid	vm/vm_enums.html#opcYldYoid	TOpcode.opcYldYoid
 opcYldVal	vm/vm_enums.html#opcYldVal	TOpcode.opcYldVal	
 opcAsgnInt	vm/vm_enums.html#opcAsgnInt	TOpcode.opcAsgnInt	
 opcAsgnFloat	vm/vm_enums.html#opcAsgnFloat	TOpcode.opcAsgnFloat	
-opcAsgnRef	vm/vm_enums.html#opcAsgnRef	TOpcode.opcAsgnRef	
 opcAsgnComplex	vm/vm_enums.html#opcAsgnComplex	TOpcode.opcAsgnComplex	
 opcCastIntToFloat32	vm/vm_enums.html#opcCastIntToFloat32	TOpcode.opcCastIntToFloat32	
 opcCastIntToFloat64	vm/vm_enums.html#opcCastIntToFloat64	TOpcode.opcCastIntToFloat64	
@@ -34,6 +35,10 @@ opcWrDeref	vm/vm_enums.html#opcWrDeref	TOpcode.opcWrDeref
 opcWrStrIdx	vm/vm_enums.html#opcWrStrIdx	TOpcode.opcWrStrIdx	
 opcLdStrIdx	vm/vm_enums.html#opcLdStrIdx	TOpcode.opcLdStrIdx	
 opcLdStrIdxAddr	vm/vm_enums.html#opcLdStrIdxAddr	TOpcode.opcLdStrIdxAddr	
+opcInitDisc	vm/vm_enums.html#opcInitDisc	TOpcode.opcInitDisc	
+opcSetDisc	vm/vm_enums.html#opcSetDisc	TOpcode.opcSetDisc	
+opcWrProc	vm/vm_enums.html#opcWrProc	TOpcode.opcWrProc	
+opcWrClosure	vm/vm_enums.html#opcWrClosure	TOpcode.opcWrClosure	
 opcAddInt	vm/vm_enums.html#opcAddInt	TOpcode.opcAddInt	
 opcAddImmInt	vm/vm_enums.html#opcAddImmInt	TOpcode.opcAddImmInt	
 opcSubInt	vm/vm_enums.html#opcSubInt	TOpcode.opcSubInt	
@@ -95,7 +100,6 @@ opcSetLenStr	vm/vm_enums.html#opcSetLenStr	TOpcode.opcSetLenStr
 opcSetLenSeq	vm/vm_enums.html#opcSetLenSeq	TOpcode.opcSetLenSeq	
 opcIsNil	vm/vm_enums.html#opcIsNil	TOpcode.opcIsNil	
 opcOf	vm/vm_enums.html#opcOf	TOpcode.opcOf	
-opcIs	vm/vm_enums.html#opcIs	TOpcode.opcIs	
 opcParseFloat	vm/vm_enums.html#opcParseFloat	TOpcode.opcParseFloat	
 opcConv	vm/vm_enums.html#opcConv	TOpcode.opcConv	
 opcCast	vm/vm_enums.html#opcCast	TOpcode.opcCast	
@@ -108,6 +112,7 @@ opcAddStrCh	vm/vm_enums.html#opcAddStrCh	TOpcode.opcAddStrCh
 opcAddStrStr	vm/vm_enums.html#opcAddStrStr	TOpcode.opcAddStrStr	
 opcAddSeqElem	vm/vm_enums.html#opcAddSeqElem	TOpcode.opcAddSeqElem	
 opcRangeChck	vm/vm_enums.html#opcRangeChck	TOpcode.opcRangeChck	
+opcArrCopy	vm/vm_enums.html#opcArrCopy	TOpcode.opcArrCopy	
 opcNAdd	vm/vm_enums.html#opcNAdd	TOpcode.opcNAdd	
 opcNAddMultiple	vm/vm_enums.html#opcNAddMultiple	TOpcode.opcNAddMultiple	
 opcNKind	vm/vm_enums.html#opcNKind	TOpcode.opcNKind	
@@ -152,6 +157,7 @@ opcEqIdent	vm/vm_enums.html#opcEqIdent	TOpcode.opcEqIdent
 opcStrToIdent	vm/vm_enums.html#opcStrToIdent	TOpcode.opcStrToIdent	
 opcGetImpl	vm/vm_enums.html#opcGetImpl	TOpcode.opcGetImpl	
 opcGetImplTransf	vm/vm_enums.html#opcGetImplTransf	TOpcode.opcGetImplTransf	
+opcNDynBindSym	vm/vm_enums.html#opcNDynBindSym	TOpcode.opcNDynBindSym	
 opcExpandToAst	vm/vm_enums.html#opcExpandToAst	TOpcode.opcExpandToAst	
 opcEcho	vm/vm_enums.html#opcEcho	TOpcode.opcEcho	
 opcIndCall	vm/vm_enums.html#opcIndCall	TOpcode.opcIndCall	
@@ -178,14 +184,19 @@ opcLdConst	vm/vm_enums.html#opcLdConst	TOpcode.opcLdConst
 opcAsgnConst	vm/vm_enums.html#opcAsgnConst	TOpcode.opcAsgnConst	
 opcLdGlobal	vm/vm_enums.html#opcLdGlobal	TOpcode.opcLdGlobal	
 opcLdGlobalAddr	vm/vm_enums.html#opcLdGlobalAddr	TOpcode.opcLdGlobalAddr	
+opcMatConst	vm/vm_enums.html#opcMatConst	TOpcode.opcMatConst	
 opcLdImmInt	vm/vm_enums.html#opcLdImmInt	TOpcode.opcLdImmInt	
 opcNBindSym	vm/vm_enums.html#opcNBindSym	TOpcode.opcNBindSym	
-opcNDynBindSym	vm/vm_enums.html#opcNDynBindSym	TOpcode.opcNDynBindSym	
 opcSetType	vm/vm_enums.html#opcSetType	TOpcode.opcSetType	
 opcTypeTrait	vm/vm_enums.html#opcTypeTrait	TOpcode.opcTypeTrait	
 opcSymOwner	vm/vm_enums.html#opcSymOwner	TOpcode.opcSymOwner	
 opcSymIsInstantiationOf	vm/vm_enums.html#opcSymIsInstantiationOf	TOpcode.opcSymIsInstantiationOf	
 TOpcode	vm/vm_enums.html#TOpcode	vm_enums: TOpcode	
+avrNoError	vm/vm_enums.html#avrNoError	AccessViolationReason.avrNoError	
+avrOutOfBounds	vm/vm_enums.html#avrOutOfBounds	AccessViolationReason.avrOutOfBounds	
+avrTypeMismatch	vm/vm_enums.html#avrTypeMismatch	AccessViolationReason.avrTypeMismatch	
+avrNoLocation	vm/vm_enums.html#avrNoLocation	AccessViolationReason.avrNoLocation	
+AccessViolationReason	vm/vm_enums.html#AccessViolationReason	vm_enums: AccessViolationReason	
 firstABxInstr	vm/vm_enums.html#firstABxInstr	vm_enums: firstABxInstr	
 largeInstrs	vm/vm_enums.html#largeInstrs	vm_enums: largeInstrs	
 relativeJumps	vm/vm_enums.html#relativeJumps	vm_enums: relativeJumps	

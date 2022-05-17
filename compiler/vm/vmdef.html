@@ -104,7 +104,82 @@ window.addEventListener('DOMContentLoaded', main);
 <li>
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#PCtx"
+      <li><a class="reference" href="#Atom"
+    title="Atom {.union.} = object
+  ptrVal*: pointer           ## akPtr
+  strVal*: VmString          ## akString
+  seqVal*: VmSeq             ## akSeq
+  refVal*: HeapSlotHandle    ## akRef
+  callableVal*: VmFunctionPtr ## akCallable
+  closureVal*: VmClosure     ## akClosure
+  nodeVal*: PNode            ## akPNode">Atom</a></li>
+  <li><a class="reference" href="#AtomKind"
+    title="AtomKind = enum
+  akInt, akFloat, akPtr, akSet, akString, akSeq, akRef, akCallable, akClosure,
+  akDiscriminator, akPNode, akObject, akArray">AtomKind</a></li>
+  <li><a class="reference" href="#BranchListEntry"
+    title="BranchListEntry = object
+  case kind*: BranchListEntryKind
+  of blekStart:
+      field*: FieldIndex     ## The index of the corresponding discriminator
+      numItems*: uint32 ## The number of items following this entry that are
+                        ## part of this record-case. Used for the fast skipping
+                        ## of inactive branches
+      defaultBranch*: uint16 ## The index of the default branch
+      numBranches*: uint16   ## The number of branches this record-case has.
+                             ## Does not include branches of sub record-cases
+    
+  of blekBranch, blekEnd:
+      fieldRange*: Slice[FieldIndex] ## 
+                                     ## For 'branch' entries, the range of field indices the branch spans.
+                                     ## For `end` entries, the range of fields past the corresponding
+                                     ## record-case that are still part of the surrounding branch.
+                                     ## 
+                                     ## In both cases, the slice may be empty, with `fieldRange.a` always
+                                     ## being &gt;= the previous entry's `fieldRange.a`.
+                                     ## For the dedicated 'end' entry, `fieldRange.b` is always 0">BranchListEntry</a></li>
+  <li><a class="reference" href="#BranchListEntryKind"
+    title="BranchListEntryKind = enum
+  blekStart, blekBranch, blekEnd">BranchListEntryKind</a></li>
+  <li><a class="reference" href="#CallableKind"
+    title="CallableKind = enum
+  ckDefault,                ## A normal function
+  ckCallback                 ## A VmCallback">CallableKind</a></li>
+  <li><a class="reference" href="#ConstantKind"
+    title="ConstantKind = enum
+  cnstInt, cnstFloat, cnstString, cnstNode, ## AST, type literals
+  cnstBranchLit">ConstantKind</a></li>
+  <li><a class="reference" href="#FieldIndex"
+    title="FieldIndex = distinct uint32">FieldIndex</a></li>
+  <li><a class="reference" href="#FieldPosition"
+    title="FieldPosition = distinct uint32">FieldPosition</a></li>
+  <li><a class="reference" href="#FunctionIndex"
+    title="FunctionIndex = distinct int">FunctionIndex</a></li>
+  <li><a class="reference" href="#FunctionTypeId"
+    title="FunctionTypeId = distinct int">FunctionTypeId</a></li>
+  <li><a class="reference" href="#FuncTypeLutKey"
+    title="FuncTypeLutKey = distinct PType">FuncTypeLutKey</a></li>
+  <li><a class="reference" href="#HeapSlot"
+    title="HeapSlot = object
+  handle*: LocHandle
+  refCount*: int
+  nType*: PType              ## The `PType` of the slot. Only needed for exceptions">HeapSlot</a></li>
+  <li><a class="reference" href="#HeapSlotHandle"
+    title="HeapSlotHandle = int">HeapSlotHandle</a></li>
+  <li><a class="reference" href="#LocHandle"
+    title="LocHandle = object
+  h*: MemRegionPtr
+  typ* {.cursor.}: PVmType">LocHandle</a></li>
+  <li><a class="reference" href="#MaterializedConst"
+    title="MaterializedConst = object
+  sym*: PSym                 ## The `const` symbol
+  handle*: LocHandle         ## The materialized value or an invalid handle if the
+                             ## `const` hasn't been materialized yet">MaterializedConst</a></li>
+  <li><a class="reference" href="#MemRegionPtr"
+    title="MemRegionPtr = object
+  p: ptr UncheckedArray[byte]
+  l: int">MemRegionPtr</a></li>
+  <li><a class="reference" href="#PCtx"
     title="PCtx = ref TCtx">PCtx</a></li>
   <li><a class="reference" href="#PEvalContext"
     title="PEvalContext = PCtx">PEvalContext</a></li>
@@ -112,11 +187,19 @@ window.addEventListener('DOMContentLoaded', main);
     title="PProc = ref object
   blocks*: seq[TBlock]
   sym*: PSym
-  regInfo*: seq[tuple[inUse: bool, kind: TSlotKind]]">PProc</a></li>
+  regInfo*: seq[RegInfo]">PProc</a></li>
   <li><a class="reference" href="#Profiler"
     title="Profiler = object
   tEnter*: float
   sframe*: StackFrameIndex   ## The current stack frame">Profiler</a></li>
+  <li><a class="reference" href="#PVmType"
+    title="PVmType = ref VmType">PVmType</a></li>
+  <li><a class="reference" href="#RegInfo"
+    title="RegInfo = object
+  refCount*: uint16
+  locReg*: uint16            ## if the register stores a handle, `locReg` is the
+                             ## register storing the backing location
+  kind*: TSlotKind">RegInfo</a></li>
   <li><a class="reference" href="#StackFrameIndex"
     title="StackFrameIndex = int">StackFrameIndex</a></li>
   <li><a class="reference" href="#TBlock"
@@ -127,11 +210,19 @@ window.addEventListener('DOMContentLoaded', main);
     title="TCtx = object of TPassContext
   code*: seq[TInstr]
   debug*: seq[TLineInfo]
-  sframes*: seq[TStackFrame] ## The stack of the currently running code
-  globals*: PNode
-  constants*: PNode
-  types*: seq[PType]
-  currentExceptionA*, currentExceptionB*: PNode
+  sframes*: seq[TStackFrame] ## The stack of the currently running code # XXX: rename to `stack`?
+  globals*: seq[HeapSlotHandle] ## Stores each global's corresponding heap slot
+  constants*: seq[VmConstant] ## constant data
+  typeInfoCache*: TypeInfoCache ## manages the types used by the VM
+  types*: seq[tuple[nType: PType, layoutDesc: PVmType]] ## 
+                                                        ## some instructions reference types (e.g. 'except')
+  functions*: seq[VmFunctionObject] ## all functions known to the VM. Indexed
+                                    ## by `FunctionIndex`
+  memory*: VmMemoryManager
+  materializedConsts*: BiTable[MaterializedConst] ## 
+                                                  ## `const` id &lt;-&gt; `const` info
+  procToFuncObj*: Table[int, FunctionIndex] ## symbol id -&gt; index into `functions`
+  currentExceptionA*, currentExceptionB*: HeapSlotHandle
   exceptionInstr*: int
   prc*: PProc
   module*: PSym
@@ -171,12 +262,18 @@ window.addEventListener('DOMContentLoaded', main);
     intVal*: BiggestInt
   of rkFloat:
     floatVal*: BiggestFloat
-  of rkNode:
-    node*: PNode
-  of rkRegisterAddr:
-    regAddr*: ptr TFullReg
-  of rkNodeAddr:
-    nodeAddr*: ptr PNode">TFullReg</a></li>
+  of rkAddress:
+      addrVal*: MemRegionPtr
+      addrTyp*: PVmType
+
+  of rkLocation, rkHandle:
+      handle*: LocHandle
+
+  of rkNimNode:
+      nimNode*: PNode
+
+  of rkRegAddr:
+      regAddr*: ptr TFullReg">TFullReg</a></li>
   <li><a class="reference" href="#TInstr"
     title="TInstr = distinct TInstrType">TInstr</a></li>
   <li><a class="reference" href="#TInstrType"
@@ -193,8 +290,16 @@ window.addEventListener('DOMContentLoaded', main);
     title="TSandboxFlags = set[TSandboxFlag]">TSandboxFlags</a></li>
   <li><a class="reference" href="#TSlotKind"
     title="TSlotKind = enum
-  slotEmpty, slotFixedVar, slotFixedLet, slotTempUnknown, slotTempInt,
-  slotTempFloat, slotTempStr, slotTempComplex, slotTempPerm">TSlotKind</a></li>
+  slotEmpty,                ## slot is unused
+  slotFixedVar,             ## slot is used for a fixed var/result (requires copy then)
+  slotFixedLet,             ## slot is used for a fixed param/let
+  slotTempUnknown,          ## slot but type unknown (argument of proc call)
+  slotTempInt,              ## some temporary int
+  slotTempFloat,            ## some temporary float
+  slotTempStr,              ## some temporary string
+  slotTempComplex,          ## some complex temporary (s.node field is used)
+  slotTempHandle,           ## some temporary handle into an object/array
+  slotTempPerm               ## slot is temporary but permanent (hack)">TSlotKind</a></li>
   <li><a class="reference" href="#TStackFrame"
     title="TStackFrame = object
   prc*: PSym
@@ -202,14 +307,129 @@ window.addEventListener('DOMContentLoaded', main);
   next*: StackFrameIndex
   comesFrom*: int
   safePoints*: seq[int]">TStackFrame</a></li>
+  <li><a class="reference" href="#TypeInfoCache"
+    title="TypeInfoCache = object
+  lut*: Table[ItemId, PVmType] ## `PType`-id -&gt; `PVmType` mappings
+  genericInsts*: Table[ItemId, seq[(PType, PVmType)]] ## 
+                                                      ## 'generic type' -&gt; 'known instantiations' mappings. Needed to make
+                                                      ## sure that all same instantations map to the same VmType
+  funcTypeLut*: Table[FuncTypeLutKey, FunctionTypeId] ## PType -&gt; function
+  nextFuncTypeId*: FunctionTypeId
+  types*: seq[PVmType]       ## all generated types (except VM-created primitive
+                             ## types)
+  startAtomic*: int          ## index of the first atomic type in `types`
+  startTuples*: int          ## index of the first `tuple` type in `types`
+  startObjects*: int         ## index of the first `object` type in `types`
+  staticInfo*: array[AtomKind, tuple[size, align: uint8]] ## size and alignment information for atoms where this information is
+                                                          ## the same for every instance
+  boolType*: PVmType
+  charType*: PVmType
+  stringType*: PVmType
+  pointerType*: PVmType
+  nodeType*: PVmType
+  emptyType*: PVmType
+  intTypes*: array[tyInt .. tyInt64, PVmType]
+  uintTypes*: array[tyUInt .. tyUInt64, PVmType]
+  floatTypes*: array[tyFloat .. tyFloat64, PVmType]">TypeInfoCache</a></li>
+  <li><a class="reference" href="#VmAllocator"
+    title="VmAllocator = object
+  regions*: seq[tuple[typ: PVmType, count: int, start: int, len: int]]
+  byteType*: PVmType         ## The VM type for `byte`">VmAllocator</a></li>
   <li><a class="reference" href="#VmArgs"
     title="VmArgs = object
   ra*, rb*, rc*: Natural
   slots*: ptr UncheckedArray[TFullReg]
-  currentException*: PNode
-  currentLineInfo*: TLineInfo">VmArgs</a></li>
+  currentException*: HeapSlotHandle
+  currentLineInfo*: TLineInfo
+  typeCache*: ptr TypeInfoCache
+  mem*: ptr VmMemoryManager
+  heap*: ptr VmHeap">VmArgs</a></li>
   <li><a class="reference" href="#VmCallback"
     title="VmCallback = proc (args: VmArgs) {.closure.}">VmCallback</a></li>
+  <li><a class="reference" href="#VmClosure"
+    title="VmClosure = object
+  fnc*: VmFunctionPtr
+  env*: HeapSlotHandle">VmClosure</a></li>
+  <li><a class="reference" href="#VmConstant"
+    title="VmConstant = object
+  case kind*: ConstantKind
+  of cnstInt:
+      intVal*: BiggestInt
+
+  of cnstFloat:
+      floatVal*: BiggestFloat
+
+  of cnstString:
+      strVal*: LocHandle
+
+  of cnstNode:
+      node*: PNode
+
+  of cnstBranchLit:
+      ranges*: seq[BiggestInt]">VmConstant</a></li>
+  <li><a class="reference" href="#VmFunctionObject"
+    title="VmFunctionObject = object
+  prc*: PSym
+  retValDesc*: PVmType       ## the return value type (may be empty)
+  envParamType*: PVmType     ## the type of the hidden environment parameter
+  typ*: FunctionTypeId
+  cbOffset*: int             ## for callbacks; the index into the callback list
+  kind*: CallableKind">VmFunctionObject</a></li>
+  <li><a class="reference" href="#VmFunctionPtr"
+    title="VmFunctionPtr = distinct int">VmFunctionPtr</a></li>
+  <li><a class="reference" href="#VmHeap"
+    title="VmHeap = object
+  slots*: seq[HeapSlot]
+  pending*: seq[int]         ## the indices of the slots that are pending clean-up">VmHeap</a></li>
+  <li><a class="reference" href="#VmMemoryManager"
+    title="VmMemoryManager = object
+  allocator*: VmAllocator
+  heap*: VmHeap">VmMemoryManager</a></li>
+  <li><a class="reference" href="#VmMemoryRegion"
+    title="VmMemoryRegion = openArray[byte]">VmMemoryRegion</a></li>
+  <li><a class="reference" href="#VmSeq"
+    title="VmSeq = object
+  length*: int
+  data*: MemRegionPtr">VmSeq</a></li>
+  <li><a class="reference" href="#VmString"
+    title="VmString = distinct VmSeq">VmString</a></li>
+  <li><a class="reference" href="#VmType"
+    title="VmType = object
+  case kind*: AtomKind
+  of akInt, akFloat, akPNode:
+    nil
+  of akPtr, akRef:
+      targetType*: PVmType
+
+  of akSet:
+      setLength*: int        ## The number of elements in the set
+    
+  of akSeq, akString:
+      seqElemStride*: int
+      seqElemType*: PVmType
+
+  of akCallable, akClosure:
+      funcTypeId*: FunctionTypeId
+
+  of akDiscriminator:
+      numBits*: int          ## The amount of bits the discriminator value occupies
+    
+  of akObject:
+      relFieldStart*: uint32 ## Encodes both the position (`PSym.position`) of
+                             ## the first field as well as whether the object
+                             ## has a base. If &gt; 0, the object has a base.
+                             ## Subtracting 1 one from a `&gt; 0` value yields the
+                             ## position
+      objFields*: seq[tuple[offset: int, typ: PVmType]]
+      branches*: seq[BranchListEntry] ## Empty if the object is no variant
+    
+  of akArray:
+      elementCount*: int
+      elementStride*: int
+      elementType*: PVmType
+
+  sizeInBytes*: uint
+  alignment*: uint8          ## 1 shl `alignment` == real alignment value">VmType</a></li>
 
   </ul>
 </li>
@@ -220,6 +440,12 @@ window.addEventListener('DOMContentLoaded', main);
     title="byteExcess = 128">byteExcess</a></li>
   <li><a class="reference" href="#nimNodeFlag"
     title="nimNodeFlag = 16">nimNodeFlag</a></li>
+  <li><a class="reference" href="#noneType"
+    title="noneType: PVmType = nil">noneType</a></li>
+  <li><a class="reference" href="#pseudoAtomKinds"
+    title="pseudoAtomKinds = {akObject, akArray}">pseudoAtomKinds</a></li>
+  <li><a class="reference" href="#realAtomKinds"
+    title="realAtomKinds = {akInt..akPNode}">realAtomKinds</a></li>
   <li><a class="reference" href="#regAMask"
     title="regAMask = 65535'u64">regAMask</a></li>
   <li><a class="reference" href="#regAShift"
@@ -254,9 +480,63 @@ window.addEventListener('DOMContentLoaded', main);
 <li>
   <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
   <ul class="simple simple-toc-section">
-      <ul class="simple nested-toc-section">newCtx
+      <ul class="simple nested-toc-section"><
+      <li><a class="reference" href="#%3C%2CFieldIndex%2CFieldIndex"
+    title="`&lt;`(a, b: FieldIndex): bool">`&lt;`(a, b: FieldIndex): bool</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section"><=
+      <li><a class="reference" href="#%3C%3D%2CFieldIndex%2CFieldIndex"
+    title="`&lt;=`(a, b: FieldIndex): bool">`&lt;=`(a, b: FieldIndex): bool</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">==
+      <li><a class="reference" href="#%3D%3D%2CFieldIndex%2CFieldIndex"
+    title="`==`(a, b: FieldIndex): bool">`==`(a, b: FieldIndex): bool</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">data
+      <li><a class="reference" href="#data%2CVmString"
+    title="data(s: VmString): MemRegionPtr">data(s: VmString): MemRegionPtr</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">hash
+      <li><a class="reference" href="#hash%2CMaterializedConst"
+    title="hash(x: MaterializedConst): int">hash(x: MaterializedConst): int</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">len
+      <li><a class="reference" href="#len%2CVmString"
+    title="len(s: VmString): int">len(s: VmString): int</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">makeLocHandle
+      <li><a class="reference" href="#makeLocHandle%2Cpointer%2CPVmType"
+    title="makeLocHandle(h: pointer; typ: PVmType): LocHandle">makeLocHandle(h: pointer; typ: PVmType): LocHandle</a></li>
+  <li><a class="reference" href="#makeLocHandle%2CMemRegionPtr%2CPVmType"
+    title="makeLocHandle(p: MemRegionPtr; typ: PVmType): LocHandle">makeLocHandle(p: MemRegionPtr; typ: PVmType): LocHandle</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">makeMemPtr
+      <li><a class="reference" href="#makeMemPtr%2Cpointer%2Cuint"
+    title="makeMemPtr(p: pointer; sizeInBytes: uint): MemRegionPtr">makeMemPtr(p: pointer; sizeInBytes: uint): MemRegionPtr</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">newCtx
       <li><a class="reference" href="#newCtx%2CPSym%2CIdentCache%2CModuleGraph%2CIdGenerator"
     title="newCtx(module: PSym; cache: IdentCache; g: ModuleGraph; idgen: IdGenerator): PCtx">newCtx(module: PSym; cache: IdentCache; g: ModuleGraph; idgen: IdGenerator): PCtx</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">newVmString
+      <li><a class="reference" href="#newVmString%2CMemRegionPtr%2CNatural"
+    title="newVmString(data: MemRegionPtr; len: Natural): VmString">newVmString(data: MemRegionPtr; len: Natural): VmString</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">overlap
+      <li><a class="reference" href="#overlap%2Cint%2Cint%2CNatural%2CNatural"
+    title="overlap(a, b: int; aLen, bLen: Natural): bool">overlap(a, b: int; aLen, bLen: Natural): bool</a></li>
+  <li><a class="reference" href="#overlap%2Cpointer%2Cpointer%2CNatural%2CNatural"
+    title="overlap(a, b: pointer; aLen, bLen: Natural): bool">overlap(a, b: pointer; aLen, bLen: Natural): bool</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">refresh
@@ -269,20 +549,122 @@ window.addEventListener('DOMContentLoaded', main);
     title="registerCallback(c: var TCtx; name: string; callback: VmCallback): int">registerCallback(c: var TCtx; name: string; callback: VmCallback): int</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">safeCopyMem
+      <li><a class="reference" href="#safeCopyMem%2CopenArray%5B%5D%2CopenArray%5B%5D%2CNatural"
+    title="safeCopyMem(dest: var openArray[byte | char]; src: openArray[byte | char];
+            numBytes: Natural)">safeCopyMem(dest: var openArray[byte | char]; src: openArray[byte | char];
+            numBytes: Natural)</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">safeCopyMemSrc
+      <li><a class="reference" href="#safeCopyMemSrc%2CopenArray%5Bbyte%5D%2CopenArray%5Bbyte%5D"
+    title="safeCopyMemSrc(dest: var openArray[byte]; src: openArray[byte])">safeCopyMemSrc(dest: var openArray[byte]; src: openArray[byte])</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">safeZeroMem
+      <li><a class="reference" href="#safeZeroMem%2CopenArray%5Bbyte%5D%2CNatural"
+    title="safeZeroMem(dest: var openArray[byte]; numBytes: Natural)">safeZeroMem(dest: var openArray[byte]; numBytes: Natural)</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">toFuncIndex
+      <li><a class="reference" href="#toFuncIndex%2CVmFunctionPtr"
+    title="toFuncIndex(x: VmFunctionPtr): FunctionIndex">toFuncIndex(x: VmFunctionPtr): FunctionIndex</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">toFuncPtr
+      <li><a class="reference" href="#toFuncPtr%2CFunctionIndex"
+    title="toFuncPtr(x: FunctionIndex): VmFunctionPtr">toFuncPtr(x: FunctionIndex): VmFunctionPtr</a></li>
+
+  </ul>
 
   </ul>
 </li>
 <li>
   <a class="reference reference-toplevel" href="#18" id="68">Templates</a>
   <ul class="simple simple-toc-section">
-      <ul class="simple nested-toc-section">jmpDiff
+      <ul class="simple nested-toc-section">-
+      <li><a class="reference" href="#-.t%2CFieldIndex%2Cint"
+    title="`-`(a: FieldIndex; b: int): FieldIndex">`-`(a: FieldIndex; b: int): FieldIndex</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">==
+      <li><a class="reference" href="#%3D%3D.t%2CFunctionTypeId%2CFunctionTypeId"
+    title="`==`(a, b: FunctionTypeId): bool">`==`(a, b: FunctionTypeId): bool</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">allocator
+      <li><a class="reference" href="#allocator.t%2CTCtx"
+    title="allocator(c: TCtx): untyped">allocator(c: TCtx): untyped</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">byteView
+      <li><a class="reference" href="#byteView.t%2CMemRegionPtr"
+    title="byteView(h: MemRegionPtr): untyped">byteView(h: MemRegionPtr): untyped</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">fieldAt
+      <li><a class="reference" href="#fieldAt.t%2CPVmType%2CFieldIndex"
+    title="fieldAt(x: PVmType; i: FieldIndex): untyped">fieldAt(x: PVmType; i: FieldIndex): untyped</a></li>
+  <li><a class="reference" href="#fieldAt.t%2CVmType%2CFieldIndex"
+    title="fieldAt(x: VmType; i: FieldIndex): untyped">fieldAt(x: VmType; i: FieldIndex): untyped</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">fpos
+      <li><a class="reference" href="#fpos.t%2Cint"
+    title="fpos(x: int): FieldPosition">fpos(x: int): FieldPosition</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">heap
+      <li><a class="reference" href="#heap.t%2CTCtx"
+    title="heap(c: TCtx): untyped">heap(c: TCtx): untyped</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">invalidLocHandle
+      <li><a class="reference" href="#invalidLocHandle.t"
+    title="invalidLocHandle(): untyped">invalidLocHandle(): untyped</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">isNil
+      <li><a class="reference" href="#isNil.t%2CHeapSlotHandle"
+    title="isNil(h: HeapSlotHandle): bool">isNil(h: HeapSlotHandle): bool</a></li>
+  <li><a class="reference" href="#isNil.t%2CMemRegionPtr"
+    title="isNil(h: MemRegionPtr): bool">isNil(h: MemRegionPtr): bool</a></li>
+  <li><a class="reference" href="#isNil.t%2CVmFunctionPtr"
+    title="isNil(x: VmFunctionPtr): bool">isNil(x: VmFunctionPtr): bool</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">isValid
+      <li><a class="reference" href="#isValid.t%2CMemRegionPtr%2Cuint"
+    title="isValid(h: MemRegionPtr; len: uint): bool">isValid(h: MemRegionPtr; len: uint): bool</a></li>
+  <li><a class="reference" href="#isValid.t%2CLocHandle"
+    title="isValid(handle: LocHandle): bool">isValid(handle: LocHandle): bool</a></li>
+  <li><a class="reference" href="#isValid.t%2CPVmType"
+    title="isValid(t: PVmType): bool">isValid(t: PVmType): bool</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">jmpDiff
       <li><a class="reference" href="#jmpDiff.t%2CTInstr"
     title="jmpDiff(x: TInstr): int">jmpDiff(x: TInstr): int</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">len
+      <li><a class="reference" href="#len.t%2CMemRegionPtr"
+    title="len(h: MemRegionPtr): untyped">len(h: MemRegionPtr): untyped</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">nilMemPtr
+      <li><a class="reference" href="#nilMemPtr.t"
+    title="nilMemPtr(): untyped">nilMemPtr(): untyped</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">opcode
       <li><a class="reference" href="#opcode.t%2CTInstr"
     title="opcode(x: TInstr): TOpcode">opcode(x: TInstr): TOpcode</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">rawPointer
+      <li><a class="reference" href="#rawPointer.t%2CMemRegionPtr"
+    title="rawPointer(h: MemRegionPtr): untyped">rawPointer(h: MemRegionPtr): untyped</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">regA
@@ -310,6 +692,18 @@ window.addEventListener('DOMContentLoaded', main);
     title="registerCallback(c: PCtx; name: string; callback: VmCallback): int">registerCallback(c: PCtx; name: string; callback: VmCallback): int</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">subView
+      <li><a class="reference" href="#subView.t%2CopenArray%5BT%5D%2C%2C"
+    title="subView[T](x: openArray[T]; off, len): untyped">subView[T](x: openArray[T]; off, len): untyped</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">unreachable
+      <li><a class="reference" href="#unreachable.t"
+    title="unreachable()">unreachable()</a></li>
+  <li><a class="reference" href="#unreachable.t%2Cstring"
+    title="unreachable(msg: string)">unreachable(msg: string)</a></li>
+
+  </ul>
 
   </ul>
 </li>
@@ -324,7 +718,7 @@ window.addEventListener('DOMContentLoaded', main);
 
   </div>
   &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L1"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L1"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L1" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -335,20 +729,268 @@ class="link-seesrc" target="_blank">Source</a>
   <div class="section" id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="../ast/ast.html">../ast/ast</a>, <a class="reference external" href="../ast/idents.html">../ast/idents</a>, <a class="reference external" href="../ast/lineinfos.html">../ast/lineinfos</a>, <a class="reference external" href="../ast/reports.html">../ast/reports</a>, <a class="reference external" href="../modules/modulegraphs.html">../modules/modulegraphs</a>, <a class="reference external" href="../front/options.html">../front/options</a>, <a class="reference external" href="../utils/debugutils.html">../utils/debugutils</a>, <a class="reference external" href="vm_enums.html">vm_enums</a>
+<a class="reference external" href="../ast/ast.html">../ast/ast</a>, <a class="reference external" href="../ast/idents.html">../ast/idents</a>, <a class="reference external" href="../ast/lineinfos.html">../ast/lineinfos</a>, <a class="reference external" href="../ast/reports.html">../ast/reports</a>, <a class="reference external" href="../modules/modulegraphs.html">../modules/modulegraphs</a>, <a class="reference external" href="../modules/magicsys.html">../modules/magicsys</a>, <a class="reference external" href="../front/options.html">../front/options</a>, <a class="reference external" href="../ic/bitabs.html">../ic/bitabs</a>, <a class="reference external" href="../utils/debugutils.html">../utils/debugutils</a>, <a class="reference external" href="vm_enums.html">vm_enums</a>
 </dl></div>
 <div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
+<div id="Atom">
+<dt><pre><a href="vmdef.html#Atom"><span class="Identifier">Atom</span></a> {.<span class="Identifier">union</span>.} <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">ptrVal</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">pointer</span>           <span class="Comment">## akPtr</span>
+  <span class="Identifier">strVal</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#VmString"><span class="Identifier">VmString</span></a>          <span class="Comment">## akString</span>
+  <span class="Identifier">seqVal</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#VmSeq"><span class="Identifier">VmSeq</span></a>             <span class="Comment">## akSeq</span>
+  <span class="Identifier">refVal</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#HeapSlotHandle"><span class="Identifier">HeapSlotHandle</span></a>    <span class="Comment">## akRef</span>
+  <span class="Identifier">callableVal</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#VmFunctionPtr"><span class="Identifier">VmFunctionPtr</span></a> <span class="Comment">## akCallable</span>
+  <span class="Identifier">closureVal</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#VmClosure"><span class="Identifier">VmClosure</span></a>     <span class="Comment">## akClosure</span>
+  <span class="Identifier">nodeVal</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a>            <span class="Comment">## akPNode</span>
+  </pre></dt>
+<dd>
+
+Convenience type to make working with atomic locations easier. Since the union stores gc'ed memory (PNode), it must never be used on either side of an assignment and also never used as a variable's type
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L273"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L273" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="AtomKind">
+<dt><pre><a href="vmdef.html#AtomKind"><span class="Identifier">AtomKind</span></a> <span class="Other">=</span> <span class="Keyword">enum</span>
+  <span class="Identifier">akInt</span><span class="Other">,</span> <span class="Identifier">akFloat</span><span class="Other">,</span> <span class="Identifier">akPtr</span><span class="Other">,</span> <span class="Identifier">akSet</span><span class="Other">,</span> <span class="Identifier">akString</span><span class="Other">,</span> <span class="Identifier">akSeq</span><span class="Other">,</span> <span class="Identifier">akRef</span><span class="Other">,</span> <span class="Identifier">akCallable</span><span class="Other">,</span> <span class="Identifier">akClosure</span><span class="Other">,</span>
+  <span class="Identifier">akDiscriminator</span><span class="Other">,</span> <span class="Identifier">akPNode</span><span class="Other">,</span> <span class="Identifier">akObject</span><span class="Other">,</span> <span class="Identifier">akArray</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L108"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L108" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="BranchListEntry">
+<dt><pre><a href="vmdef.html#BranchListEntry"><span class="Identifier">BranchListEntry</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Keyword">case</span> <span class="Identifier">kind</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#BranchListEntryKind"><span class="Identifier">BranchListEntryKind</span></a>
+  <span class="Keyword">of</span> <span class="Identifier">blekStart</span><span class="Other">:</span>
+      <span class="Identifier">field</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#FieldIndex"><span class="Identifier">FieldIndex</span></a>     <span class="Comment">## The index of the corresponding discriminator</span>
+      <span class="Identifier">numItems</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">uint32</span> <span class="Comment">## The number of items following this entry that are</span>
+                        <span class="Comment">## part of this record-case. Used for the fast skipping</span>
+                        <span class="Comment">## of inactive branches</span>
+      <span class="Identifier">defaultBranch</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">uint16</span> <span class="Comment">## The index of the default branch</span>
+      <span class="Identifier">numBranches</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">uint16</span>   <span class="Comment">## The number of branches this record-case has.</span>
+                             <span class="Comment">## Does not include branches of sub record-cases</span>
+    
+  <span class="Keyword">of</span> <span class="Identifier">blekBranch</span><span class="Other">,</span> <span class="Identifier">blekEnd</span><span class="Other">:</span>
+      <span class="Identifier">fieldRange</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Slice</span><span class="Other">[</span><a href="vmdef.html#FieldIndex"><span class="Identifier">FieldIndex</span></a><span class="Other">]</span> <span class="Comment">## </span>
+                                     <span class="Comment">## For 'branch' entries, the range of field indices the branch spans.</span>
+                                     <span class="Comment">## For `end` entries, the range of fields past the corresponding</span>
+                                     <span class="Comment">## record-case that are still part of the surrounding branch.</span>
+                                     <span class="Comment">## </span>
+                                     <span class="Comment">## In both cases, the slice may be empty, with `fieldRange.a` always</span>
+                                     <span class="Comment">## being &gt;= the previous entry's `fieldRange.a`.</span>
+                                     <span class="Comment">## For the dedicated 'end' entry, `fieldRange.b` is always 0</span>
+    
+  </pre></dt>
+<dd>
+
+An entry in a walk-list, describing an object variant in a flat manner. A record-case maps to the following entries:<ul class="simple"><li>a 'start' entry (represents the discriminator)</li>
+<li>one or more 'branch' entries (one for each <tt class="docutils literal"><span class="pre"><span class="Keyword">of</span></span></tt>-branch)</li>
+<li>an 'end' entry</li>
+</ul>
+<p>If a branch contains a sub record-case, the record-case's entries follow the entry of the surrounding branch (i.e. the layout is stored depth-first). The first entry in the list is always a 'branch' (called the master branch) enclosing all fields in the object. The last entry is always a dedicated 'end' entry.</p>
+<p>The idea behind this way of representing the layout of a variant object, is to allow for fast linear traversal of active fields without the need for recursion or auxiliary stack-like data structures</p>
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L145"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L145" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="BranchListEntryKind">
+<dt><pre><a href="vmdef.html#BranchListEntryKind"><span class="Identifier">BranchListEntryKind</span></a> <span class="Other">=</span> <span class="Keyword">enum</span>
+  <span class="Identifier">blekStart</span><span class="Other">,</span> <span class="Identifier">blekBranch</span><span class="Other">,</span> <span class="Identifier">blekEnd</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L140"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L140" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="CallableKind">
+<dt><pre><a href="vmdef.html#CallableKind"><span class="Identifier">CallableKind</span></a> <span class="Other">=</span> <span class="Keyword">enum</span>
+  <span class="Identifier">ckDefault</span><span class="Other">,</span>                <span class="Comment">## A normal function</span>
+  <span class="Identifier">ckCallback</span>                 <span class="Comment">## A VmCallback</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L228"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L228" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="ConstantKind">
+<dt><pre><a href="vmdef.html#ConstantKind"><span class="Identifier">ConstantKind</span></a> <span class="Other">=</span> <span class="Keyword">enum</span>
+  <span class="Identifier">cnstInt</span><span class="Other">,</span> <span class="Identifier">cnstFloat</span><span class="Other">,</span> <span class="Identifier">cnstString</span><span class="Other">,</span> <span class="Identifier">cnstNode</span><span class="Other">,</span> <span class="Comment">## AST, type literals</span>
+  <span class="Identifier">cnstBranchLit</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L325"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L325" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="FieldIndex">
+<dt><pre><a href="vmdef.html#FieldIndex"><span class="Identifier">FieldIndex</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">uint32</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L138"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L138" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="FieldPosition">
+<dt><pre><a href="vmdef.html#FieldPosition"><span class="Identifier">FieldPosition</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">uint32</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L137"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L137" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="FunctionIndex">
+<dt><pre><a href="vmdef.html#FunctionIndex"><span class="Identifier">FunctionIndex</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">int</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L435"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L435" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="FunctionTypeId">
+<dt><pre><a href="vmdef.html#FunctionTypeId"><span class="Identifier">FunctionTypeId</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">int</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L394"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L394" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="FuncTypeLutKey">
+<dt><pre><a href="vmdef.html#FuncTypeLutKey"><span class="Identifier">FuncTypeLutKey</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L398"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L398" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="HeapSlot">
+<dt><pre><a href="vmdef.html#HeapSlot"><span class="Identifier">HeapSlot</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">handle</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#LocHandle"><span class="Identifier">LocHandle</span></a>
+  <span class="Identifier">refCount</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
+  <span class="Identifier">nType</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a>              <span class="Comment">## The `PType` of the slot. Only needed for exceptions</span>
+  </pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L307"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L307" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="HeapSlotHandle">
+<dt><pre><a href="vmdef.html#HeapSlotHandle"><span class="Identifier">HeapSlotHandle</span></a> <span class="Other">=</span> <span class="Identifier">int</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L305"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L305" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="LocHandle">
+<dt><pre><a href="vmdef.html#LocHandle"><span class="Identifier">LocHandle</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">h</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#MemRegionPtr"><span class="Identifier">MemRegionPtr</span></a>
+  <span class="Identifier">typ</span><span class="Operator">*</span> {.<span class="Identifier">cursor</span>.}<span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a>
+</pre></dt>
+<dd>
+
+A handle to a <tt class="docutils literal"><span class="pre">location</span></tt>
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L262"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L262" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="MaterializedConst">
+<dt><pre><a href="vmdef.html#MaterializedConst"><span class="Identifier">MaterializedConst</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">sym</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a>                 <span class="Comment">## The `const` symbol</span>
+  <span class="Identifier">handle</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#LocHandle"><span class="Identifier">LocHandle</span></a>         <span class="Comment">## The materialized value or an invalid handle if the</span>
+                             <span class="Comment">## `const` hasn't been materialized yet</span>
+  </pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L438"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L438" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="MemRegionPtr">
+<dt><pre><a href="vmdef.html#MemRegionPtr"><span class="Identifier">MemRegionPtr</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">p</span><span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">UncheckedArray</span><span class="Other">[</span><span class="Identifier">byte</span><span class="Other">]</span>
+  <span class="Identifier">l</span><span class="Other">:</span> <span class="Identifier">int</span>
+</pre></dt>
+<dd>
+
+A pointer to a region of memory
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L256"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L256" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
 <div id="PCtx">
 <dt><pre><a href="vmdef.html#PCtx"><span class="Identifier">PCtx</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <a href="vmdef.html#TCtx"><span class="Identifier">TCtx</span></a></pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L126"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L457"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L126" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L457" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -358,9 +1000,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L173"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L523"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L173" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L523" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -368,15 +1010,15 @@ class="link-seesrc" target="_blank">Source</a>
 <dt><pre><a href="vmdef.html#PProc"><span class="Identifier">PProc</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
   <span class="Identifier">blocks</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="vmdef.html#TBlock"><span class="Identifier">TBlock</span></a><span class="Other">]</span>
   <span class="Identifier">sym</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a>
-  <span class="Identifier">regInfo</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">inUse</span><span class="Other">:</span> <span class="Identifier">bool</span><span class="Other">,</span> <span class="Identifier">kind</span><span class="Other">:</span> <a href="vmdef.html#TSlotKind"><span class="Identifier">TSlotKind</span></a><span class="Other">]</span><span class="Other">]</span>
+  <span class="Identifier">regInfo</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="vmdef.html#RegInfo"><span class="Identifier">RegInfo</span></a><span class="Other">]</span>
 </pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L114"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L362"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L114" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L362" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -389,9 +1031,38 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L167"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L517"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L167" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L517" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="PVmType">
+<dt><pre><a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a> <span class="Other">=</span> <span class="Keyword">ref</span> <a href="vmdef.html#VmType"><span class="Identifier">VmType</span></a></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L135"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L135" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="RegInfo">
+<dt><pre><a href="vmdef.html#RegInfo"><span class="Identifier">RegInfo</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">refCount</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">uint16</span>
+  <span class="Identifier">locReg</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">uint16</span>            <span class="Comment">## if the register stores a handle, `locReg` is the</span>
+                             <span class="Comment">## register storing the backing location</span>
+  <span class="Identifier">kind</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#TSlotKind"><span class="Identifier">TSlotKind</span></a>
+</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L356"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L356" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -401,9 +1072,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L156"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L506"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L156" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L506" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -416,9 +1087,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L71"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L75"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L71" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L75" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -426,11 +1097,19 @@ class="link-seesrc" target="_blank">Source</a>
 <dt><pre><a href="vmdef.html#TCtx"><span class="Identifier">TCtx</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <a href="../modules/modulegraphs.html#TPassContext"><span class="Identifier">TPassContext</span></a>
   <span class="Identifier">code</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="vmdef.html#TInstr"><span class="Identifier">TInstr</span></a><span class="Other">]</span>
   <span class="Identifier">debug</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="../ast/ast_types.html#TLineInfo"><span class="Identifier">TLineInfo</span></a><span class="Other">]</span>
-  <span class="Identifier">sframes</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="vmdef.html#TStackFrame"><span class="Identifier">TStackFrame</span></a><span class="Other">]</span> <span class="Comment">## The stack of the currently running code</span>
-  <span class="Identifier">globals</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a>
-  <span class="Identifier">constants</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a>
-  <span class="Identifier">types</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a><span class="Other">]</span>
-  <span class="Identifier">currentExceptionA</span><span class="Operator">*</span><span class="Other">,</span> <span class="Identifier">currentExceptionB</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a>
+  <span class="Identifier">sframes</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="vmdef.html#TStackFrame"><span class="Identifier">TStackFrame</span></a><span class="Other">]</span> <span class="Comment">## The stack of the currently running code # XXX: rename to `stack`?</span>
+  <span class="Identifier">globals</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="vmdef.html#HeapSlotHandle"><span class="Identifier">HeapSlotHandle</span></a><span class="Other">]</span> <span class="Comment">## Stores each global's corresponding heap slot</span>
+  <span class="Identifier">constants</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="vmdef.html#VmConstant"><span class="Identifier">VmConstant</span></a><span class="Other">]</span> <span class="Comment">## constant data</span>
+  <span class="Identifier">typeInfoCache</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#TypeInfoCache"><span class="Identifier">TypeInfoCache</span></a> <span class="Comment">## manages the types used by the VM</span>
+  <span class="Identifier">types</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">nType</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a><span class="Other">,</span> <span class="Identifier">layoutDesc</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a><span class="Other">]</span><span class="Other">]</span> <span class="Comment">## </span>
+                                                        <span class="Comment">## some instructions reference types (e.g. 'except')</span>
+  <span class="Identifier">functions</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="vmdef.html#VmFunctionObject"><span class="Identifier">VmFunctionObject</span></a><span class="Other">]</span> <span class="Comment">## all functions known to the VM. Indexed</span>
+                                    <span class="Comment">## by `FunctionIndex`</span>
+  <span class="Identifier">memory</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#VmMemoryManager"><span class="Identifier">VmMemoryManager</span></a>
+  <span class="Identifier">materializedConsts</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ic/bitabs.html#BiTable"><span class="Identifier">BiTable</span></a><span class="Other">[</span><a href="vmdef.html#MaterializedConst"><span class="Identifier">MaterializedConst</span></a><span class="Other">]</span> <span class="Comment">## </span>
+                                                  <span class="Comment">## `const` id &lt;-&gt; `const` info</span>
+  <span class="Identifier">procToFuncObj</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">int</span><span class="Other">,</span> <a href="vmdef.html#FunctionIndex"><span class="Identifier">FunctionIndex</span></a><span class="Other">]</span> <span class="Comment">## symbol id -&gt; index into `functions`</span>
+  <span class="Identifier">currentExceptionA</span><span class="Operator">*</span><span class="Other">,</span> <span class="Identifier">currentExceptionB</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#HeapSlotHandle"><span class="Identifier">HeapSlotHandle</span></a>
   <span class="Identifier">exceptionInstr</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
   <span class="Identifier">prc</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#PProc"><span class="Identifier">PProc</span></a>
   <span class="Identifier">module</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a>
@@ -455,9 +1134,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L127"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L458"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L127" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L458" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -467,9 +1146,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L67"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L71"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L67" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L71" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -486,9 +1165,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 reason for evaluation
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L75"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L79"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L75" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L79" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -501,20 +1180,27 @@ class="link-seesrc" target="_blank">Source</a>
     <span class="Identifier">intVal</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">BiggestInt</span>
   <span class="Keyword">of</span> <span class="Identifier">rkFloat</span><span class="Other">:</span>
     <span class="Identifier">floatVal</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">BiggestFloat</span>
-  <span class="Keyword">of</span> <span class="Identifier">rkNode</span><span class="Other">:</span>
-    <span class="Identifier">node</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a>
-  <span class="Keyword">of</span> <span class="Identifier">rkRegisterAddr</span><span class="Other">:</span>
-    <span class="Identifier">regAddr</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="vmdef.html#TFullReg"><span class="Identifier">TFullReg</span></a>
-  <span class="Keyword">of</span> <span class="Identifier">rkNodeAddr</span><span class="Other">:</span>
-    <span class="Identifier">nodeAddr</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a>
+  <span class="Keyword">of</span> <span class="Identifier">rkAddress</span><span class="Other">:</span>
+      <span class="Identifier">addrVal</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#MemRegionPtr"><span class="Identifier">MemRegionPtr</span></a>
+      <span class="Identifier">addrTyp</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a>
+
+  <span class="Keyword">of</span> <span class="Identifier">rkLocation</span><span class="Other">,</span> <span class="Identifier">rkHandle</span><span class="Other">:</span>
+      <span class="Identifier">handle</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#LocHandle"><span class="Identifier">LocHandle</span></a>
+
+  <span class="Keyword">of</span> <span class="Identifier">rkNimNode</span><span class="Other">:</span>
+      <span class="Identifier">nimNode</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a>
+
+  <span class="Keyword">of</span> <span class="Identifier">rkRegAddr</span><span class="Other">:</span>
+      <span class="Identifier">regAddr</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="vmdef.html#TFullReg"><span class="Identifier">TFullReg</span></a>
+
   </pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L104"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L287"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L104" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L287" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -524,9 +1210,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L68"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L72"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L68" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L72" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -536,9 +1222,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L35"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L39"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L35" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L39" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -548,9 +1234,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L171"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L521"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L171" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L521" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -560,9 +1246,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L66"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L70"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L66" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L70" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -574,9 +1260,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 what the evaluation engine should allow
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L84"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L88"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L84" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L88" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -586,23 +1272,31 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L87"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L91"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L87" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L91" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="TSlotKind">
 <dt><pre><a href="vmdef.html#TSlotKind"><span class="Identifier">TSlotKind</span></a> <span class="Other">=</span> <span class="Keyword">enum</span>
-  <span class="Identifier">slotEmpty</span><span class="Other">,</span> <span class="Identifier">slotFixedVar</span><span class="Other">,</span> <span class="Identifier">slotFixedLet</span><span class="Other">,</span> <span class="Identifier">slotTempUnknown</span><span class="Other">,</span> <span class="Identifier">slotTempInt</span><span class="Other">,</span>
-  <span class="Identifier">slotTempFloat</span><span class="Other">,</span> <span class="Identifier">slotTempStr</span><span class="Other">,</span> <span class="Identifier">slotTempComplex</span><span class="Other">,</span> <span class="Identifier">slotTempPerm</span></pre></dt>
+  <span class="Identifier">slotEmpty</span><span class="Other">,</span>                <span class="Comment">## slot is unused</span>
+  <span class="Identifier">slotFixedVar</span><span class="Other">,</span>             <span class="Comment">## slot is used for a fixed var/result (requires copy then)</span>
+  <span class="Identifier">slotFixedLet</span><span class="Other">,</span>             <span class="Comment">## slot is used for a fixed param/let</span>
+  <span class="Identifier">slotTempUnknown</span><span class="Other">,</span>          <span class="Comment">## slot but type unknown (argument of proc call)</span>
+  <span class="Identifier">slotTempInt</span><span class="Other">,</span>              <span class="Comment">## some temporary int</span>
+  <span class="Identifier">slotTempFloat</span><span class="Other">,</span>            <span class="Comment">## some temporary float</span>
+  <span class="Identifier">slotTempStr</span><span class="Other">,</span>              <span class="Comment">## some temporary string</span>
+  <span class="Identifier">slotTempComplex</span><span class="Other">,</span>          <span class="Comment">## some complex temporary (s.node field is used)</span>
+  <span class="Identifier">slotTempHandle</span><span class="Other">,</span>           <span class="Comment">## some temporary handle into an object/array</span>
+  <span class="Identifier">slotTempPerm</span>               <span class="Comment">## slot is temporary but permanent (hack)</span></pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L89"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L93"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L89" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L93" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -618,9 +1312,59 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L158"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L508"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L158" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L508" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="TypeInfoCache">
+<dt><pre><a href="vmdef.html#TypeInfoCache"><span class="Identifier">TypeInfoCache</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">lut</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><a href="../ast/ast_types.html#ItemId"><span class="Identifier">ItemId</span></a><span class="Other">,</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a><span class="Other">]</span> <span class="Comment">## `PType`-id -&gt; `PVmType` mappings</span>
+  <span class="Identifier">genericInsts</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><a href="../ast/ast_types.html#ItemId"><span class="Identifier">ItemId</span></a><span class="Other">,</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Other">(</span><a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a><span class="Other">,</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a><span class="Other">)</span><span class="Other">]</span><span class="Other">]</span> <span class="Comment">## </span>
+                                                      <span class="Comment">## 'generic type' -&gt; 'known instantiations' mappings. Needed to make</span>
+                                                      <span class="Comment">## sure that all same instantations map to the same VmType</span>
+  <span class="Identifier">funcTypeLut</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><a href="vmdef.html#FuncTypeLutKey"><span class="Identifier">FuncTypeLutKey</span></a><span class="Other">,</span> <a href="vmdef.html#FunctionTypeId"><span class="Identifier">FunctionTypeId</span></a><span class="Other">]</span> <span class="Comment">## PType -&gt; function</span>
+  <span class="Identifier">nextFuncTypeId</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#FunctionTypeId"><span class="Identifier">FunctionTypeId</span></a>
+  <span class="Identifier">types</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a><span class="Other">]</span>       <span class="Comment">## all generated types (except VM-created primitive</span>
+                             <span class="Comment">## types)</span>
+  <span class="Identifier">startAtomic</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>          <span class="Comment">## index of the first atomic type in `types`</span>
+  <span class="Identifier">startTuples</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>          <span class="Comment">## index of the first `tuple` type in `types`</span>
+  <span class="Identifier">startObjects</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>         <span class="Comment">## index of the first `object` type in `types`</span>
+  <span class="Identifier">staticInfo</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">array</span><span class="Other">[</span><span class="Identifier">AtomKind</span><span class="Other">,</span> <span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">size</span><span class="Other">,</span> <span class="Identifier">align</span><span class="Other">:</span> <span class="Identifier">uint8</span><span class="Other">]</span><span class="Other">]</span> <span class="Comment">## size and alignment information for atoms where this information is</span>
+                                                          <span class="Comment">## the same for every instance</span>
+  <span class="Identifier">boolType</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a>
+  <span class="Identifier">charType</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a>
+  <span class="Identifier">stringType</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a>
+  <span class="Identifier">pointerType</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a>
+  <span class="Identifier">nodeType</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a>
+  <span class="Identifier">emptyType</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a>
+  <span class="Identifier">intTypes</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">array</span><span class="Other">[</span><span class="Identifier">tyInt</span> <span class="Operator">..</span> <span class="Identifier">tyInt64</span><span class="Other">,</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a><span class="Other">]</span>
+  <span class="Identifier">uintTypes</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">array</span><span class="Other">[</span><span class="Identifier">tyUInt</span> <span class="Operator">..</span> <span class="Identifier">tyUInt64</span><span class="Other">,</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a><span class="Other">]</span>
+  <span class="Identifier">floatTypes</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">array</span><span class="Other">[</span><span class="Identifier">tyFloat</span> <span class="Operator">..</span> <span class="Identifier">tyFloat64</span><span class="Other">,</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a><span class="Other">]</span>
+</pre></dt>
+<dd>
+
+An append-only cache for everything type related
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L400"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L400" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="VmAllocator">
+<dt><pre><a href="vmdef.html#VmAllocator"><span class="Identifier">VmAllocator</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">regions</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">typ</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a><span class="Other">,</span> <span class="Identifier">count</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">start</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">len</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">]</span><span class="Other">]</span>
+  <span class="Identifier">byteType</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a>         <span class="Comment">## The VM type for `byte`</span>
+  </pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L381"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L381" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -628,16 +1372,19 @@ class="link-seesrc" target="_blank">Source</a>
 <dt><pre><a href="vmdef.html#VmArgs"><span class="Identifier">VmArgs</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">ra</span><span class="Operator">*</span><span class="Other">,</span> <span class="Identifier">rb</span><span class="Operator">*</span><span class="Other">,</span> <span class="Identifier">rc</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Natural</span>
   <span class="Identifier">slots</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">ptr</span> <span class="Identifier">UncheckedArray</span><span class="Other">[</span><a href="vmdef.html#TFullReg"><span class="Identifier">TFullReg</span></a><span class="Other">]</span>
-  <span class="Identifier">currentException</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a>
+  <span class="Identifier">currentException</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#HeapSlotHandle"><span class="Identifier">HeapSlotHandle</span></a>
   <span class="Identifier">currentLineInfo</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#TLineInfo"><span class="Identifier">TLineInfo</span></a>
+  <span class="Identifier">typeCache</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="vmdef.html#TypeInfoCache"><span class="Identifier">TypeInfoCache</span></a>
+  <span class="Identifier">mem</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="vmdef.html#VmMemoryManager"><span class="Identifier">VmMemoryManager</span></a>
+  <span class="Identifier">heap</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="vmdef.html#VmHeap"><span class="Identifier">VmHeap</span></a>
 </pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L119"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L367"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L119" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L367" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -647,9 +1394,203 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L124"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L379"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L124" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L379" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="VmClosure">
+<dt><pre><a href="vmdef.html#VmClosure"><span class="Identifier">VmClosure</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">fnc</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#VmFunctionPtr"><span class="Identifier">VmFunctionPtr</span></a>
+  <span class="Identifier">env</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#HeapSlotHandle"><span class="Identifier">HeapSlotHandle</span></a>
+</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L250"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L250" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="VmConstant">
+<dt><pre><a href="vmdef.html#VmConstant"><span class="Identifier">VmConstant</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Keyword">case</span> <span class="Identifier">kind</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#ConstantKind"><span class="Identifier">ConstantKind</span></a>
+  <span class="Keyword">of</span> <span class="Identifier">cnstInt</span><span class="Other">:</span>
+      <span class="Identifier">intVal</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">BiggestInt</span>
+
+  <span class="Keyword">of</span> <span class="Identifier">cnstFloat</span><span class="Other">:</span>
+      <span class="Identifier">floatVal</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">BiggestFloat</span>
+
+  <span class="Keyword">of</span> <span class="Identifier">cnstString</span><span class="Other">:</span>
+      <span class="Identifier">strVal</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#LocHandle"><span class="Identifier">LocHandle</span></a>
+
+  <span class="Keyword">of</span> <span class="Identifier">cnstNode</span><span class="Other">:</span>
+      <span class="Identifier">node</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a>
+
+  <span class="Keyword">of</span> <span class="Identifier">cnstBranchLit</span><span class="Other">:</span>
+      <span class="Identifier">ranges</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">BiggestInt</span><span class="Other">]</span>
+
+  </pre></dt>
+<dd>
+
+<tt class="docutils literal"><span class="pre"><span class="Identifier">VmConstant</span></span></tt>s are used for passing constant data from <tt class="docutils literal"><span class="pre"><span class="Identifier">vmgen</span></span></tt> to the execution engine. This currently includes constants for both internal use as well as user-defined literal values (e.g. string literals).
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L332"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L332" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="VmFunctionObject">
+<dt><pre><a href="vmdef.html#VmFunctionObject"><span class="Identifier">VmFunctionObject</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">prc</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a>
+  <span class="Identifier">retValDesc</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a>       <span class="Comment">## the return value type (may be empty)</span>
+  <span class="Identifier">envParamType</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a>     <span class="Comment">## the type of the hidden environment parameter</span>
+  <span class="Identifier">typ</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#FunctionTypeId"><span class="Identifier">FunctionTypeId</span></a>
+  <span class="Identifier">cbOffset</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>             <span class="Comment">## for callbacks; the index into the callback list</span>
+  <span class="Identifier">kind</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#CallableKind"><span class="Identifier">CallableKind</span></a>
+</pre></dt>
+<dd>
+
+Represents a callable procedure inside the VM, storing all information necessary to call the procedure.
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L234"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L234" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="VmFunctionPtr">
+<dt><pre><a href="vmdef.html#VmFunctionPtr"><span class="Identifier">VmFunctionPtr</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">int</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L232"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L232" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="VmHeap">
+<dt><pre><a href="vmdef.html#VmHeap"><span class="Identifier">VmHeap</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">slots</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="vmdef.html#HeapSlot"><span class="Identifier">HeapSlot</span></a><span class="Other">]</span>
+  <span class="Identifier">pending</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">int</span><span class="Other">]</span>         <span class="Comment">## the indices of the slots that are pending clean-up</span>
+  </pre></dt>
+<dd>
+
+<p><tt class="docutils literal"><span class="pre"><span class="Identifier">VmHeap</span></span></tt> manages all ref-counted locations. These are used for <tt class="docutils literal"><span class="pre"><span class="Identifier">new</span></span></tt>'ed values as well as globals.</p>
+<p>Once a slot's ref-count reaches zero, the slot is not cleaned up and freed immediately, but is added to the <tt class="docutils literal"><span class="pre"><span class="Identifier">pending</span></span></tt> list first. Pending slots are currently only freed at the end of a VM invocation, with cyclic references leading to memory leaks (no cycle detection is performed)</p>
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L313"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L313" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="VmMemoryManager">
+<dt><pre><a href="vmdef.html#VmMemoryManager"><span class="Identifier">VmMemoryManager</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">allocator</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#VmAllocator"><span class="Identifier">VmAllocator</span></a>
+  <span class="Identifier">heap</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#VmHeap"><span class="Identifier">VmHeap</span></a>
+</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L390"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L390" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="VmMemoryRegion">
+<dt><pre><a href="vmdef.html#VmMemoryRegion"><span class="Identifier">VmMemoryRegion</span></a> <span class="Other">=</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">byte</span><span class="Other">]</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L260"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L260" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="VmSeq">
+<dt><pre><a href="vmdef.html#VmSeq"><span class="Identifier">VmSeq</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">length</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
+  <span class="Identifier">data</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#MemRegionPtr"><span class="Identifier">MemRegionPtr</span></a>
+</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L267"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L267" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="VmString">
+<dt><pre><a href="vmdef.html#VmString"><span class="Identifier">VmString</span></a> <span class="Other">=</span> <span class="Keyword">distinct</span> <a href="vmdef.html#VmSeq"><span class="Identifier">VmSeq</span></a></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L271"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L271" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="VmType">
+<dt><pre><a href="vmdef.html#VmType"><span class="Identifier">VmType</span></a> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Keyword">case</span> <span class="Identifier">kind</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#AtomKind"><span class="Identifier">AtomKind</span></a>
+  <span class="Keyword">of</span> <span class="Identifier">akInt</span><span class="Other">,</span> <span class="Identifier">akFloat</span><span class="Other">,</span> <span class="Identifier">akPNode</span><span class="Other">:</span>
+    <span class="Keyword">nil</span>
+  <span class="Keyword">of</span> <span class="Identifier">akPtr</span><span class="Other">,</span> <span class="Identifier">akRef</span><span class="Other">:</span>
+      <span class="Identifier">targetType</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a>
+
+  <span class="Keyword">of</span> <span class="Identifier">akSet</span><span class="Other">:</span>
+      <span class="Identifier">setLength</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>        <span class="Comment">## The number of elements in the set</span>
+    
+  <span class="Keyword">of</span> <span class="Identifier">akSeq</span><span class="Other">,</span> <span class="Identifier">akString</span><span class="Other">:</span>
+      <span class="Identifier">seqElemStride</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
+      <span class="Identifier">seqElemType</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a>
+
+  <span class="Keyword">of</span> <span class="Identifier">akCallable</span><span class="Other">,</span> <span class="Identifier">akClosure</span><span class="Other">:</span>
+      <span class="Identifier">funcTypeId</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#FunctionTypeId"><span class="Identifier">FunctionTypeId</span></a>
+
+  <span class="Keyword">of</span> <span class="Identifier">akDiscriminator</span><span class="Other">:</span>
+      <span class="Identifier">numBits</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>          <span class="Comment">## The amount of bits the discriminator value occupies</span>
+    
+  <span class="Keyword">of</span> <span class="Identifier">akObject</span><span class="Other">:</span>
+      <span class="Identifier">relFieldStart</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">uint32</span> <span class="Comment">## Encodes both the position (`PSym.position`) of</span>
+                             <span class="Comment">## the first field as well as whether the object</span>
+                             <span class="Comment">## has a base. If &gt; 0, the object has a base.</span>
+                             <span class="Comment">## Subtracting 1 one from a `&gt; 0` value yields the</span>
+                             <span class="Comment">## position</span>
+      <span class="Identifier">objFields</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">offset</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">typ</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a><span class="Other">]</span><span class="Other">]</span>
+      <span class="Identifier">branches</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="vmdef.html#BranchListEntry"><span class="Identifier">BranchListEntry</span></a><span class="Other">]</span> <span class="Comment">## Empty if the object is no variant</span>
+    
+  <span class="Keyword">of</span> <span class="Identifier">akArray</span><span class="Other">:</span>
+      <span class="Identifier">elementCount</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
+      <span class="Identifier">elementStride</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
+      <span class="Identifier">elementType</span><span class="Operator">*</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a>
+
+  <span class="Identifier">sizeInBytes</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">uint</span>
+  <span class="Identifier">alignment</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">uint8</span>          <span class="Comment">## 1 shl `alignment` == real alignment value</span>
+  </pre></dt>
+<dd>
+
+A <tt class="docutils literal"><span class="pre"><span class="Identifier">VmType</span></span></tt> is a concrete type, holding the information necessary to interpret the raw bytes of a location. <tt class="docutils literal"><span class="pre"><span class="Identifier">PType</span></span></tt>s are mapped to <tt class="docutils literal"><span class="pre"><span class="Identifier">VmType</span></span></tt>s in <tt class="docutils literal"><span class="pre"><span class="Identifier">vmtypegen</span></span></tt>.
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L180"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L180" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -664,9 +1605,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L44"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L48"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L44" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L48" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -676,9 +1617,45 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L214"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L690"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L214" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L690" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="noneType">
+<dt><pre><a href="vmdef.html#noneType"><span class="Identifier">noneType</span></a><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a> <span class="Other">=</span> <span class="Keyword">nil</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L714"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L714" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="pseudoAtomKinds">
+<dt><pre><a href="vmdef.html#pseudoAtomKinds"><span class="Identifier">pseudoAtomKinds</span></a> <span class="Other">=</span> <span class="Other">{</span><span class="DecNumber">akObject</span><span class="Other">,</span> <span class="DecNumber">akArray</span><span class="Other">}</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L683"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L683" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="realAtomKinds">
+<dt><pre><a href="vmdef.html#realAtomKinds"><span class="Identifier">realAtomKinds</span></a> <span class="Other">=</span> <span class="Other">{</span><span class="DecNumber">akInt</span><span class="Other">..</span><span class="DecNumber">akPNode</span><span class="Other">}</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L684"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L684" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -688,9 +1665,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L56"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L60"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L56" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L60" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -700,9 +1677,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L50"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L54"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L50" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L54" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -712,9 +1689,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L57"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L61"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L57" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L61" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -724,9 +1701,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L51"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L55"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L51" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L55" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -736,9 +1713,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L59"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L63"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L59" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L63" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -748,9 +1725,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L63"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L67"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L63" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L67" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -760,9 +1737,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L62"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L66"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L62" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L66" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -772,9 +1749,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L53"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L57"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L53" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L57" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -784,9 +1761,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L58"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L62"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L58" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L62" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -796,9 +1773,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L52"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L56"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L52" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L56" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -808,9 +1785,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L55"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L59"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L55" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L59" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -820,9 +1797,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L49"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L53"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L49" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L53" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -832,9 +1809,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L211"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L687"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L211" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L687" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -844,9 +1821,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L61"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L65"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L61" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L65" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -855,6 +1832,117 @@ class="link-seesrc" target="_blank">Source</a>
 <div class="section" id="12">
 <h1><a class="toc-backref" href="#12">Procs</a></h1>
 <dl class="item">
+<div id="<=,FieldIndex,FieldIndex">
+<dt><pre><span class="Keyword">func</span> <a href="#%3C%3D%2CFieldIndex%2CFieldIndex"><span class="Identifier">`&lt;=`</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">:</span> <a href="vmdef.html#FieldIndex"><span class="Identifier">FieldIndex</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">borrow</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L526"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L526" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="<,FieldIndex,FieldIndex">
+<dt><pre><span class="Keyword">func</span> <a href="#%3C%2CFieldIndex%2CFieldIndex"><span class="Identifier">`&lt;`</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">:</span> <a href="vmdef.html#FieldIndex"><span class="Identifier">FieldIndex</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">borrow</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L525"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L525" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="==,FieldIndex,FieldIndex">
+<dt><pre><span class="Keyword">func</span> <a href="#%3D%3D%2CFieldIndex%2CFieldIndex"><span class="Identifier">`==`</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">:</span> <a href="vmdef.html#FieldIndex"><span class="Identifier">FieldIndex</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">borrow</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L527"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L527" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="data,VmString">
+<dt><pre><span class="Keyword">func</span> <a href="#data%2CVmString"><span class="Identifier">data</span></a><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <a href="vmdef.html#VmString"><span class="Identifier">VmString</span></a><span class="Other">)</span><span class="Other">:</span> <a href="vmdef.html#MemRegionPtr"><span class="Identifier">MemRegionPtr</span></a> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L738"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L738" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="hash,MaterializedConst">
+<dt><pre><span class="Keyword">func</span> <a href="#hash%2CMaterializedConst"><span class="Identifier">hash</span></a><span class="Other">(</span><span class="Identifier">x</span><span class="Other">:</span> <a href="vmdef.html#MaterializedConst"><span class="Identifier">MaterializedConst</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L802"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L802" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="len,VmString">
+<dt><pre><span class="Keyword">func</span> <a href="#len%2CVmString"><span class="Identifier">len</span></a><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <a href="vmdef.html#VmString"><span class="Identifier">VmString</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L736"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L736" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="makeLocHandle,pointer,PVmType">
+<dt><pre><span class="Keyword">func</span> <a href="#makeLocHandle%2Cpointer%2CPVmType"><span class="Identifier">makeLocHandle</span></a><span class="Other">(</span><span class="Identifier">h</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">typ</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a><span class="Other">)</span><span class="Other">:</span> <a href="vmdef.html#LocHandle"><span class="Identifier">LocHandle</span></a> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L708"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L708" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="makeLocHandle,MemRegionPtr,PVmType">
+<dt><pre><span class="Keyword">func</span> <a href="#makeLocHandle%2CMemRegionPtr%2CPVmType"><span class="Identifier">makeLocHandle</span></a><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <a href="vmdef.html#MemRegionPtr"><span class="Identifier">MemRegionPtr</span></a><span class="Other">;</span> <span class="Identifier">typ</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a><span class="Other">)</span><span class="Other">:</span> <a href="vmdef.html#LocHandle"><span class="Identifier">LocHandle</span></a> {.<span class="Identifier">inline</span><span class="Other">,</span>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L703"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L703" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="makeMemPtr,pointer,uint">
+<dt><pre><span class="Keyword">func</span> <a href="#makeMemPtr%2Cpointer%2Cuint"><span class="Identifier">makeMemPtr</span></a><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">sizeInBytes</span><span class="Other">:</span> <span class="Identifier">uint</span><span class="Other">)</span><span class="Other">:</span> <a href="vmdef.html#MemRegionPtr"><span class="Identifier">MemRegionPtr</span></a> {.<span class="Identifier">inline</span><span class="Other">,</span>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L700"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L700" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
 <div id="newCtx,PSym,IdentCache,ModuleGraph,IdGenerator">
 <dt><pre><span class="Keyword">proc</span> <a href="#newCtx%2CPSym%2CIdentCache%2CModuleGraph%2CIdGenerator"><span class="Identifier">newCtx</span></a><span class="Other">(</span><span class="Identifier">module</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">;</span> <span class="Identifier">cache</span><span class="Other">:</span> <a href="../ast/idents.html#IdentCache"><span class="Identifier">IdentCache</span></a><span class="Other">;</span> <span class="Identifier">g</span><span class="Other">:</span> <a href="../modules/modulegraphs.html#ModuleGraph"><span class="Identifier">ModuleGraph</span></a><span class="Other">;</span> <span class="Identifier">idgen</span><span class="Other">:</span> <a href="../ast/ast.html#IdGenerator"><span class="Identifier">IdGenerator</span></a><span class="Other">)</span><span class="Other">:</span> <a href="vmdef.html#PCtx"><span class="Identifier">PCtx</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
@@ -862,9 +1950,46 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L175"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L641"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L175" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L641" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="newVmString,MemRegionPtr,Natural">
+<dt><pre><span class="Keyword">func</span> <a href="#newVmString%2CMemRegionPtr%2CNatural"><span class="Identifier">newVmString</span></a><span class="Other">(</span><span class="Identifier">data</span><span class="Other">:</span> <a href="vmdef.html#MemRegionPtr"><span class="Identifier">MemRegionPtr</span></a><span class="Other">;</span> <span class="Identifier">len</span><span class="Other">:</span> <span class="Identifier">Natural</span><span class="Other">)</span><span class="Other">:</span> <a href="vmdef.html#VmString"><span class="Identifier">VmString</span></a> {.<span class="Identifier">inline</span><span class="Other">,</span>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L733"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L733" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="overlap,int,int,Natural,Natural">
+<dt><pre><span class="Keyword">func</span> <a href="#overlap%2Cint%2Cint%2CNatural%2CNatural"><span class="Identifier">overlap</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">aLen</span><span class="Other">,</span> <span class="Identifier">bLen</span><span class="Other">:</span> <span class="Identifier">Natural</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Tests if the ranges <tt class="docutils literal"><span class="pre"><span class="Punctuation">[</span><span class="Identifier">a</span><span class="Punctuation">,</span> <span class="Identifier">a</span><span class="Operator">+</span><span class="Identifier">aLen</span><span class="Punctuation">)</span></span></tt> and <tt class="docutils literal"><span class="pre"><span class="Punctuation">[</span><span class="Identifier">b</span><span class="Punctuation">,</span> <span class="Identifier">b</span><span class="Operator">+</span><span class="Identifier">bLen</span><span class="Punctuation">)</span></span></tt> have elements in common
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L747"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L747" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="overlap,pointer,pointer,Natural,Natural">
+<dt><pre><span class="Keyword">func</span> <a href="#overlap%2Cpointer%2Cpointer%2CNatural%2CNatural"><span class="Identifier">overlap</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">:</span> <span class="Identifier">pointer</span><span class="Other">;</span> <span class="Identifier">aLen</span><span class="Other">,</span> <span class="Identifier">bLen</span><span class="Other">:</span> <span class="Identifier">Natural</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Test if the memory regions overlap
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L757"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L757" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -875,9 +2000,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L194"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L666"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L194" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L666" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -888,9 +2013,72 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L201"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L673"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L201" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L673" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="safeCopyMem,openArray[],openArray[],Natural">
+<dt><pre><span class="Keyword">func</span> <a href="#safeCopyMem%2CopenArray%5B%5D%2CopenArray%5B%5D%2CNatural"><span class="Identifier">safeCopyMem</span></a><span class="Other">(</span><span class="Identifier">dest</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">byte</span> <span class="Operator">|</span> <span class="Identifier">char</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">src</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">byte</span> <span class="Operator">|</span> <span class="Identifier">char</span><span class="Other">]</span><span class="Other">;</span>
+                 <span class="Identifier">numBytes</span><span class="Other">:</span> <span class="Identifier">Natural</span><span class="Other">)</span> {.<span class="Identifier">inline</span>.}</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L779"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L779" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="safeCopyMemSrc,openArray[byte],openArray[byte]">
+<dt><pre><span class="Keyword">func</span> <a href="#safeCopyMemSrc%2CopenArray%5Bbyte%5D%2CopenArray%5Bbyte%5D"><span class="Identifier">safeCopyMemSrc</span></a><span class="Other">(</span><span class="Identifier">dest</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">byte</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">src</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">byte</span><span class="Other">]</span><span class="Other">)</span> {.<span class="Identifier">inline</span><span class="Other">,</span>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L788"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L788" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="safeZeroMem,openArray[byte],Natural">
+<dt><pre><span class="Keyword">func</span> <a href="#safeZeroMem%2CopenArray%5Bbyte%5D%2CNatural"><span class="Identifier">safeZeroMem</span></a><span class="Other">(</span><span class="Identifier">dest</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">byte</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">numBytes</span><span class="Other">:</span> <span class="Identifier">Natural</span><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L795"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L795" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="toFuncIndex,VmFunctionPtr">
+<dt><pre><span class="Keyword">func</span> <a href="#toFuncIndex%2CVmFunctionPtr"><span class="Identifier">toFuncIndex</span></a><span class="Other">(</span><span class="Identifier">x</span><span class="Other">:</span> <a href="vmdef.html#VmFunctionPtr"><span class="Identifier">VmFunctionPtr</span></a><span class="Other">)</span><span class="Other">:</span> <a href="vmdef.html#FunctionIndex"><span class="Identifier">FunctionIndex</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L633"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L633" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="toFuncPtr,FunctionIndex">
+<dt><pre><span class="Keyword">func</span> <a href="#toFuncPtr%2CFunctionIndex"><span class="Identifier">toFuncPtr</span></a><span class="Other">(</span><span class="Identifier">x</span><span class="Other">:</span> <a href="vmdef.html#FunctionIndex"><span class="Identifier">FunctionIndex</span></a><span class="Other">)</span><span class="Other">:</span> <a href="vmdef.html#VmFunctionPtr"><span class="Identifier">VmFunctionPtr</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L630"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L630" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -899,15 +2087,219 @@ class="link-seesrc" target="_blank">Source</a>
 <div class="section" id="18">
 <h1><a class="toc-backref" href="#18">Templates</a></h1>
 <dl class="item">
+<div id="-.t,FieldIndex,int">
+<dt><pre><span class="Keyword">template</span> <a href="#-.t%2CFieldIndex%2Cint"><span class="Identifier">`-`</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">:</span> <a href="vmdef.html#FieldIndex"><span class="Identifier">FieldIndex</span></a><span class="Other">;</span> <span class="Identifier">b</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="vmdef.html#FieldIndex"><span class="Identifier">FieldIndex</span></a></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L528"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L528" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="==.t,FunctionTypeId,FunctionTypeId">
+<dt><pre><span class="Keyword">template</span> <a href="#%3D%3D.t%2CFunctionTypeId%2CFunctionTypeId"><span class="Identifier">`==`</span></a><span class="Other">(</span><span class="Identifier">a</span><span class="Other">,</span> <span class="Identifier">b</span><span class="Other">:</span> <a href="vmdef.html#FunctionTypeId"><span class="Identifier">FunctionTypeId</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L639"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L639" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="allocator.t,TCtx">
+<dt><pre><span class="Keyword">template</span> <a href="#allocator.t%2CTCtx"><span class="Identifier">allocator</span></a><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="vmdef.html#TCtx"><span class="Identifier">TCtx</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L545"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L545" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="byteView.t,MemRegionPtr">
+<dt><pre><span class="Keyword">template</span> <a href="#byteView.t%2CMemRegionPtr"><span class="Identifier">byteView</span></a><span class="Other">(</span><span class="Identifier">h</span><span class="Other">:</span> <a href="vmdef.html#MemRegionPtr"><span class="Identifier">MemRegionPtr</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L726"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L726" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="fieldAt.t,PVmType,FieldIndex">
+<dt><pre><span class="Keyword">template</span> <a href="#fieldAt.t%2CPVmType%2CFieldIndex"><span class="Identifier">fieldAt</span></a><span class="Other">(</span><span class="Identifier">x</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a><span class="Other">;</span> <span class="Identifier">i</span><span class="Other">:</span> <a href="vmdef.html#FieldIndex"><span class="Identifier">FieldIndex</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L536"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L536" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="fieldAt.t,VmType,FieldIndex">
+<dt><pre><span class="Keyword">template</span> <a href="#fieldAt.t%2CVmType%2CFieldIndex"><span class="Identifier">fieldAt</span></a><span class="Other">(</span><span class="Identifier">x</span><span class="Other">:</span> <a href="vmdef.html#VmType"><span class="Identifier">VmType</span></a><span class="Other">;</span> <span class="Identifier">i</span><span class="Other">:</span> <a href="vmdef.html#FieldIndex"><span class="Identifier">FieldIndex</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L533"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L533" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="fpos.t,int">
+<dt><pre><span class="Keyword">template</span> <a href="#fpos.t%2Cint"><span class="Identifier">fpos</span></a><span class="Other">(</span><span class="Identifier">x</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="vmdef.html#FieldPosition"><span class="Identifier">FieldPosition</span></a></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L539"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L539" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="heap.t,TCtx">
+<dt><pre><span class="Keyword">template</span> <a href="#heap.t%2CTCtx"><span class="Identifier">heap</span></a><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="vmdef.html#TCtx"><span class="Identifier">TCtx</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L542"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L542" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="invalidLocHandle.t">
+<dt><pre><span class="Keyword">template</span> <a href="#invalidLocHandle.t"><span class="Identifier">invalidLocHandle</span></a><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L717"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L717" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="isNil.t,HeapSlotHandle">
+<dt><pre><span class="Keyword">template</span> <a href="#isNil.t%2CHeapSlotHandle"><span class="Identifier">isNil</span></a><span class="Other">(</span><span class="Identifier">h</span><span class="Other">:</span> <a href="vmdef.html#HeapSlotHandle"><span class="Identifier">HeapSlotHandle</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L712"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L712" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="isNil.t,MemRegionPtr">
+<dt><pre><span class="Keyword">template</span> <a href="#isNil.t%2CMemRegionPtr"><span class="Identifier">isNil</span></a><span class="Other">(</span><span class="Identifier">h</span><span class="Other">:</span> <a href="vmdef.html#MemRegionPtr"><span class="Identifier">MemRegionPtr</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L711"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L711" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="isNil.t,VmFunctionPtr">
+<dt><pre><span class="Keyword">template</span> <a href="#isNil.t%2CVmFunctionPtr"><span class="Identifier">isNil</span></a><span class="Other">(</span><span class="Identifier">x</span><span class="Other">:</span> <a href="vmdef.html#VmFunctionPtr"><span class="Identifier">VmFunctionPtr</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L637"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L637" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="isValid.t,MemRegionPtr,uint">
+<dt><pre><span class="Keyword">template</span> <a href="#isValid.t%2CMemRegionPtr%2Cuint"><span class="Identifier">isValid</span></a><span class="Other">(</span><span class="Identifier">h</span><span class="Other">:</span> <a href="vmdef.html#MemRegionPtr"><span class="Identifier">MemRegionPtr</span></a><span class="Other">;</span> <span class="Identifier">len</span><span class="Other">:</span> <span class="Identifier">uint</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L741"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L741" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="isValid.t,LocHandle">
+<dt><pre><span class="Keyword">template</span> <a href="#isValid.t%2CLocHandle"><span class="Identifier">isValid</span></a><span class="Other">(</span><span class="Identifier">handle</span><span class="Other">:</span> <a href="vmdef.html#LocHandle"><span class="Identifier">LocHandle</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L742"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L742" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="isValid.t,PVmType">
+<dt><pre><span class="Keyword">template</span> <a href="#isValid.t%2CPVmType"><span class="Identifier">isValid</span></a><span class="Other">(</span><span class="Identifier">t</span><span class="Other">:</span> <a href="vmdef.html#PVmType"><span class="Identifier">PVmType</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L719"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L719" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
 <div id="jmpDiff.t,TInstr">
 <dt><pre><span class="Keyword">template</span> <a href="#jmpDiff.t%2CTInstr"><span class="Identifier">jmpDiff</span></a><span class="Other">(</span><span class="Identifier">x</span><span class="Other">:</span> <a href="vmdef.html#TInstr"><span class="Identifier">TInstr</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span></pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L222"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L698"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L222" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L698" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="len.t,MemRegionPtr">
+<dt><pre><span class="Keyword">template</span> <a href="#len.t%2CMemRegionPtr"><span class="Identifier">len</span></a><span class="Other">(</span><span class="Identifier">h</span><span class="Other">:</span> <a href="vmdef.html#MemRegionPtr"><span class="Identifier">MemRegionPtr</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L724"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L724" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="nilMemPtr.t">
+<dt><pre><span class="Keyword">template</span> <a href="#nilMemPtr.t"><span class="Identifier">nilMemPtr</span></a><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L716"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L716" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -917,9 +2309,21 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L216"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L692"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L216" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L692" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="rawPointer.t,MemRegionPtr">
+<dt><pre><span class="Keyword">template</span> <a href="#rawPointer.t%2CMemRegionPtr"><span class="Identifier">rawPointer</span></a><span class="Other">(</span><span class="Identifier">h</span><span class="Other">:</span> <a href="vmdef.html#MemRegionPtr"><span class="Identifier">MemRegionPtr</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L721"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L721" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -929,9 +2333,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L217"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L693"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L217" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L693" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -941,9 +2345,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L218"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L694"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L218" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L694" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -953,9 +2357,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L220"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L696"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L220" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L696" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -965,9 +2369,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L219"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L695"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L219" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L695" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -981,9 +2385,45 @@ class="link-seesrc" target="_blank">Source</a>
 
 A transition helper. Use the <tt class="docutils literal"><span class="pre"><span class="Identifier">registerCallback</span></span></tt> proc that takes <tt class="docutils literal"><span class="pre"><span class="Keyword">var</span> <span class="Identifier">TCtx</span></span></tt> instead
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/cfe2295d50d084326c2bf4f8b7cc44ccc060c83f/compiler/vm/vmdef.nim#L205"
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L677"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L205" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L677" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="subView.t,openArray[T],,">
+<dt><pre><span class="Keyword">template</span> <a href="#subView.t%2CopenArray%5BT%5D%2C%2C"><span class="Identifier">subView</span></a><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">x</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">off</span><span class="Other">,</span> <span class="Identifier">len</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">untyped</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L729"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L729" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="unreachable.t">
+<dt><pre><span class="Keyword">template</span> <a href="#unreachable.t"><span class="Identifier">unreachable</span></a><span class="Other">(</span><span class="Other">)</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L806"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L806" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="unreachable.t,string">
+<dt><pre><span class="Keyword">template</span> <a href="#unreachable.t%2Cstring"><span class="Identifier">unreachable</span></a><span class="Other">(</span><span class="Identifier">msg</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span></pre></dt>
+<dd>
+
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/3282714c5e98fc0d394e8d4c4a415b23790ecd68/compiler/vm/vmdef.nim#L809"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmdef.nim#L809" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -992,7 +2432,7 @@ class="link-seesrc" target="_blank">Source</a>
 <div class="section" id="19">
 <h1><a class="toc-backref" href="#19">Exports</a></h1>
 <dl class="item">
-<a href="vm_enums.html#largeInstrs"><span class="Identifier">largeInstrs</span></a>, <a href="vm_enums.html#relativeJumps"><span class="Identifier">relativeJumps</span></a>, <a href="vm_enums.html#TRegisterKind"><span class="Identifier">TRegisterKind</span></a>, <a href="vm_enums.html#firstABxInstr"><span class="Identifier">firstABxInstr</span></a>, <a href="vm_enums.html#TOpcode"><span class="Identifier">TOpcode</span></a>
+<a href="vm_enums.html#largeInstrs"><span class="Identifier">largeInstrs</span></a>, <a href="vm_enums.html#relativeJumps"><span class="Identifier">relativeJumps</span></a>, <a href="vm_enums.html#TRegisterKind"><span class="Identifier">TRegisterKind</span></a>, <a href="vm_enums.html#firstABxInstr"><span class="Identifier">firstABxInstr</span></a>, <a href="vm_enums.html#AccessViolationReason"><span class="Identifier">AccessViolationReason</span></a>, <a href="vm_enums.html#TOpcode"><span class="Identifier">TOpcode</span></a>
 </dl></div>
 
   </div>

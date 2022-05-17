@@ -1,0 +1,5 @@
+GenClosure	vm/vmtypegen.html#GenClosure	vmtypegen: GenClosure	
+getOrCreate	vm/vmtypegen.html#getOrCreate,TypeInfoCache,ConfigRef,PType,GenClosure	vmtypegen: getOrCreate(c: var TypeInfoCache; conf: ConfigRef; typ: PType;\n            cl: var GenClosure): PVmType	
+getOrCreate	vm/vmtypegen.html#getOrCreate,TCtx,PType	vmtypegen: getOrCreate(c: var TCtx; typ: PType): PVmType	
+lookup	vm/vmtypegen.html#lookup,TypeInfoCache,ConfigRef,PType	vmtypegen: lookup(c: TypeInfoCache; conf: ConfigRef; typ: PType): Option[PVmType]	
+getOrCreateFuncType	vm/vmtypegen.html#getOrCreateFuncType,TypeInfoCache,PType	vmtypegen: getOrCreateFuncType(c: var TypeInfoCache; typ: PType): FunctionTypeId	

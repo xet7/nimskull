@@ -35,12 +35,66 @@ slotTempInt	vm/vmdef.html#slotTempInt	TSlotKind.slotTempInt
 slotTempFloat	vm/vmdef.html#slotTempFloat	TSlotKind.slotTempFloat	
 slotTempStr	vm/vmdef.html#slotTempStr	TSlotKind.slotTempStr	
 slotTempComplex	vm/vmdef.html#slotTempComplex	TSlotKind.slotTempComplex	
+slotTempHandle	vm/vmdef.html#slotTempHandle	TSlotKind.slotTempHandle	
 slotTempPerm	vm/vmdef.html#slotTempPerm	TSlotKind.slotTempPerm	
 TSlotKind	vm/vmdef.html#TSlotKind	vmdef: TSlotKind	
+akInt	vm/vmdef.html#akInt	AtomKind.akInt	
+akFloat	vm/vmdef.html#akFloat	AtomKind.akFloat	
+akPtr	vm/vmdef.html#akPtr	AtomKind.akPtr	
+akSet	vm/vmdef.html#akSet	AtomKind.akSet	
+akString	vm/vmdef.html#akString	AtomKind.akString	
+akSeq	vm/vmdef.html#akSeq	AtomKind.akSeq	
+akRef	vm/vmdef.html#akRef	AtomKind.akRef	
+akCallable	vm/vmdef.html#akCallable	AtomKind.akCallable	
+akClosure	vm/vmdef.html#akClosure	AtomKind.akClosure	
+akDiscriminator	vm/vmdef.html#akDiscriminator	AtomKind.akDiscriminator	
+akPNode	vm/vmdef.html#akPNode	AtomKind.akPNode	
+akObject	vm/vmdef.html#akObject	AtomKind.akObject	
+akArray	vm/vmdef.html#akArray	AtomKind.akArray	
+AtomKind	vm/vmdef.html#AtomKind	vmdef: AtomKind	
+PVmType	vm/vmdef.html#PVmType	vmdef: PVmType	
+FieldPosition	vm/vmdef.html#FieldPosition	vmdef: FieldPosition	
+FieldIndex	vm/vmdef.html#FieldIndex	vmdef: FieldIndex	
+blekStart	vm/vmdef.html#blekStart	BranchListEntryKind.blekStart	
+blekBranch	vm/vmdef.html#blekBranch	BranchListEntryKind.blekBranch	
+blekEnd	vm/vmdef.html#blekEnd	BranchListEntryKind.blekEnd	
+BranchListEntryKind	vm/vmdef.html#BranchListEntryKind	vmdef: BranchListEntryKind	
+BranchListEntry	vm/vmdef.html#BranchListEntry	vmdef: BranchListEntry	
+VmType	vm/vmdef.html#VmType	vmdef: VmType	
+ckDefault	vm/vmdef.html#ckDefault	CallableKind.ckDefault	
+ckCallback	vm/vmdef.html#ckCallback	CallableKind.ckCallback	
+CallableKind	vm/vmdef.html#CallableKind	vmdef: CallableKind	
+VmFunctionPtr	vm/vmdef.html#VmFunctionPtr	vmdef: VmFunctionPtr	
+VmFunctionObject	vm/vmdef.html#VmFunctionObject	vmdef: VmFunctionObject	
+VmClosure	vm/vmdef.html#VmClosure	vmdef: VmClosure	
+MemRegionPtr	vm/vmdef.html#MemRegionPtr	vmdef: MemRegionPtr	
+VmMemoryRegion	vm/vmdef.html#VmMemoryRegion	vmdef: VmMemoryRegion	
+LocHandle	vm/vmdef.html#LocHandle	vmdef: LocHandle	
+VmSeq	vm/vmdef.html#VmSeq	vmdef: VmSeq	
+VmString	vm/vmdef.html#VmString	vmdef: VmString	
+Atom	vm/vmdef.html#Atom	vmdef: Atom	
 TFullReg	vm/vmdef.html#TFullReg	vmdef: TFullReg	
+HeapSlotHandle	vm/vmdef.html#HeapSlotHandle	vmdef: HeapSlotHandle	
+HeapSlot	vm/vmdef.html#HeapSlot	vmdef: HeapSlot	
+VmHeap	vm/vmdef.html#VmHeap	vmdef: VmHeap	
+cnstInt	vm/vmdef.html#cnstInt	ConstantKind.cnstInt	
+cnstFloat	vm/vmdef.html#cnstFloat	ConstantKind.cnstFloat	
+cnstString	vm/vmdef.html#cnstString	ConstantKind.cnstString	
+cnstNode	vm/vmdef.html#cnstNode	ConstantKind.cnstNode	
+cnstBranchLit	vm/vmdef.html#cnstBranchLit	ConstantKind.cnstBranchLit	
+ConstantKind	vm/vmdef.html#ConstantKind	vmdef: ConstantKind	
+VmConstant	vm/vmdef.html#VmConstant	vmdef: VmConstant	
+RegInfo	vm/vmdef.html#RegInfo	vmdef: RegInfo	
 PProc	vm/vmdef.html#PProc	vmdef: PProc	
 VmArgs	vm/vmdef.html#VmArgs	vmdef: VmArgs	
 VmCallback	vm/vmdef.html#VmCallback	vmdef: VmCallback	
+VmAllocator	vm/vmdef.html#VmAllocator	vmdef: VmAllocator	
+VmMemoryManager	vm/vmdef.html#VmMemoryManager	vmdef: VmMemoryManager	
+FunctionTypeId	vm/vmdef.html#FunctionTypeId	vmdef: FunctionTypeId	
+FuncTypeLutKey	vm/vmdef.html#FuncTypeLutKey	vmdef: FuncTypeLutKey	
+TypeInfoCache	vm/vmdef.html#TypeInfoCache	vmdef: TypeInfoCache	
+FunctionIndex	vm/vmdef.html#FunctionIndex	vmdef: FunctionIndex	
+MaterializedConst	vm/vmdef.html#MaterializedConst	vmdef: MaterializedConst	
 PCtx	vm/vmdef.html#PCtx	vmdef: PCtx	
 TCtx	vm/vmdef.html#TCtx	vmdef: TCtx	
 StackFrameIndex	vm/vmdef.html#StackFrameIndex	vmdef: StackFrameIndex	
@@ -48,10 +102,25 @@ TStackFrame	vm/vmdef.html#TStackFrame	vmdef: TStackFrame
 Profiler	vm/vmdef.html#Profiler	vmdef: Profiler	
 TPosition	vm/vmdef.html#TPosition	vmdef: TPosition	
 PEvalContext	vm/vmdef.html#PEvalContext	vmdef: PEvalContext	
+`&lt;`	vm/vmdef.html#<,FieldIndex,FieldIndex	vmdef: `&lt;`(a, b: FieldIndex): bool	
+`&lt;=`	vm/vmdef.html#<=,FieldIndex,FieldIndex	vmdef: `&lt;=`(a, b: FieldIndex): bool	
+`==`	vm/vmdef.html#==,FieldIndex,FieldIndex	vmdef: `==`(a, b: FieldIndex): bool	
+`-`	vm/vmdef.html#-.t,FieldIndex,int	vmdef: `-`(a: FieldIndex; b: int): FieldIndex	
+fieldAt	vm/vmdef.html#fieldAt.t,VmType,FieldIndex	vmdef: fieldAt(x: VmType; i: FieldIndex): untyped	
+fieldAt	vm/vmdef.html#fieldAt.t,PVmType,FieldIndex	vmdef: fieldAt(x: PVmType; i: FieldIndex): untyped	
+fpos	vm/vmdef.html#fpos.t,int	vmdef: fpos(x: int): FieldPosition	
+heap	vm/vmdef.html#heap.t,TCtx	vmdef: heap(c: TCtx): untyped	
+allocator	vm/vmdef.html#allocator.t,TCtx	vmdef: allocator(c: TCtx): untyped	
+toFuncPtr	vm/vmdef.html#toFuncPtr,FunctionIndex	vmdef: toFuncPtr(x: FunctionIndex): VmFunctionPtr	
+toFuncIndex	vm/vmdef.html#toFuncIndex,VmFunctionPtr	vmdef: toFuncIndex(x: VmFunctionPtr): FunctionIndex	
+isNil	vm/vmdef.html#isNil.t,VmFunctionPtr	vmdef: isNil(x: VmFunctionPtr): bool	
+`==`	vm/vmdef.html#==.t,FunctionTypeId,FunctionTypeId	vmdef: `==`(a, b: FunctionTypeId): bool	
 newCtx	vm/vmdef.html#newCtx,PSym,IdentCache,ModuleGraph,IdGenerator	vmdef: newCtx(module: PSym; cache: IdentCache; g: ModuleGraph; idgen: IdGenerator): PCtx	
 refresh	vm/vmdef.html#refresh,TCtx,PSym,IdGenerator	vmdef: refresh(c: var TCtx; module: PSym; idgen: IdGenerator)	
 registerCallback	vm/vmdef.html#registerCallback,TCtx,string,VmCallback	vmdef: registerCallback(c: var TCtx; name: string; callback: VmCallback): int	
 registerCallback	vm/vmdef.html#registerCallback.t,PCtx,string,VmCallback	vmdef: registerCallback(c: PCtx; name: string; callback: VmCallback): int	
+pseudoAtomKinds	vm/vmdef.html#pseudoAtomKinds	vmdef: pseudoAtomKinds	
+realAtomKinds	vm/vmdef.html#realAtomKinds	vmdef: realAtomKinds	
 slotSomeTemp	vm/vmdef.html#slotSomeTemp	vmdef: slotSomeTemp	
 nimNodeFlag	vm/vmdef.html#nimNodeFlag	vmdef: nimNodeFlag	
 opcode	vm/vmdef.html#opcode.t,TInstr	vmdef: opcode(x: TInstr): TOpcode	
@@ -60,3 +129,29 @@ regB	vm/vmdef.html#regB.t,TInstr	vmdef: regB(x: TInstr): TRegister
 regC	vm/vmdef.html#regC.t,TInstr	vmdef: regC(x: TInstr): TRegister	
 regBx	vm/vmdef.html#regBx.t,TInstr	vmdef: regBx(x: TInstr): int	
 jmpDiff	vm/vmdef.html#jmpDiff.t,TInstr	vmdef: jmpDiff(x: TInstr): int	
+makeMemPtr	vm/vmdef.html#makeMemPtr,pointer,uint	vmdef: makeMemPtr(p: pointer; sizeInBytes: uint): MemRegionPtr	
+makeLocHandle	vm/vmdef.html#makeLocHandle,MemRegionPtr,PVmType	vmdef: makeLocHandle(p: MemRegionPtr; typ: PVmType): LocHandle	
+makeLocHandle	vm/vmdef.html#makeLocHandle,pointer,PVmType	vmdef: makeLocHandle(h: pointer; typ: PVmType): LocHandle	
+isNil	vm/vmdef.html#isNil.t,MemRegionPtr	vmdef: isNil(h: MemRegionPtr): bool	
+isNil	vm/vmdef.html#isNil.t,HeapSlotHandle	vmdef: isNil(h: HeapSlotHandle): bool	
+noneType	vm/vmdef.html#noneType	vmdef: noneType	
+nilMemPtr	vm/vmdef.html#nilMemPtr.t	vmdef: nilMemPtr(): untyped	
+invalidLocHandle	vm/vmdef.html#invalidLocHandle.t	vmdef: invalidLocHandle(): untyped	
+isValid	vm/vmdef.html#isValid.t,PVmType	vmdef: isValid(t: PVmType): bool	
+rawPointer	vm/vmdef.html#rawPointer.t,MemRegionPtr	vmdef: rawPointer(h: MemRegionPtr): untyped	
+len	vm/vmdef.html#len.t,MemRegionPtr	vmdef: len(h: MemRegionPtr): untyped	
+byteView	vm/vmdef.html#byteView.t,MemRegionPtr	vmdef: byteView(h: MemRegionPtr): untyped	
+subView	vm/vmdef.html#subView.t,openArray[T],,	vmdef: subView[T](x: openArray[T]; off, len): untyped	
+newVmString	vm/vmdef.html#newVmString,MemRegionPtr,Natural	vmdef: newVmString(data: MemRegionPtr; len: Natural): VmString	
+len	vm/vmdef.html#len,VmString	vmdef: len(s: VmString): int	
+data	vm/vmdef.html#data,VmString	vmdef: data(s: VmString): MemRegionPtr	
+isValid	vm/vmdef.html#isValid.t,MemRegionPtr,uint	vmdef: isValid(h: MemRegionPtr; len: uint): bool	
+isValid	vm/vmdef.html#isValid.t,LocHandle	vmdef: isValid(handle: LocHandle): bool	
+overlap	vm/vmdef.html#overlap,int,int,Natural,Natural	vmdef: overlap(a, b: int; aLen, bLen: Natural): bool	
+overlap	vm/vmdef.html#overlap,pointer,pointer,Natural,Natural	vmdef: overlap(a, b: pointer; aLen, bLen: Natural): bool	
+safeCopyMem	vm/vmdef.html#safeCopyMem,openArray[],openArray[],Natural	vmdef: safeCopyMem(dest: var openArray[byte | char]; src: openArray[byte | char];\n            numBytes: Natural)	
+safeCopyMemSrc	vm/vmdef.html#safeCopyMemSrc,openArray[byte],openArray[byte]	vmdef: safeCopyMemSrc(dest: var openArray[byte]; src: openArray[byte])	
+safeZeroMem	vm/vmdef.html#safeZeroMem,openArray[byte],Natural	vmdef: safeZeroMem(dest: var openArray[byte]; numBytes: Natural)	
+hash	vm/vmdef.html#hash,MaterializedConst	vmdef: hash(x: MaterializedConst): int	
+unreachable	vm/vmdef.html#unreachable.t	vmdef: unreachable()	
+unreachable	vm/vmdef.html#unreachable.t,string	vmdef: unreachable(msg: string)	

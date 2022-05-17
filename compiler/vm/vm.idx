@@ -1,18 +1,21 @@
 setResult	vm/vm.html#setResult,VmArgs,BiggestInt	vm: setResult(a: VmArgs; v: BiggestInt)	
 setResult	vm/vm.html#setResult,VmArgs,BiggestFloat	vm: setResult(a: VmArgs; v: BiggestFloat)	
 setResult	vm/vm.html#setResult,VmArgs,bool	vm: setResult(a: VmArgs; v: bool)	
-setResult	vm/vm.html#setResult,VmArgs,string	vm: setResult(a: VmArgs; v: string)	
-setResult	vm/vm.html#setResult,VmArgs,PNode	vm: setResult(a: VmArgs; n: PNode)	
+setResult	vm/vm.html#setResult,VmArgs,openArray[char]	vm: setResult(a: VmArgs; v: openArray[char])	
 setResult	vm/vm.html#setResult,VmArgs,AbsoluteDir	vm: setResult(a: VmArgs; v: AbsoluteDir)	
-setResult	vm/vm.html#setResult,VmArgs,seq[string]	vm: setResult(a: VmArgs; v: seq[string])	
+setResult	vm/vm.html#setResult,VmArgs,PNode	vm: setResult(a: VmArgs; v: PNode)	
+getResultHandle	vm/vm.html#getResultHandle,VmArgs	vm: getResultHandle(a: VmArgs): LocHandle	
 numArgs	vm/vm.html#numArgs,VmArgs	vm: numArgs(a: VmArgs): int	
 getInt	vm/vm.html#getInt,VmArgs,Natural	vm: getInt(a: VmArgs; i: Natural): BiggestInt	
 getBool	vm/vm.html#getBool,VmArgs,Natural	vm: getBool(a: VmArgs; i: Natural): bool	
 getFloat	vm/vm.html#getFloat,VmArgs,Natural	vm: getFloat(a: VmArgs; i: Natural): BiggestFloat	
 getNode	vm/vm.html#getNode,VmArgs,Natural	vm: getNode(a: VmArgs; i: Natural): PNode	
 getString	vm/vm.html#getString,VmArgs,Natural	vm: getString(a: VmArgs; i: Natural): string	
-getVar	vm/vm.html#getVar,VmArgs,Natural	vm: getVar(a: VmArgs; i: Natural): PNode	
-getNodeAddr	vm/vm.html#getNodeAddr,VmArgs,Natural	vm: getNodeAddr(a: VmArgs; i: Natural): PNode	
+getHandle	vm/vm.html#getHandle,VmArgs,Natural	vm: getHandle(a: VmArgs; i: Natural): LocHandle	
+getVar	vm/vm.html#getVar,VmArgs,Natural	vm: getVar(a: VmArgs; i: Natural): LocHandle	
+strVal	vm/vm.html#strVal.t,TFullReg	vm: strVal(r: TFullReg): untyped	
+strVal=	vm/vm.html#strVal=.t,TFullReg,VmString	vm: strVal=(r: TFullReg; s: VmString)	
+strVal=	vm/vm.html#strVal=.t,TFullReg,string	vm: strVal=(r: TFullReg; s: string)	
 execProc	vm/vm.html#execProc,TCtx,PSym,openArray[PNode]	vm: execProc(c: var TCtx; sym: PSym; args: openArray[PNode]): PNode	
 evalExpr	vm/vm.html#evalExpr,TCtx,PNode	vm: evalExpr(c: var TCtx; n: PNode): PNode	
 getGlobalValue	vm/vm.html#getGlobalValue,TCtx,PSym	vm: getGlobalValue(c: TCtx; s: PSym): PNode	

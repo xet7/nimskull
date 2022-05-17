@@ -416,6 +416,9 @@ rsemVmCannotCallMethod	ast/report_enums.html#rsemVmCannotCallMethod	ReportKind.r
 rsemVmCallingNonRoutine	ast/report_enums.html#rsemVmCallingNonRoutine	ReportKind.rsemVmCallingNonRoutine	
 rsemVmCannotModifyTypechecked	ast/report_enums.html#rsemVmCannotModifyTypechecked	ReportKind.rsemVmCannotModifyTypechecked	
 rsemVmNilAccess	ast/report_enums.html#rsemVmNilAccess	ReportKind.rsemVmNilAccess	
+rsemVmAccessOutOfBounds	ast/report_enums.html#rsemVmAccessOutOfBounds	ReportKind.rsemVmAccessOutOfBounds	
+rsemVmAccessTypeMismatch	ast/report_enums.html#rsemVmAccessTypeMismatch	ReportKind.rsemVmAccessTypeMismatch	
+rsemVmAccessNoLocation	ast/report_enums.html#rsemVmAccessNoLocation	ReportKind.rsemVmAccessNoLocation	
 rsemVmDerefUnsupportedPtr	ast/report_enums.html#rsemVmDerefUnsupportedPtr	ReportKind.rsemVmDerefUnsupportedPtr	
 rsemVmErrInternal	ast/report_enums.html#rsemVmErrInternal	ReportKind.rsemVmErrInternal	
 rsemVmIndexError	ast/report_enums.html#rsemVmIndexError	ReportKind.rsemVmIndexError	
@@ -435,6 +438,7 @@ rsemVmCannotAddChild	ast/report_enums.html#rsemVmCannotAddChild	ReportKind.rsemV
 rsemVmCannotGetChild	ast/report_enums.html#rsemVmCannotGetChild	ReportKind.rsemVmCannotGetChild	
 rsemVmNoType	ast/report_enums.html#rsemVmNoType	ReportKind.rsemVmNoType	
 rsemVmNotAField	ast/report_enums.html#rsemVmNotAField	ReportKind.rsemVmNotAField	
+rsemVmUnsupportedNonNil	ast/report_enums.html#rsemVmUnsupportedNonNil	ReportKind.rsemVmUnsupportedNonNil	
 rsemVmTooManyIterations	ast/report_enums.html#rsemVmTooManyIterations	ReportKind.rsemVmTooManyIterations	
 rsemMissingImportcCompleteStruct	ast/report_enums.html#rsemMissingImportcCompleteStruct	ReportKind.rsemMissingImportcCompleteStruct	
 rsemCyclicTree	ast/report_enums.html#rsemCyclicTree	ReportKind.rsemCyclicTree	

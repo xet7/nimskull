@@ -1,0 +1,4 @@
+procIsCallback	vm/vmaux.html#procIsCallback,TCtx,PSym	vmaux: procIsCallback(c: TCtx; s: PSym): bool	
+findRecCase	vm/vmaux.html#findRecCase,PType,PSym	vmaux: findRecCase(t: PType; d: PSym): PNode	
+findMatchingBranch	vm/vmaux.html#findMatchingBranch,PNode,PNode	vmaux: findMatchingBranch(recCase: PNode; lit: PNode): int	
+getOrCreateFunction	vm/vmaux.html#getOrCreateFunction,TCtx,PSym	vmaux: getOrCreateFunction(c: var TCtx; prc: PSym): FunctionIndex	

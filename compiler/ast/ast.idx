@@ -55,7 +55,6 @@ ggDebug	ast/ast.html#ggDebug	ast: ggDebug
 isCallExpr	ast/ast.html#isCallExpr,PNode	ast: isCallExpr(n: PNode): bool	
 len	ast/ast.html#len,Indexable	ast: len(n: Indexable): int	
 safeLen	ast/ast.html#safeLen,PNode	ast: safeLen(n: PNode): int	
-safeArrLen	ast/ast.html#safeArrLen,PNode	ast: safeArrLen(n: PNode): int	
 add	ast/ast.html#add,Indexable,Indexable	ast: add(father, son: Indexable)	
 addAllowNil	ast/ast.html#addAllowNil,Indexable,Indexable	ast: addAllowNil(father, son: Indexable)	
 `[]`	ast/ast.html#[].t,Indexable,int	ast: `[]`(n: Indexable; i: int): Indexable	
