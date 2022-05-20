@@ -32,6 +32,7 @@ signExtended	vm/vmobjects.html#signExtended.t,BiggestInt,BiggestInt	vmobjects: s
 `$`	vm/vmobjects.html#$,VmString	vmobjects: `$`(s: VmString): string	
 asCString	vm/vmobjects.html#asCString,VmString	vmobjects: asCString(s: VmString): cstring	
 asgnVmString	vm/vmobjects.html#asgnVmString,VmString,VmString,VmAllocator	vmobjects: asgnVmString(dest: var VmString; src: VmString; a: var VmAllocator)	
+cmp	vm/vmobjects.html#cmp,VmString,VmString	vmobjects: cmp(a, b: VmString): int	
 `&lt;=`	vm/vmobjects.html#<=,VmString,VmString	vmobjects: `&lt;=`(a, b: VmString): bool	
 `&lt;`	vm/vmobjects.html#<,VmString,VmString	vmobjects: `&lt;`(a, b: VmString): bool	
 `&gt;`	vm/vmobjects.html#>,VmString,VmString	vmobjects: `&gt;`(a, b: VmString): bool	
