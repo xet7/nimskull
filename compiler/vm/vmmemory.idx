@@ -19,7 +19,7 @@ getFieldHandle	vm/vmmemory.html#getFieldHandle,LocHandle,FieldIndex	vmmemory: ge
 getFieldHandle	vm/vmmemory.html#getFieldHandle,LocHandle,FieldPosition	vmmemory: getFieldHandle(h: LocHandle; pos: FieldPosition): LocHandle	
 deref	vm/vmmemory.html#deref,LocHandle	vmmemory: deref(handle: LocHandle): ptr Atom	
 byteView	vm/vmmemory.html#byteView.t,LocHandle	vmmemory: byteView(handle: LocHandle): untyped	
-heapNew	vm/vmmemory.html#heapNew,VmHeap,VmAllocator,PVmType,PType	vmmemory: heapNew(heap: var VmHeap; a: var VmAllocator; typ: PVmType; nimTyp: PType): HeapSlotHandle	
+heapNew	vm/vmmemory.html#heapNew,VmHeap,VmAllocator,PVmType	vmmemory: heapNew(heap: var VmHeap; a: var VmAllocator; typ: PVmType): HeapSlotHandle	
 heapIncRef	vm/vmmemory.html#heapIncRef,VmHeap,HeapSlotHandle	vmmemory: heapIncRef(heap: var VmHeap; slot: HeapSlotHandle)	
 heapDecRef	vm/vmmemory.html#heapDecRef,VmHeap,VmAllocator,HeapSlotHandle	vmmemory: heapDecRef(heap: var VmHeap; a: var VmAllocator; slot: HeapSlotHandle)	
 isValid	vm/vmmemory.html#isValid,VmHeap,HeapSlotHandle	vmmemory: isValid(heap: VmHeap; slot: HeapSlotHandle): bool	
