@@ -53,6 +53,7 @@ akObject	vm/vmdef.html#akObject	AtomKind.akObject
 akArray	vm/vmdef.html#akArray	AtomKind.akArray	
 AtomKind	vm/vmdef.html#AtomKind	vmdef: AtomKind	
 PVmType	vm/vmdef.html#PVmType	vmdef: PVmType	
+VmTypeId	vm/vmdef.html#VmTypeId	vmdef: VmTypeId	
 FieldPosition	vm/vmdef.html#FieldPosition	vmdef: FieldPosition	
 FieldIndex	vm/vmdef.html#FieldIndex	vmdef: FieldIndex	
 blekStart	vm/vmdef.html#blekStart	BranchListEntryKind.blekStart	
@@ -95,6 +96,8 @@ VmAllocator	vm/vmdef.html#VmAllocator	vmdef: VmAllocator
 VmMemoryManager	vm/vmdef.html#VmMemoryManager	vmdef: VmMemoryManager	
 FunctionTypeId	vm/vmdef.html#FunctionTypeId	vmdef: FunctionTypeId	
 FuncTypeLutKey	vm/vmdef.html#FuncTypeLutKey	vmdef: FuncTypeLutKey	
+TypeTableEntry	vm/vmdef.html#TypeTableEntry	vmdef: TypeTableEntry	
+TypeTable	vm/vmdef.html#TypeTable	vmdef: TypeTable	
 TypeInfoCache	vm/vmdef.html#TypeInfoCache	vmdef: TypeInfoCache	
 FunctionIndex	vm/vmdef.html#FunctionIndex	vmdef: FunctionIndex	
 MaterializedConst	vm/vmdef.html#MaterializedConst	vmdef: MaterializedConst	
