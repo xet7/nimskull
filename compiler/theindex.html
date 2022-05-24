@@ -579,6 +579,12 @@ window.addEventListener('DOMContentLoaded', main);
           <li><a class="reference external"
           data-doc-search-tag="debugutils: addInNimDebugUtils(c: ConfigRef; action: string; n: PNode; prev, r: PType)" href="utils/debugutils.html#addInNimDebugUtils.t%2CConfigRef%2Cstring%2CPNode%2CPType%2CPType">debugutils: addInNimDebugUtils(c: ConfigRef; action: string; n: PNode; prev, r: PType)</a></li>
           <li><a class="reference external"
+          data-doc-search-tag="debugutils: addInNimDebugUtils(c: ConfigRef; action: string; n: PNode; filter: TSymKinds;
+                   e: var seq[SemCallMismatch]; res: typed)" href="utils/debugutils.html#addInNimDebugUtils.t%2CConfigRef%2Cstring%2CPNode%2CTSymKinds%2Cseq%5BSemCallMismatch%5D%2Ctyped">debugutils: addInNimDebugUtils(c: ConfigRef; action: string; n: PNode; filter: TSymKinds;
+                   e: var seq[SemCallMismatch]; res: typed)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="debugutils: addInNimDebugUtils(c: ConfigRef; action: string; n: PNode; res: typed)" href="utils/debugutils.html#addInNimDebugUtils.t%2CConfigRef%2Cstring%2CPNode%2Ctyped">debugutils: addInNimDebugUtils(c: ConfigRef; action: string; n: PNode; res: typed)</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="debugutils: addInNimDebugUtils(c: ConfigRef; action: string; sym: PSym; n: PNode; res: PNode)" href="utils/debugutils.html#addInNimDebugUtils.t%2CConfigRef%2Cstring%2CPSym%2CPNode%2CPNode">debugutils: addInNimDebugUtils(c: ConfigRef; action: string; sym: PSym; n: PNode; res: PNode)</a></li>
           <li><a class="reference external"
           data-doc-search-tag="debugutils: addInNimDebugUtils(c: ConfigRef; action: string; x, y, r: PType)" href="utils/debugutils.html#addInNimDebugUtils.t%2CConfigRef%2Cstring%2CPType%2CPType%2CPType">debugutils: addInNimDebugUtils(c: ConfigRef; action: string; x, y, r: PType)</a></li>
@@ -2463,6 +2469,10 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="ast: copyTreeWithoutNode(src, skippedNode: PNode): PNode" href="ast/ast.html#copyTreeWithoutNode%2CPNode%2CPNode">ast: copyTreeWithoutNode(src, skippedNode: PNode): PNode</a></li>
           </ul></dd>
+<dt><a name="copyTreeWithoutNodes" href="#copyTreeWithoutNodes"><span>copyTreeWithoutNodes:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="ast: copyTreeWithoutNodes(src: PNode; skippedNodes: varargs[PNode]): PNode" href="ast/ast.html#copyTreeWithoutNodes%2CPNode%2Cvarargs%5BPNode%5D">ast: copyTreeWithoutNodes(src: PNode; skippedNodes: varargs[PNode]): PNode</a></li>
+          </ul></dd>
 <dt><a name="copyType" href="#copyType"><span>copyType:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="ast: copyType(t: PType; id: ItemId; owner: PSym): PType" href="ast/ast.html#copyType%2CPType%2CItemId%2CPSym">ast: copyType(t: PType; id: ItemId; owner: PSym): PType</a></li>
@@ -2866,6 +2876,10 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="debugAst" href="#debugAst"><span>debugAst:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="astrepr: debugAst(it: PNode)" href="utils/astrepr.html#debugAst%2CPNode">astrepr: debugAst(it: PNode)</a></li>
+          </ul></dd>
+<dt><a name="DebugCallableCandidate" href="#DebugCallableCandidate"><span>DebugCallableCandidate:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="reports: DebugCallableCandidate" href="ast/reports.html#DebugCallableCandidate">reports: DebugCallableCandidate</a></li>
           </ul></dd>
 <dt><a name="debugEchoCode" href="#debugEchoCode"><span>debugEchoCode:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -9557,10 +9571,6 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="RodFileError.ok" href="ic/rodfiles.html#ok">RodFileError.ok</a></li>
           </ul></dd>
-<dt><a name="oKeepVariableNames" href="#oKeepVariableNames"><span>oKeepVariableNames:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="options: oKeepVariableNames" href="front/options.html#oKeepVariableNames">options: oKeepVariableNames</a></li>
-          </ul></dd>
 <dt><a name="oldExperimentalFeatures" href="#oldExperimentalFeatures"><span>oldExperimentalFeatures:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="options: oldExperimentalFeatures" href="front/options.html#oldExperimentalFeatures">options: oldExperimentalFeatures</a></li>
@@ -14315,6 +14325,10 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="ReportKind.rsemPattern" href="ast/report_enums.html#rsemPattern">ReportKind.rsemPattern</a></li>
           </ul></dd>
+<dt><a name="rsemPragmaDisallowedForTupleUnpacking" href="#rsemPragmaDisallowedForTupleUnpacking"><span>rsemPragmaDisallowedForTupleUnpacking:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="ReportKind.rsemPragmaDisallowedForTupleUnpacking" href="ast/report_enums.html#rsemPragmaDisallowedForTupleUnpacking">ReportKind.rsemPragmaDisallowedForTupleUnpacking</a></li>
+          </ul></dd>
 <dt><a name="rsemPragmaDynlibRequiresExportc" href="#rsemPragmaDynlibRequiresExportc"><span>rsemPragmaDynlibRequiresExportc:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="ReportKind.rsemPragmaDynlibRequiresExportc" href="ast/report_enums.html#rsemPragmaDynlibRequiresExportc">ReportKind.rsemPragmaDynlibRequiresExportc</a></li>
@@ -16267,6 +16281,10 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="DebugSemStepKind.stepNodeFlagsToNode" href="ast/reports.html#stepNodeFlagsToNode">DebugSemStepKind.stepNodeFlagsToNode</a></li>
           </ul></dd>
+<dt><a name="stepNodeSigMatch" href="#stepNodeSigMatch"><span>stepNodeSigMatch:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="DebugSemStepKind.stepNodeSigMatch" href="ast/reports.html#stepNodeSigMatch">DebugSemStepKind.stepNodeSigMatch</a></li>
+          </ul></dd>
 <dt><a name="stepNodeToNode" href="#stepNodeToNode"><span>stepNodeToNode:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="DebugSemStepKind.stepNodeToNode" href="ast/reports.html#stepNodeToNode">DebugSemStepKind.stepNodeToNode</a></li>
@@ -16288,6 +16306,10 @@ window.addEventListener('DOMContentLoaded', main);
           data-doc-search-tag="debugutils: stepParams(c: ConfigRef; kind: DebugSemStepKind; indentLevel: int;
            action: string): StepParams" href="utils/debugutils.html#stepParams%2CConfigRef%2CDebugSemStepKind%2Cint%2Cstring">debugutils: stepParams(c: ConfigRef; kind: DebugSemStepKind; indentLevel: int;
            action: string): StepParams</a></li>
+          </ul></dd>
+<dt><a name="stepResolveOverload" href="#stepResolveOverload"><span>stepResolveOverload:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="DebugSemStepKind.stepResolveOverload" href="ast/reports.html#stepResolveOverload">DebugSemStepKind.stepResolveOverload</a></li>
           </ul></dd>
 <dt><a name="stepSymNodeToNode" href="#stepSymNodeToNode"><span>stepSymNodeToNode:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -17750,6 +17772,10 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="toColumn" href="#toColumn"><span>toColumn:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="msgs: toColumn(info: TLineInfo): int" href="front/msgs.html#toColumn%2CTLineInfo">msgs: toColumn(info: TLineInfo): int</a></li>
+          </ul></dd>
+<dt><a name="toDebugCallableCandidate" href="#toDebugCallableCandidate"><span>toDebugCallableCandidate:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="sigmatch: toDebugCallableCandidate(c: TCandidate): DebugCallableCandidate" href="sem/sigmatch.html#toDebugCallableCandidate%2CTCandidate">sigmatch: toDebugCallableCandidate(c: TCandidate): DebugCallableCandidate</a></li>
           </ul></dd>
 <dt><a name="toFieldIndex" href="#toFieldIndex"><span>toFieldIndex:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -20560,7 +20586,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-05-20 00:00:00 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-05-24 00:00:00 UTC</small>
       </div>
     </div>
   </div>

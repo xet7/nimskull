@@ -143,6 +143,7 @@ transitionToLet	ast/ast.html#transitionToLet,PSym	ast: transitionToLet(s: PSym)
 shallowCopy	ast/ast.html#shallowCopy,PNode	ast: shallowCopy(src: PNode): PNode	
 copyTree	ast/ast.html#copyTree,PNode	ast: copyTree(src: PNode): PNode	
 copyTreeWithoutNode	ast/ast.html#copyTreeWithoutNode,PNode,PNode	ast: copyTreeWithoutNode(src, skippedNode: PNode): PNode	
+copyTreeWithoutNodes	ast/ast.html#copyTreeWithoutNodes,PNode,varargs[PNode]	ast: copyTreeWithoutNodes(src: PNode; skippedNodes: varargs[PNode]): PNode	
 hasSonWith	ast/ast.html#hasSonWith,PNode,TNodeKind	ast: hasSonWith(n: PNode; kind: TNodeKind): bool	
 hasNilSon	ast/ast.html#hasNilSon,PNode	ast: hasNilSon(n: PNode): bool	
 containsNode	ast/ast.html#containsNode,PNode,TNodeKinds	ast: containsNode(n: PNode; kinds: TNodeKinds): bool	

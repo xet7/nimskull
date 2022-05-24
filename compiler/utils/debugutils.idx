@@ -12,4 +12,6 @@ addInNimDebugUtils	utils/debugutils.html#addInNimDebugUtils.t,ConfigRef,string,P
 addInNimDebugUtils	utils/debugutils.html#addInNimDebugUtils.t,ConfigRef,string,PNode,PSym	debugutils: addInNimDebugUtils(c: ConfigRef; action: string; n: PNode; resSym: PSym)	
 addInNimDebugUtils	utils/debugutils.html#addInNimDebugUtils.t,ConfigRef,string,PSym,PNode,PNode	debugutils: addInNimDebugUtils(c: ConfigRef; action: string; sym: PSym; n: PNode; res: PNode)	
 addInNimDebugUtils	utils/debugutils.html#addInNimDebugUtils.t,ConfigRef,string,PType,PType,PType	debugutils: addInNimDebugUtils(c: ConfigRef; action: string; x, y, r: PType)	
+addInNimDebugUtils	utils/debugutils.html#addInNimDebugUtils.t,ConfigRef,string,PNode,TSymKinds,seq[SemCallMismatch],typed	debugutils: addInNimDebugUtils(c: ConfigRef; action: string; n: PNode; filter: TSymKinds;\n                   e: var seq[SemCallMismatch]; res: typed)	
+addInNimDebugUtils	utils/debugutils.html#addInNimDebugUtils.t,ConfigRef,string,PNode,typed	debugutils: addInNimDebugUtils(c: ConfigRef; action: string; n: PNode; res: typed)	
 addInNimDebugUtils	utils/debugutils.html#addInNimDebugUtils.t,ConfigRef,string	debugutils: addInNimDebugUtils(c: ConfigRef; action: string)	

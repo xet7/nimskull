@@ -54,10 +54,13 @@ stepSymNodeToNode	ast/reports.html#stepSymNodeToNode	DebugSemStepKind.stepSymNod
 stepNodeFlagsToNode	ast/reports.html#stepNodeFlagsToNode	DebugSemStepKind.stepNodeFlagsToNode	
 stepNodeTypeToNode	ast/reports.html#stepNodeTypeToNode	DebugSemStepKind.stepNodeTypeToNode	
 stepTypeTypeToType	ast/reports.html#stepTypeTypeToType	DebugSemStepKind.stepTypeTypeToType	
+stepResolveOverload	ast/reports.html#stepResolveOverload	DebugSemStepKind.stepResolveOverload	
+stepNodeSigMatch	ast/reports.html#stepNodeSigMatch	DebugSemStepKind.stepNodeSigMatch	
 stepWrongNode	ast/reports.html#stepWrongNode	DebugSemStepKind.stepWrongNode	
 stepError	ast/reports.html#stepError	DebugSemStepKind.stepError	
 stepTrack	ast/reports.html#stepTrack	DebugSemStepKind.stepTrack	
 DebugSemStepKind	ast/reports.html#DebugSemStepKind	reports: DebugSemStepKind	
+DebugCallableCandidate	ast/reports.html#DebugCallableCandidate	reports: DebugCallableCandidate	
 DebugSemStep	ast/reports.html#DebugSemStep	reports: DebugSemStep	
 DebugVmCodeEntry	ast/reports.html#DebugVmCodeEntry	reports: DebugVmCodeEntry	
 DebugReport	ast/reports.html#DebugReport	reports: DebugReport	

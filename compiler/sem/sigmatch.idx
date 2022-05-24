@@ -8,6 +8,7 @@ trNoCovariance	sem/sigmatch.html#trNoCovariance	TTypeRelFlag.trNoCovariance
 trBindGenericParam	sem/sigmatch.html#trBindGenericParam	TTypeRelFlag.trBindGenericParam	
 TTypeRelFlag	sem/sigmatch.html#TTypeRelFlag	sigmatch: TTypeRelFlag	
 TTypeRelFlags	sem/sigmatch.html#TTypeRelFlags	sigmatch: TTypeRelFlags	
+toDebugCallableCandidate	sem/sigmatch.html#toDebugCallableCandidate,TCandidate	sigmatch: toDebugCallableCandidate(c: TCandidate): DebugCallableCandidate	
 hasFauxMatch	sem/sigmatch.html#hasFauxMatch.t,TCandidate	sigmatch: hasFauxMatch(c: TCandidate): bool	
 initCandidate	sem/sigmatch.html#initCandidate,PContext,TCandidate,PType	sigmatch: initCandidate(ctx: PContext; c: var TCandidate; callee: PType)	
 initCandidate	sem/sigmatch.html#initCandidate,PContext,TCandidate,PSym,PNode,int	sigmatch: initCandidate(ctx: PContext; c: var TCandidate; callee: PSym; binding: PNode;\n              calleeScope = -1)	

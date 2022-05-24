@@ -18,7 +18,6 @@ DocConfig	front/options.html#DocConfig	options: DocConfig
 DocTexConfig	front/options.html#DocTexConfig	options: DocTexConfig	
 htmldocsDir	front/options.html#htmldocsDir	options: htmldocsDir	
 docRootDefault	front/options.html#docRootDefault	options: docRootDefault	
-oKeepVariableNames	front/options.html#oKeepVariableNames	options: oKeepVariableNames	
 spellSuggestSecretSauce	front/options.html#spellSuggestSecretSauce	options: spellSuggestSecretSauce	
 cmdBackends	front/options.html#cmdBackends	options: cmdBackends	
 cmdDocLike	front/options.html#cmdDocLike	options: cmdDocLike	
