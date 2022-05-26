@@ -62,6 +62,7 @@ blekEnd	vm/vmdef.html#blekEnd	BranchListEntryKind.blekEnd
 BranchListEntryKind	vm/vmdef.html#BranchListEntryKind	vmdef: BranchListEntryKind	
 BranchListEntry	vm/vmdef.html#BranchListEntry	vmdef: BranchListEntry	
 VmType	vm/vmdef.html#VmType	vmdef: VmType	
+VmTypeInfo	vm/vmdef.html#VmTypeInfo	vmdef: VmTypeInfo	
 ckDefault	vm/vmdef.html#ckDefault	CallableKind.ckDefault	
 ckCallback	vm/vmdef.html#ckCallback	CallableKind.ckCallback	
 CallableKind	vm/vmdef.html#CallableKind	vmdef: CallableKind	
@@ -117,6 +118,7 @@ fieldAt	vm/vmdef.html#fieldAt.t,PVmType,FieldIndex	vmdef: fieldAt(x: PVmType; i:
 fpos	vm/vmdef.html#fpos.t,int	vmdef: fpos(x: int): FieldPosition	
 heap	vm/vmdef.html#heap.t,TCtx	vmdef: heap(c: TCtx): untyped	
 allocator	vm/vmdef.html#allocator.t,TCtx	vmdef: allocator(c: TCtx): untyped	
+types	vm/vmdef.html#types.t,TCtx	vmdef: types(c: TCtx): untyped	
 toFuncPtr	vm/vmdef.html#toFuncPtr,FunctionIndex	vmdef: toFuncPtr(x: FunctionIndex): VmFunctionPtr	
 toFuncIndex	vm/vmdef.html#toFuncIndex,VmFunctionPtr	vmdef: toFuncIndex(x: VmFunctionPtr): FunctionIndex	
 isNil	vm/vmdef.html#isNil.t,VmFunctionPtr	vmdef: isNil(x: VmFunctionPtr): bool	
