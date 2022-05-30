@@ -1,6 +1,6 @@
 PIdentResult	sem/lookups.html#PIdentResult	lookups: PIdentResult	
-considerQuotedIdent2	sem/lookups.html#considerQuotedIdent2,PContext,PNode	lookups: considerQuotedIdent2(c: PContext; n: PNode): PIdentResult	
-considerQuotedIdent	sem/lookups.html#considerQuotedIdent,PContext,PNode,PNode	lookups: considerQuotedIdent(c: PContext; n: PNode; origin: PNode = nil): PIdent	
+considerQuotedIdent	sem/lookups.html#considerQuotedIdent,PContext,PNode	lookups: considerQuotedIdent(c: PContext; n: PNode): PIdentResult	
+legacyConsiderQuotedIdent	sem/lookups.html#legacyConsiderQuotedIdent.t,PContext,PNode,PNode	lookups: legacyConsiderQuotedIdent(c: PContext; n, origin: PNode): PIdent	
 addSym	sem/lookups.html#addSym.t,PScope,PSym	lookups: addSym(scope: PScope; s: PSym)	
 addUniqueSym	sem/lookups.html#addUniqueSym,PScope,PSym	lookups: addUniqueSym(scope: PScope; s: PSym): PSym	
 openScope	sem/lookups.html#openScope,PContext	lookups: openScope(c: PContext): PScope	
@@ -17,7 +17,6 @@ someSymFromImportTable	sem/lookups.html#someSymFromImportTable,PContext,PIdent,b
 searchInScopes	sem/lookups.html#searchInScopes,PContext,PIdent,bool	lookups: searchInScopes(c: PContext; s: PIdent; ambiguous: var bool): PSym	
 debugScopes	sem/lookups.html#debugScopes,PContext,int	lookups: debugScopes(c: PContext; limit = 0; max = int.high)	
 searchInScopesFilterBy	sem/lookups.html#searchInScopesFilterBy,PContext,PIdent,TSymKinds	lookups: searchInScopesFilterBy(c: PContext; s: PIdent; filter: TSymKinds): seq[PSym]	
-errorSym	sem/lookups.html#errorSym,PContext,PNode	lookups: errorSym(c: PContext; n: PNode): PSym	
 oimDone	sem/lookups.html#oimDone	TOverloadIterMode.oimDone	
 oimNoQualifier	sem/lookups.html#oimNoQualifier	TOverloadIterMode.oimNoQualifier	
 oimSelfModule	sem/lookups.html#oimSelfModule	TOverloadIterMode.oimSelfModule	
@@ -42,7 +41,7 @@ mergeShadowScope	sem/lookups.html#mergeShadowScope,PContext	lookups: mergeShadow
 fixSpelling	sem/lookups.html#fixSpelling,PContext,PIdent	lookups: fixSpelling(c: PContext; ident: PIdent): seq[SemSpellCandidate]	
 errorUseQualifier	sem/lookups.html#errorUseQualifier,PContext,TLineInfo,PSym	lookups: errorUseQualifier(c: PContext; info: TLineInfo; s: PSym)	
 errorUndeclaredIdentifier	sem/lookups.html#errorUndeclaredIdentifier,PContext,TLineInfo,string,seq[SemSpellCandidate]	lookups: errorUndeclaredIdentifier(c: PContext; info: TLineInfo; name: string;\n                          candidates: seq[SemSpellCandidate] = @[])	
-errorUndeclaredIdentifierHint	sem/lookups.html#errorUndeclaredIdentifierHint,PContext,PNode,PIdent	lookups: errorUndeclaredIdentifierHint(c: PContext; n: PNode; ident: PIdent): PSym	
+errorSym	sem/lookups.html#errorSym,PContext,PNode,PNode	lookups: errorSym(c: PContext; n, err: PNode): PSym	
 lookUp	sem/lookups.html#lookUp,PContext,PNode	lookups: lookUp(c: PContext; n: PNode): PSym	
 checkAmbiguity	sem/lookups.html#checkAmbiguity	TLookupFlag.checkAmbiguity	
 checkUndeclared	sem/lookups.html#checkUndeclared	TLookupFlag.checkUndeclared	
