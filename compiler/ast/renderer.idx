@@ -14,7 +14,6 @@ TRenderFlags	ast/renderer.html#TRenderFlags	renderer: TRenderFlags
 TRenderTok	ast/renderer.html#TRenderTok	renderer: TRenderTok	
 TRenderTokSeq	ast/renderer.html#TRenderTokSeq	renderer: TRenderTokSeq	
 TSrcGen	ast/renderer.html#TSrcGen	renderer: TSrcGen	
-isKeyword	ast/renderer.html#isKeyword,PIdent	renderer: isKeyword(i: PIdent): bool	
 renderDefinitionName	ast/renderer.html#renderDefinitionName,PSym	renderer: renderDefinitionName(s: PSym; noQuotes = false): string	
 bracketKind	ast/renderer.html#bracketKind,TSrcGen,PNode	renderer: bracketKind(g: TSrcGen; n: PNode): BracketKind	
 renderTree	ast/renderer.html#renderTree,PNode,TRenderFlags	renderer: renderTree(n: PNode; renderFlags: TRenderFlags = {}): string	

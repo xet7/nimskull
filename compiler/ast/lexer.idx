@@ -135,6 +135,7 @@ Token	ast/lexer.html#Token	lexer: Token
 Lexer	ast/lexer.html#Lexer	lexer: Lexer	
 getLineInfo	ast/lexer.html#getLineInfo,Lexer,Token	lexer: getLineInfo(L: Lexer; tok: Token): TLineInfo	
 isKeyword	ast/lexer.html#isKeyword,TokType	lexer: isKeyword(kind: TokType): bool	
+isKeyword	ast/lexer.html#isKeyword,PIdent	lexer: isKeyword(i: PIdent): bool	
 isNimIdentifier	ast/lexer.html#isNimIdentifier,string	lexer: isNimIdentifier(s: string): bool	
 `$`	ast/lexer.html#$,Token	lexer: `$`(tok: Token): string	
 prettyTok	ast/lexer.html#prettyTok,Token	lexer: prettyTok(tok: Token): string	

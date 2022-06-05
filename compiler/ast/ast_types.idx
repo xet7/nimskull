@@ -858,8 +858,19 @@ efNoSem2Check	ast/ast_types.html#efNoSem2Check	TExprFlag.efNoSem2Check
 efNoUndeclared	ast/ast_types.html#efNoUndeclared	TExprFlag.efNoUndeclared	
 TExprFlag	ast/ast_types.html#TExprFlag	ast_types: TExprFlag	
 TExprFlags	ast/ast_types.html#TExprFlags	ast_types: TExprFlags	
+Indexable	ast/ast_types.html#Indexable	ast_types: Indexable	
+len	ast/ast_types.html#len,Indexable	ast_types: len(n: Indexable): int	
+add	ast/ast_types.html#add,Indexable,Indexable	ast_types: add(father, son: Indexable)	
+`[]`	ast/ast_types.html#[].t,Indexable,int	ast_types: `[]`(n: Indexable; i: int): Indexable	
+`[]=`	ast/ast_types.html#[]=.t,Indexable,int,Indexable	ast_types: `[]=`(n: Indexable; i: int; x: Indexable)	
+`[]`	ast/ast_types.html#[].t,Indexable,BackwardsIndex	ast_types: `[]`(n: Indexable; i: BackwardsIndex): Indexable	
+`[]=`	ast/ast_types.html#[]=.t,Indexable,BackwardsIndex,Indexable	ast_types: `[]=`(n: Indexable; i: BackwardsIndex; x: Indexable)	
 emptyReportId	ast/ast_types.html#emptyReportId	ast_types: emptyReportId	
 `==`	ast/ast_types.html#==,ReportId,ReportId	ast_types: `==`(id1, id2: ReportId): bool	
 `&lt;`	ast/ast_types.html#<,ReportId,ReportId	ast_types: `&lt;`(id1, id2: ReportId): bool	
 isEmpty	ast/ast_types.html#isEmpty,ReportId	ast_types: isEmpty(id: ReportId): bool	
 `$`	ast/ast_types.html#$,ReportId	ast_types: `$`(id: ReportId): string	
+invalidNodeId	ast/ast_types.html#invalidNodeId	ast_types: invalidNodeId	
+comment	ast/ast_types.html#comment,PNode	ast_types: comment(n: PNode): string	
+comment=	ast/ast_types.html#comment=,PNode,string	ast_types: comment=(n: PNode; a: string)	
+setUseIc	ast/ast_types.html#setUseIc,bool	ast_types: setUseIc(useIc: bool)	
