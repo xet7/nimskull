@@ -570,8 +570,6 @@ countup	system.html#countup.i,T,T,Positive	system: countup[T](a, b: T; step: Pos
 `..&lt;`	system.html#..<.i,int32,int32	system: `..&lt;`(a, b: int32): int32	
 `..&lt;`	system.html#..<.i,uint64,uint64	system: `..&lt;`(a, b: uint64): uint64	
 `..&lt;`	system.html#..<.i,uint32,uint32	system: `..&lt;`(a, b: uint32): uint32	
-`||`	system.html#||.i,S,T,staticstring	system: `||`[S, T](a: S; b: T; annotation: static string = &quot;parallel for&quot;): T	
-`||`	system.html#||.i,S,T,Positive,staticstring	system: `||`[S, T](a: S; b: T; step: Positive;\n           annotation: static string = &quot;parallel for&quot;): T	
 abs	system.html#abs,T	system: abs[T: float64 | float32](x: T): T	
 min	system.html#min,float32,float32	system: min(x, y: float32): float32	
 min	system.html#min,float64,float64	system: min(x, y: float64): float64	
@@ -805,8 +803,6 @@ shallow copy	system.html#shallow-copy_1	Module system
 resource	system.html#resource_1	Module system	
 cut	system.html#cut_1	Module system	
 limit	system.html#limit_1	Module system	
-OpenMP	system.html#openmp_1	Module system	
-OpenMP	system.html#openmp_2	Module system	
 roof	system.html#roof_1	Module system	
 System module	system.html#system-module	 System module	
 Strings and characters	system.html#system-module-strings-and-characters	  Strings and characters	

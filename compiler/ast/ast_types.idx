@@ -579,7 +579,6 @@ mSetLengthStr	ast/ast_types.html#mSetLengthStr	TMagic.mSetLengthStr
 mSetLengthSeq	ast/ast_types.html#mSetLengthSeq	TMagic.mSetLengthSeq	
 mIsPartOf	ast/ast_types.html#mIsPartOf	TMagic.mIsPartOf	
 mAstToStr	ast/ast_types.html#mAstToStr	TMagic.mAstToStr	
-mParallel	ast/ast_types.html#mParallel	TMagic.mParallel	
 mSwap	ast/ast_types.html#mSwap	TMagic.mSwap	
 mIsNil	ast/ast_types.html#mIsNil	TMagic.mIsNil	
 mArrToSeq	ast/ast_types.html#mArrToSeq	TMagic.mArrToSeq	
@@ -636,7 +635,6 @@ mStmt	ast/ast_types.html#mStmt	TMagic.mStmt
 mTypeDesc	ast/ast_types.html#mTypeDesc	TMagic.mTypeDesc	
 mVoidType	ast/ast_types.html#mVoidType	TMagic.mVoidType	
 mPNimrodNode	ast/ast_types.html#mPNimrodNode	TMagic.mPNimrodNode	
-mSpawn	ast/ast_types.html#mSpawn	TMagic.mSpawn	
 mDeepCopy	ast/ast_types.html#mDeepCopy	TMagic.mDeepCopy	
 mIsMainModule	ast/ast_types.html#mIsMainModule	TMagic.mIsMainModule	
 mCompileDate	ast/ast_types.html#mCompileDate	TMagic.mCompileDate	

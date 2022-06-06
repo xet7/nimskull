@@ -137,7 +137,6 @@ FilenameOption	front/in_options.html#FilenameOption	in_options: FilenameOption
 implicitDeref	front/in_options.html#implicitDeref	Feature.implicitDeref	
 dotOperators	front/in_options.html#dotOperators	Feature.dotOperators	
 callOperator	front/in_options.html#callOperator	Feature.callOperator	
-parallel	front/in_options.html#parallel	Feature.parallel	
 destructor	front/in_options.html#destructor	Feature.destructor	
 notnil	front/in_options.html#notnil	Feature.notnil	
 dynamicBindSym	front/in_options.html#dynamicBindSym	Feature.dynamicBindSym	

@@ -362,14 +362,14 @@ window.addEventListener('DOMContentLoaded', main);
 
   </div>
   &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/1c4e4bc6f439bbc946c03c1495060a4c91e02be8/doc/manual.rst#L1"
+href="https://github.com/nim-works/nimskull/tree/2c66fdbaf3131171ddf7faab74f06a524a329b12/doc/manual.rst#L1"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/doc/manual.rst#L1" class="link-seesrc" target="_blank" >Edit</a>
 
   <div class="nine columns" id="content">
   <div id="tocRoot"></div>
   
-  <p class="module-desc"><table class="docinfo" frame="void" rules="none"><col class="docinfo-name" /><col class="docinfo-content" /><tbody valign="top"><tr><th class="docinfo-name">Version:</th><td>0.1.0-dev.20227</td></tr>
+  <p class="module-desc"><table class="docinfo" frame="void" rules="none"><col class="docinfo-name" /><col class="docinfo-content" /><tbody valign="top"><tr><th class="docinfo-name">Version:</th><td>0.1.0-dev.20229</td></tr>
 </tbody></table><blockquote><p>&quot;Complexity&quot; seems to be a lot like &quot;energy&quot;: you can transfer it from the end-user to one/some of the other players, but the total amount seems to remain pretty much constant for a given task. -- Ran</p></blockquote>
 
 <h1><a class="toc-backref" id="about-this-document" href="#about-this-document">About this document</a></h1><p><strong>Note</strong>: This document is a draft! Several of  NimSkull's features may need more precise wording. This manual is constantly evolving.</p>
@@ -2366,7 +2366,7 @@ Use of pragmas is not supporting during let, var, or const tuple unpacking. This
 <p>For more details on some of those procs, see <a class="reference external" href="destructors.html#lifetimeminustracking-hooks">Lifetime-tracking hooks</a>.</p>
 
 <h2><a class="toc-backref" id="procedures-nonoverloadable-builtins" href="#procedures-nonoverloadable-builtins">Nonoverloadable builtins</a></h2><p>The following built-in procs cannot be overloaded for reasons of implementation simplicity (they require specialized semantic checking):<pre>declared, defined, definedInScope, compiles, sizeof,
-is, shallowCopy, getAst, astToStr, spawn, procCall</pre>
+is, shallowCopy, getAst, astToStr, procCall</pre>
 </p>
 <p>Thus they act more like keywords than like ordinary identifiers; unlike a keyword however, a redefinition may <span id="shadow_1">shadow</span> the definition in the <a class="reference external" href="system.html">system</a> module. From this list the following should not be written in dot notation <tt class="docutils literal"><span class="pre"><span class="Identifier">x</span><span class="Operator">.</span><span class="Identifier">f</span></span></tt> since <tt class="docutils literal"><span class="pre"><span class="Identifier">x</span></span></tt> cannot be type-checked before it gets passed to <tt class="docutils literal"><span class="pre"><span class="Identifier">f</span></span></tt>:<pre>declared, defined, definedInScope, compiles, getAst, astToStr</pre>
 </p>
@@ -3840,28 +3840,23 @@ is, shallowCopy, getAst, astToStr, spawn, procCall</pre>
   <span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">used</span><span class="Operator">.</span><span class="Punctuation">}</span></pre>
 <h2><a class="toc-backref" id="pragmas-experimental-pragma" href="#pragmas-experimental-pragma">experimental pragma</a></h2><p>The <tt class="docutils literal"><span class="pre"><span class="Identifier">experimental</span></span></tt> pragma enables experimental language features. Depending on the concrete feature, this means that the feature is either considered too unstable for an otherwise stable release or that the future of the feature is uncertain (it may be removed at any time). See the <a class="reference external" href="manual_experimental.html">experimental manual</a> for more details.</p>
 <p>Example:</p>
-<pre class="listing"><span class="Keyword">import</span> <span class="Identifier">std</span><span class="Operator">/</span><span class="Identifier">threadpool</span>
-<span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">experimental</span><span class="Punctuation">:</span> <span class="StringLit">&quot;parallel&quot;</span><span class="Operator">.</span><span class="Punctuation">}</span>
+<pre class="listing"><span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">experimental</span><span class="Punctuation">:</span> <span class="StringLit">&quot;notnil&quot;</span><span class="Operator">.</span><span class="Punctuation">}</span>
 
-<span class="Keyword">proc</span> <span class="Identifier">threadedEcho</span><span class="Punctuation">(</span><span class="Identifier">s</span><span class="Punctuation">:</span> <span class="Identifier">string</span><span class="Punctuation">,</span> <span class="Identifier">i</span><span class="Punctuation">:</span> <span class="Identifier">int</span><span class="Punctuation">)</span> <span class="Operator">=</span>
-  <span class="Identifier">echo</span><span class="Punctuation">(</span><span class="Identifier">s</span><span class="Punctuation">,</span> <span class="StringLit">&quot; &quot;</span><span class="Punctuation">,</span> <span class="Operator">$</span><span class="Identifier">i</span><span class="Punctuation">)</span>
+<span class="Keyword">type</span>
+  <span class="Identifier">PObject</span> <span class="Operator">=</span> <span class="Keyword">ref</span> <span class="Identifier">TObj</span> <span class="Keyword">not</span> <span class="Keyword">nil</span>
+  <span class="Identifier">TProc</span> <span class="Operator">=</span> <span class="Punctuation">(</span><span class="Keyword">proc</span> <span class="Punctuation">(</span><span class="Identifier">x</span><span class="Punctuation">,</span> <span class="Identifier">y</span><span class="Punctuation">:</span> <span class="Identifier">int</span><span class="Punctuation">)</span><span class="Punctuation">)</span> <span class="Keyword">not</span> <span class="Keyword">nil</span>
 
-<span class="Keyword">proc</span> <span class="Identifier">useParallel</span><span class="Punctuation">(</span><span class="Punctuation">)</span> <span class="Operator">=</span>
-  <span class="Identifier">parallel</span><span class="Punctuation">:</span>
-    <span class="Keyword">for</span> <span class="Identifier">i</span> <span class="Keyword">in</span> <span class="FloatNumber">0.</span><span class="Operator">.</span><span class="DecNumber">4</span><span class="Punctuation">:</span>
-      <span class="Identifier">spawn</span> <span class="Identifier">threadedEcho</span><span class="Punctuation">(</span><span class="StringLit">&quot;echo in parallel&quot;</span><span class="Punctuation">,</span> <span class="Identifier">i</span><span class="Punctuation">)</span>
+<span class="Keyword">proc</span> <span class="Identifier">p</span><span class="Punctuation">(</span><span class="Identifier">x</span><span class="Punctuation">:</span> <span class="Identifier">PObject</span><span class="Punctuation">)</span> <span class="Operator">=</span>
+  <span class="Identifier">echo</span> <span class="StringLit">&quot;not nil&quot;</span>
 
-<span class="Identifier">useParallel</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre><p>As a top-level statement, the experimental pragma enables a feature for the rest of the module it's enabled in. This is problematic for macro and generic instantiations that cross a module scope. Currently, these usages have to be put into a <tt class="docutils literal"><span class="pre"><span class="Operator">.</span><span class="Identifier">push</span><span class="Operator">/</span><span class="Identifier">pop</span></span></tt> environment:</p>
-<pre class="listing"><span class="Comment"># client.nim</span>
-<span class="Keyword">proc</span> <span class="Identifier">useParallel</span><span class="Operator">*</span><span class="Punctuation">[</span><span class="Identifier">T</span><span class="Punctuation">]</span><span class="Punctuation">(</span><span class="Identifier">unused</span><span class="Punctuation">:</span> <span class="Identifier">T</span><span class="Punctuation">)</span> <span class="Operator">=</span>
-  <span class="Comment"># use a generic T here to show the problem.</span>
-  <span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">push</span> <span class="Identifier">experimental</span><span class="Punctuation">:</span> <span class="StringLit">&quot;parallel&quot;</span><span class="Operator">.</span><span class="Punctuation">}</span>
-  <span class="Identifier">parallel</span><span class="Punctuation">:</span>
-    <span class="Keyword">for</span> <span class="Identifier">i</span> <span class="Keyword">in</span> <span class="FloatNumber">0.</span><span class="Operator">.</span><span class="DecNumber">4</span><span class="Punctuation">:</span>
-      <span class="Identifier">echo</span> <span class="StringLit">&quot;echo in parallel&quot;</span>
-  
-  <span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">pop</span><span class="Operator">.</span><span class="Punctuation">}</span></pre><pre class="listing"><span class="Keyword">import</span> <span class="Identifier">client</span>
-<span class="Identifier">useParallel</span><span class="Punctuation">(</span><span class="DecNumber">1</span><span class="Punctuation">)</span></pre>
+<span class="Comment"># compiler catches this:</span>
+<span class="Identifier">p</span><span class="Punctuation">(</span><span class="Keyword">nil</span><span class="Punctuation">)</span>
+
+<span class="Comment"># and also this:</span>
+<span class="Keyword">var</span> <span class="Identifier">x</span><span class="Punctuation">:</span> <span class="Identifier">PObject</span>
+<span class="Identifier">p</span><span class="Punctuation">(</span><span class="Identifier">x</span><span class="Punctuation">)</span></pre><p>As a top-level statement, the experimental pragma enables a feature for the rest of the module it's enabled in. This is problematic for macro and generic instantiations that cross a module scope. Currently, these usages have to be put into a <tt class="docutils literal"><span class="pre"><span class="Operator">.</span><span class="Identifier">push</span><span class="Operator">/</span><span class="Identifier">pop</span></span></tt> environment:</p>
+<p><strong>TODO</strong> document a relevant example, or better yet remove the need for this, it creates yet more dialects</p>
+
 <h1><a class="toc-backref" id="implementation-specific-pragmas" href="#implementation-specific-pragmas">Implementation Specific Pragmas</a></h1><p>This section describes additional pragmas that the current Nim implementation supports but which should not be seen as part of the language specification.</p>
 
 <h2><a class="toc-backref" id="implementation-specific-pragmas-bitsize-pragma" href="#implementation-specific-pragmas-bitsize-pragma">Bitsize pragma</a></h2><p>The <tt class="docutils literal"><span class="pre"><span class="Identifier">bitsize</span></span></tt> pragma is for object field members. It declares the field as a bitfield in C/C++.</p>
@@ -4325,7 +4320,7 @@ libtcl8.3.so.0</pre>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-06-05 00:00:00 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-06-06 00:00:00 UTC</small>
       </div>
     </div>
   </div>

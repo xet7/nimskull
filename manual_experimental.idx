@@ -58,12 +58,4 @@ noRewrite pragma	manual_experimental.html#term-rewriting-macros-norewrite-pragma
 Example: Partial evaluation	manual_experimental.html#term-rewriting-macros-examplecolon-partial-evaluation	  Example: Partial evaluation	
 Example: Hoisting	manual_experimental.html#term-rewriting-macros-examplecolon-hoisting	  Example: Hoisting	
 AST based overloading	manual_experimental.html#ast-based-overloading	 AST based overloading	
-Parallel &amp; Spawn	manual_experimental.html#parallel-amp-spawn	 Parallel &amp; Spawn	
-Structured	manual_experimental.html#structured_1	Parallel &amp; Spawn	
-Unstructured	manual_experimental.html#unstructured_1	Parallel &amp; Spawn	
-Spawn statement	manual_experimental.html#parallel-amp-spawn-spawn-statement	  Spawn statement	
-spawn	manual_experimental.html#spawn_1	Spawn statement	
-data flow variable	manual_experimental.html#data-flow-variable_1	Spawn statement	
-Parallel statement	manual_experimental.html#parallel-amp-spawn-parallel-statement	  Parallel statement	
-disjoint checker	manual_experimental.html#disjoint-checker_1	Parallel statement	
 Lock levels	manual_experimental.html#lock-levels	 Lock levels	
