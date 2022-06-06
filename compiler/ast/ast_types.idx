@@ -106,7 +106,6 @@ nkPragmaBlock	ast/ast_types.html#nkPragmaBlock	TNodeKind.nkPragmaBlock
 nkIfStmt	ast/ast_types.html#nkIfStmt	TNodeKind.nkIfStmt	
 nkWhenStmt	ast/ast_types.html#nkWhenStmt	TNodeKind.nkWhenStmt	
 nkForStmt	ast/ast_types.html#nkForStmt	TNodeKind.nkForStmt	
-nkParForStmt	ast/ast_types.html#nkParForStmt	TNodeKind.nkParForStmt	
 nkWhileStmt	ast/ast_types.html#nkWhileStmt	TNodeKind.nkWhileStmt	
 nkCaseStmt	ast/ast_types.html#nkCaseStmt	TNodeKind.nkCaseStmt	
 nkTypeSection	ast/ast_types.html#nkTypeSection	TNodeKind.nkTypeSection	

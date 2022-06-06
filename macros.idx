@@ -92,7 +92,6 @@ nnkPragmaBlock	macros.html#nnkPragmaBlock	NimNodeKind.nnkPragmaBlock
 nnkIfStmt	macros.html#nnkIfStmt	NimNodeKind.nnkIfStmt	
 nnkWhenStmt	macros.html#nnkWhenStmt	NimNodeKind.nnkWhenStmt	
 nnkForStmt	macros.html#nnkForStmt	NimNodeKind.nnkForStmt	
-nnkParForStmt	macros.html#nnkParForStmt	NimNodeKind.nnkParForStmt	
 nnkWhileStmt	macros.html#nnkWhileStmt	NimNodeKind.nnkWhileStmt	
 nnkCaseStmt	macros.html#nnkCaseStmt	NimNodeKind.nnkCaseStmt	
 nnkTypeSection	macros.html#nnkTypeSection	NimNodeKind.nnkTypeSection	
