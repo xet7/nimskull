@@ -95,8 +95,8 @@ VmArgs	vm/vmdef.html#VmArgs	vmdef: VmArgs
 VmCallback	vm/vmdef.html#VmCallback	vmdef: VmCallback	
 VmAllocator	vm/vmdef.html#VmAllocator	vmdef: VmAllocator	
 VmMemoryManager	vm/vmdef.html#VmMemoryManager	vmdef: VmMemoryManager	
-FunctionTypeId	vm/vmdef.html#FunctionTypeId	vmdef: FunctionTypeId	
-FuncTypeLutKey	vm/vmdef.html#FuncTypeLutKey	vmdef: FuncTypeLutKey	
+RoutineSigId	vm/vmdef.html#RoutineSigId	vmdef: RoutineSigId	
+RoutineSig	vm/vmdef.html#RoutineSig	vmdef: RoutineSig	
 TypeTableEntry	vm/vmdef.html#TypeTableEntry	vmdef: TypeTableEntry	
 TypeTable	vm/vmdef.html#TypeTable	vmdef: TypeTable	
 TypeInfoCache	vm/vmdef.html#TypeInfoCache	vmdef: TypeInfoCache	
@@ -122,7 +122,7 @@ types	vm/vmdef.html#types.t,TCtx	vmdef: types(c: TCtx): untyped
 toFuncPtr	vm/vmdef.html#toFuncPtr,FunctionIndex	vmdef: toFuncPtr(x: FunctionIndex): VmFunctionPtr	
 toFuncIndex	vm/vmdef.html#toFuncIndex,VmFunctionPtr	vmdef: toFuncIndex(x: VmFunctionPtr): FunctionIndex	
 isNil	vm/vmdef.html#isNil.t,VmFunctionPtr	vmdef: isNil(x: VmFunctionPtr): bool	
-`==`	vm/vmdef.html#==.t,FunctionTypeId,FunctionTypeId	vmdef: `==`(a, b: FunctionTypeId): bool	
+`==`	vm/vmdef.html#==,RoutineSigId,RoutineSigId	vmdef: `==`(a, b: RoutineSigId): bool	
 newCtx	vm/vmdef.html#newCtx,PSym,IdentCache,ModuleGraph,IdGenerator	vmdef: newCtx(module: PSym; cache: IdentCache; g: ModuleGraph; idgen: IdGenerator): PCtx	
 refresh	vm/vmdef.html#refresh,TCtx,PSym,IdGenerator	vmdef: refresh(c: var TCtx; module: PSym; idgen: IdGenerator)	
 registerCallback	vm/vmdef.html#registerCallback,TCtx,string,VmCallback	vmdef: registerCallback(c: var TCtx; name: string; callback: VmCallback): int	

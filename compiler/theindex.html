@@ -275,7 +275,7 @@ window.addEventListener('DOMContentLoaded', main);
           <li><a class="reference external"
           data-doc-search-tag="vmdef: `==`(a, b: FieldIndex): bool" href="vm/vmdef.html#%3D%3D%2CFieldIndex%2CFieldIndex">vmdef: `==`(a, b: FieldIndex): bool</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="vmdef: `==`(a, b: FunctionTypeId): bool" href="vm/vmdef.html#%3D%3D.t%2CFunctionTypeId%2CFunctionTypeId">vmdef: `==`(a, b: FunctionTypeId): bool</a></li>
+          data-doc-search-tag="vmdef: `==`(a, b: RoutineSigId): bool" href="vm/vmdef.html#%3D%3D%2CRoutineSigId%2CRoutineSigId">vmdef: `==`(a, b: RoutineSigId): bool</a></li>
           <li><a class="reference external"
           data-doc-search-tag="vmobjects: `==`(a: VmString; b: openArray[char]): bool" href="vm/vmobjects.html#%3D%3D%2CVmString%2CopenArray%5Bchar%5D">vmobjects: `==`(a: VmString; b: openArray[char]): bool</a></li>
           <li><a class="reference external"
@@ -4083,14 +4083,6 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="vmdef: FunctionIndex" href="vm/vmdef.html#FunctionIndex">vmdef: FunctionIndex</a></li>
           </ul></dd>
-<dt><a name="FunctionTypeId" href="#FunctionTypeId"><span>FunctionTypeId:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="vmdef: FunctionTypeId" href="vm/vmdef.html#FunctionTypeId">vmdef: FunctionTypeId</a></li>
-          </ul></dd>
-<dt><a name="FuncTypeLutKey" href="#FuncTypeLutKey"><span>FuncTypeLutKey:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="vmdef: FuncTypeLutKey" href="vm/vmdef.html#FuncTypeLutKey">vmdef: FuncTypeLutKey</a></li>
-          </ul></dd>
 <dt><a name="gCacheIntTries" href="#gCacheIntTries"><span>gCacheIntTries:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="ropes: gCacheIntTries" href="utils/ropes.html#gCacheIntTries">ropes: gCacheIntTries</a></li>
@@ -4542,10 +4534,6 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="getOrCreateFunction" href="#getOrCreateFunction"><span>getOrCreateFunction:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="vmaux: getOrCreateFunction(c: var TCtx; prc: PSym): FunctionIndex" href="vm/vmaux.html#getOrCreateFunction%2CTCtx%2CPSym">vmaux: getOrCreateFunction(c: var TCtx; prc: PSym): FunctionIndex</a></li>
-          </ul></dd>
-<dt><a name="getOrCreateFuncType" href="#getOrCreateFuncType"><span>getOrCreateFuncType:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="vmtypegen: getOrCreateFuncType(c: var TypeInfoCache; typ: PType): FunctionTypeId" href="vm/vmtypegen.html#getOrCreateFuncType%2CTypeInfoCache%2CPType">vmtypegen: getOrCreateFuncType(c: var TypeInfoCache; typ: PType): FunctionTypeId</a></li>
           </ul></dd>
 <dt><a name="getOrDefault" href="#getOrDefault"><span>getOrDefault:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -6808,6 +6796,10 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="makeRangeWithStaticExpr" href="#makeRangeWithStaticExpr"><span>makeRangeWithStaticExpr:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="semdata: makeRangeWithStaticExpr(c: PContext; n: PNode): PType" href="sem/semdata.html#makeRangeWithStaticExpr%2CPContext%2CPNode">semdata: makeRangeWithStaticExpr(c: PContext; n: PNode): PType</a></li>
+          </ul></dd>
+<dt><a name="makeSignatureId" href="#makeSignatureId"><span>makeSignatureId:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="vmtypegen: makeSignatureId(c: var TypeInfoCache; typ: PType): RoutineSigId" href="vm/vmtypegen.html#makeSignatureId%2CTypeInfoCache%2CPType">vmtypegen: makeSignatureId(c: var TypeInfoCache; typ: PType): RoutineSigId</a></li>
           </ul></dd>
 <dt><a name="makeSingleLineCString" href="#makeSingleLineCString"><span>makeSingleLineCString:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -13016,6 +13008,14 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="routineKinds" href="#routineKinds"><span>routineKinds:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="ast_types: routineKinds" href="ast/ast_types.html#routineKinds">ast_types: routineKinds</a></li>
+          </ul></dd>
+<dt><a name="RoutineSig" href="#RoutineSig"><span>RoutineSig:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="vmdef: RoutineSig" href="vm/vmdef.html#RoutineSig">vmdef: RoutineSig</a></li>
+          </ul></dd>
+<dt><a name="RoutineSigId" href="#RoutineSigId"><span>RoutineSigId:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="vmdef: RoutineSigId" href="vm/vmdef.html#RoutineSigId">vmdef: RoutineSigId</a></li>
           </ul></dd>
 <dt><a name="rparConceptNotinType" href="#rparConceptNotinType"><span>rparConceptNotinType:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -20504,7 +20504,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-06-06 00:00:00 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-06-09 00:00:00 UTC</small>
       </div>
     </div>
   </div>
