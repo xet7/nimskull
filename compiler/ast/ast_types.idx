@@ -567,7 +567,6 @@ mSlice	ast/ast_types.html#mSlice	TMagic.mSlice
 mDotDot	ast/ast_types.html#mDotDot	TMagic.mDotDot	
 mFields	ast/ast_types.html#mFields	TMagic.mFields	
 mFieldPairs	ast/ast_types.html#mFieldPairs	TMagic.mFieldPairs	
-mOmpParFor	ast/ast_types.html#mOmpParFor	TMagic.mOmpParFor	
 mAppendStrCh	ast/ast_types.html#mAppendStrCh	TMagic.mAppendStrCh	
 mAppendStrStr	ast/ast_types.html#mAppendStrStr	TMagic.mAppendStrStr	
 mAppendSeqElem	ast/ast_types.html#mAppendSeqElem	TMagic.mAppendSeqElem	
