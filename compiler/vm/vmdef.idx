@@ -163,3 +163,4 @@ safeZeroMem	vm/vmdef.html#safeZeroMem,openArray[byte],Natural	vmdef: safeZeroMem
 hash	vm/vmdef.html#hash,MaterializedConst	vmdef: hash(x: MaterializedConst): int	
 unreachable	vm/vmdef.html#unreachable.t	vmdef: unreachable()	
 unreachable	vm/vmdef.html#unreachable.t,string	vmdef: unreachable(msg: string)	
+unreachable	vm/vmdef.html#unreachable.t_2	vmdef: unreachable(e: enum)	
