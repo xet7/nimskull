@@ -1,18 +1,3 @@
-setResult	vm/vm.html#setResult,VmArgs,BiggestInt	vm: setResult(a: VmArgs; v: BiggestInt)	
-setResult	vm/vm.html#setResult,VmArgs,BiggestFloat	vm: setResult(a: VmArgs; v: BiggestFloat)	
-setResult	vm/vm.html#setResult,VmArgs,bool	vm: setResult(a: VmArgs; v: bool)	
-setResult	vm/vm.html#setResult,VmArgs,openArray[char]	vm: setResult(a: VmArgs; v: openArray[char])	
-setResult	vm/vm.html#setResult,VmArgs,AbsoluteDir	vm: setResult(a: VmArgs; v: AbsoluteDir)	
-setResult	vm/vm.html#setResult,VmArgs,PNode	vm: setResult(a: VmArgs; v: PNode)	
-getResultHandle	vm/vm.html#getResultHandle,VmArgs	vm: getResultHandle(a: VmArgs): LocHandle	
-numArgs	vm/vm.html#numArgs,VmArgs	vm: numArgs(a: VmArgs): int	
-getInt	vm/vm.html#getInt,VmArgs,Natural	vm: getInt(a: VmArgs; i: Natural): BiggestInt	
-getBool	vm/vm.html#getBool,VmArgs,Natural	vm: getBool(a: VmArgs; i: Natural): bool	
-getFloat	vm/vm.html#getFloat,VmArgs,Natural	vm: getFloat(a: VmArgs; i: Natural): BiggestFloat	
-getNode	vm/vm.html#getNode,VmArgs,Natural	vm: getNode(a: VmArgs; i: Natural): PNode	
-getString	vm/vm.html#getString,VmArgs,Natural	vm: getString(a: VmArgs; i: Natural): string	
-getHandle	vm/vm.html#getHandle,VmArgs,Natural	vm: getHandle(a: VmArgs; i: Natural): LocHandle	
-getVar	vm/vm.html#getVar,VmArgs,Natural	vm: getVar(a: VmArgs; i: Natural): LocHandle	
 strVal	vm/vm.html#strVal.t,TFullReg	vm: strVal(r: TFullReg): untyped	
 strVal=	vm/vm.html#strVal=.t,TFullReg,VmString	vm: strVal=(r: TFullReg; s: VmString)	
 strVal=	vm/vm.html#strVal=.t,TFullReg,string	vm: strVal=(r: TFullReg; s: string)	
@@ -20,7 +5,6 @@ execProc	vm/vm.html#execProc,TCtx,PSym,openArray[PNode]	vm: execProc(c: var TCtx
 evalExpr	vm/vm.html#evalExpr,TCtx,PNode	vm: evalExpr(c: var TCtx; n: PNode): PNode	
 getGlobalValue	vm/vm.html#getGlobalValue,TCtx,PSym	vm: getGlobalValue(c: TCtx; s: PSym): PNode	
 setGlobalValue	vm/vm.html#setGlobalValue,TCtx,PSym,PNode	vm: setGlobalValue(c: var TCtx; s: PSym; val: PNode)	
-registerAdditionalOps	vm/vm.html#registerAdditionalOps,PCtx	vm: registerAdditionalOps(c: PCtx)	
 setupGlobalCtx	vm/vm.html#setupGlobalCtx,PSym,ModuleGraph,IdGenerator	vm: setupGlobalCtx(module: PSym; graph: ModuleGraph; idgen: IdGenerator)	
 evalPass	vm/vm.html#evalPass	vm: evalPass	
 evalConstExpr	vm/vm.html#evalConstExpr,PSym,IdGenerator,ModuleGraph,PNode	vm: evalConstExpr(module: PSym; idgen: IdGenerator; g: ModuleGraph; e: PNode): PNode	
