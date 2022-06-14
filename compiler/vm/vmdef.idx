@@ -92,6 +92,7 @@ VmConstant	vm/vmdef.html#VmConstant	vmdef: VmConstant
 RegInfo	vm/vmdef.html#RegInfo	vmdef: RegInfo	
 PProc	vm/vmdef.html#PProc	vmdef: PProc	
 VmArgs	vm/vmdef.html#VmArgs	vmdef: VmArgs	
+IdentPattern	vm/vmdef.html#IdentPattern	vmdef: IdentPattern	
 VmCallback	vm/vmdef.html#VmCallback	vmdef: VmCallback	
 VmAllocator	vm/vmdef.html#VmAllocator	vmdef: VmAllocator	
 VmMemoryManager	vm/vmdef.html#VmMemoryManager	vmdef: VmMemoryManager	

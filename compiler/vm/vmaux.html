@@ -119,9 +119,9 @@ window.addEventListener('DOMContentLoaded', main);
     title="getOrCreateFunction(c: var TCtx; prc: PSym): FunctionIndex">getOrCreateFunction(c: var TCtx; prc: PSym): FunctionIndex</a></li>
 
   </ul>
-  <ul class="simple nested-toc-section">procIsCallback
-      <li><a class="reference" href="#procIsCallback%2CTCtx%2CPSym"
-    title="procIsCallback(c: TCtx; s: PSym): bool">procIsCallback(c: TCtx; s: PSym): bool</a></li>
+  <ul class="simple nested-toc-section">lookup
+      <li><a class="reference" href="#lookup%2Cseq%5BIdentPattern%5D%2CPSym"
+    title="lookup(patterns: seq[IdentPattern]; s: PSym): int">lookup(patterns: seq[IdentPattern]; s: PSym): int</a></li>
 
   </ul>
 
@@ -132,7 +132,7 @@ window.addEventListener('DOMContentLoaded', main);
 
   </div>
   &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/2633f6422150c451040e9b2ced1f312f948bfdc8/compiler/vm/vmaux.nim#L1"
+href="https://github.com/nim-works/nimskull/tree/d407ca2bfd813173a37617737ea42b02335454be/compiler/vm/vmaux.nim#L1"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmaux.nim#L1" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -155,9 +155,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/2633f6422150c451040e9b2ced1f312f948bfdc8/compiler/vm/vmaux.nim#L80"
+href="https://github.com/nim-works/nimskull/tree/d407ca2bfd813173a37617737ea42b02335454be/compiler/vm/vmaux.nim#L76"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmaux.nim#L80" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmaux.nim#L76" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -167,9 +167,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 Find the <tt class="docutils literal"><span class="pre"><span class="Identifier">nkRecCase</span></span></tt> node in <tt class="docutils literal"><span class="pre"><span class="Identifier">t</span></span></tt> or any of it's base types that has <tt class="docutils literal"><span class="pre"><span class="Identifier">d</span></span></tt> as the discriminator
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/2633f6422150c451040e9b2ced1f312f948bfdc8/compiler/vm/vmaux.nim#L73"
+href="https://github.com/nim-works/nimskull/tree/d407ca2bfd813173a37617737ea42b02335454be/compiler/vm/vmaux.nim#L69"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmaux.nim#L73" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmaux.nim#L69" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -180,21 +180,21 @@ class="link-seesrc" target="_blank">Source</a>
 
 Looks up the index of the given procs corresponding VM function object. If one does not exists yet, it is created first. If the function type description doesn't exist yet it is created too
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/2633f6422150c451040e9b2ced1f312f948bfdc8/compiler/vm/vmaux.nim#L100"
+href="https://github.com/nim-works/nimskull/tree/d407ca2bfd813173a37617737ea42b02335454be/compiler/vm/vmaux.nim#L96"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmaux.nim#L100" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmaux.nim#L96" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
-<div id="procIsCallback,TCtx,PSym">
-<dt><pre><span class="Keyword">proc</span> <a href="#procIsCallback%2CTCtx%2CPSym"><span class="Identifier">procIsCallback</span></a><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="vmdef.html#TCtx"><span class="Identifier">TCtx</span></a><span class="Other">;</span> <span class="Identifier">s</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="lookup,seq[IdentPattern],PSym">
+<dt><pre><span class="Keyword">func</span> <a href="#lookup%2Cseq%5BIdentPattern%5D%2CPSym"><span class="Identifier">lookup</span></a><span class="Other">(</span><span class="Identifier">patterns</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="vmdef.html#IdentPattern"><span class="Identifier">IdentPattern</span></a><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">s</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
-
+Tries to find and return the index of the pattern matching <tt class="docutils literal"><span class="pre"><span class="Identifier">s</span></span></tt>. If none is found, -1 is returned
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/2633f6422150c451040e9b2ced1f312f948bfdc8/compiler/vm/vmaux.nim#L38"
+href="https://github.com/nim-works/nimskull/tree/d407ca2bfd813173a37617737ea42b02335454be/compiler/vm/vmaux.nim#L36"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmaux.nim#L38" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/vm/vmaux.nim#L36" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
