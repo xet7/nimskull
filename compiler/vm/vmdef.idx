@@ -101,7 +101,6 @@ TypeTableEntry	vm/vmdef.html#TypeTableEntry	vmdef: TypeTableEntry
 TypeTable	vm/vmdef.html#TypeTable	vmdef: TypeTable	
 TypeInfoCache	vm/vmdef.html#TypeInfoCache	vmdef: TypeInfoCache	
 FunctionIndex	vm/vmdef.html#FunctionIndex	vmdef: FunctionIndex	
-MaterializedConst	vm/vmdef.html#MaterializedConst	vmdef: MaterializedConst	
 PCtx	vm/vmdef.html#PCtx	vmdef: PCtx	
 TCtx	vm/vmdef.html#TCtx	vmdef: TCtx	
 StackFrameIndex	vm/vmdef.html#StackFrameIndex	vmdef: StackFrameIndex	
@@ -160,7 +159,6 @@ overlap	vm/vmdef.html#overlap,pointer,pointer,Natural,Natural	vmdef: overlap(a, 
 safeCopyMem	vm/vmdef.html#safeCopyMem,openArray[],openArray[],Natural	vmdef: safeCopyMem(dest: var openArray[byte | char]; src: openArray[byte | char];\n            numBytes: Natural)	
 safeCopyMemSrc	vm/vmdef.html#safeCopyMemSrc,openArray[byte],openArray[byte]	vmdef: safeCopyMemSrc(dest: var openArray[byte]; src: openArray[byte])	
 safeZeroMem	vm/vmdef.html#safeZeroMem,openArray[byte],Natural	vmdef: safeZeroMem(dest: var openArray[byte]; numBytes: Natural)	
-hash	vm/vmdef.html#hash,MaterializedConst	vmdef: hash(x: MaterializedConst): int	
 unreachable	vm/vmdef.html#unreachable.t	vmdef: unreachable()	
 unreachable	vm/vmdef.html#unreachable.t,string	vmdef: unreachable(msg: string)	
 unreachable	vm/vmdef.html#unreachable.t_2	vmdef: unreachable(e: enum)	
