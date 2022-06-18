@@ -38,6 +38,7 @@ slotTempComplex	vm/vmdef.html#slotTempComplex	TSlotKind.slotTempComplex
 slotTempHandle	vm/vmdef.html#slotTempHandle	TSlotKind.slotTempHandle	
 slotTempPerm	vm/vmdef.html#slotTempPerm	TSlotKind.slotTempPerm	
 TSlotKind	vm/vmdef.html#TSlotKind	vmdef: TSlotKind	
+CodeInfo	vm/vmdef.html#CodeInfo	vmdef: CodeInfo	
 akInt	vm/vmdef.html#akInt	AtomKind.akInt	
 akFloat	vm/vmdef.html#akFloat	AtomKind.akFloat	
 akPtr	vm/vmdef.html#akPtr	AtomKind.akPtr	
@@ -67,7 +68,7 @@ ckDefault	vm/vmdef.html#ckDefault	CallableKind.ckDefault
 ckCallback	vm/vmdef.html#ckCallback	CallableKind.ckCallback	
 CallableKind	vm/vmdef.html#CallableKind	vmdef: CallableKind	
 VmFunctionPtr	vm/vmdef.html#VmFunctionPtr	vmdef: VmFunctionPtr	
-VmFunctionObject	vm/vmdef.html#VmFunctionObject	vmdef: VmFunctionObject	
+FuncTableEntry	vm/vmdef.html#FuncTableEntry	vmdef: FuncTableEntry	
 VmClosure	vm/vmdef.html#VmClosure	vmdef: VmClosure	
 MemRegionPtr	vm/vmdef.html#MemRegionPtr	vmdef: MemRegionPtr	
 VmMemoryRegion	vm/vmdef.html#VmMemoryRegion	vmdef: VmMemoryRegion	
@@ -102,6 +103,8 @@ TypeTableEntry	vm/vmdef.html#TypeTableEntry	vmdef: TypeTableEntry
 TypeTable	vm/vmdef.html#TypeTable	vmdef: TypeTable	
 TypeInfoCache	vm/vmdef.html#TypeInfoCache	vmdef: TypeInfoCache	
 FunctionIndex	vm/vmdef.html#FunctionIndex	vmdef: FunctionIndex	
+LinkIndex	vm/vmdef.html#LinkIndex	vmdef: LinkIndex	
+CodeGenInOut	vm/vmdef.html#CodeGenInOut	vmdef: CodeGenInOut	
 PCtx	vm/vmdef.html#PCtx	vmdef: PCtx	
 TCtx	vm/vmdef.html#TCtx	vmdef: TCtx	
 StackFrameIndex	vm/vmdef.html#StackFrameIndex	vmdef: StackFrameIndex	
@@ -113,6 +116,7 @@ PEvalContext	vm/vmdef.html#PEvalContext	vmdef: PEvalContext
 `&lt;=`	vm/vmdef.html#<=,FieldIndex,FieldIndex	vmdef: `&lt;=`(a, b: FieldIndex): bool	
 `==`	vm/vmdef.html#==,FieldIndex,FieldIndex	vmdef: `==`(a, b: FieldIndex): bool	
 `-`	vm/vmdef.html#-.t,FieldIndex,int	vmdef: `-`(a: FieldIndex; b: int): FieldIndex	
+`==`	vm/vmdef.html#==,FunctionIndex,FunctionIndex	vmdef: `==`(a, b: FunctionIndex): bool	
 fieldAt	vm/vmdef.html#fieldAt.t,VmType,FieldIndex	vmdef: fieldAt(x: VmType; i: FieldIndex): untyped	
 fieldAt	vm/vmdef.html#fieldAt.t,PVmType,FieldIndex	vmdef: fieldAt(x: PVmType; i: FieldIndex): untyped	
 fpos	vm/vmdef.html#fpos.t,int	vmdef: fpos(x: int): FieldPosition	

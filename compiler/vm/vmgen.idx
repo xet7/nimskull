@@ -1,9 +1,10 @@
-debugEchoCode	vm/vmgen.html#debugEchoCode	vmgen: debugEchoCode	
 VmGenResult	vm/vmgen.html#VmGenResult	vmgen: VmGenResult	
 codeListing	vm/vmgen.html#codeListing,TCtx,PSym,PNode,int,int	vmgen: codeListing(c: TCtx; prc: PSym; ast: PNode; start = 0; last = -1)	
+gABC	vm/vmgen.html#gABC,TCtx,PNode,TOpcode,TRegister,TRegister,TRegister	vmgen: gABC(ctx: var TCtx; n: PNode; opc: TOpcode; a, b, c: TRegister = 0)	
+gABx	vm/vmgen.html#gABx,TCtx,PNode,TOpcode,TRegister,int	vmgen: gABx(c: var TCtx; n: PNode; opc: TOpcode; a: TRegister = 0; bx: int)	
 fitsRegister	vm/vmgen.html#fitsRegister,PType	vmgen: fitsRegister(t: PType): bool	
 importcCondVar	vm/vmgen.html#importcCondVar,PSym	vmgen: importcCondVar(s: PSym): bool	
 importcCond	vm/vmgen.html#importcCond,TCtx,PSym	vmgen: importcCond(c: TCtx; s: PSym): bool	
-genStmt	vm/vmgen.html#genStmt,TCtx,PNode	vmgen: genStmt(c: var TCtx; n: PNode): VmGenResult	
+genStmt	vm/vmgen.html#genStmt,TCtx,PNode	vmgen: genStmt(c: var TCtx; n: PNode): Result[void, SemReport]	
 genExpr	vm/vmgen.html#genExpr,TCtx,PNode	vmgen: genExpr(c: var TCtx; n: PNode; requiresValue = true): VmGenResult	
-genProc	vm/vmgen.html#genProc,TCtx,PSym	vmgen: genProc(c: var TCtx; s: PSym): VmGenResult	
+genProc	vm/vmgen.html#genProc,TCtx,PSym,PNode	vmgen: genProc(c: var TCtx; s: PSym; body: PNode): VmGenResult	
