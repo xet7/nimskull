@@ -127,79 +127,419 @@ window.addEventListener('DOMContentLoaded', main);
   <li><a class="reference" href="#TContext"
     title="TContext = object of TPassContext
   enforceVoidContext*: PType ## for `if cond: stmt else: foo`, `foo` will be evaluated under
-                             ## enforceVoidContext != nil
-  voidType*: PType
-  module*: PSym              ## the module sym belonging to the context
-  currentScope*: PScope      ## current scope
-  moduleScope*: PScope       ## scope for modules
-  imports*: seq[ImportedModule] ## scope for all imported symbols
-  topLevelScope*: PScope     ## scope for all top-level symbols
-  p*: PProcCon               ## procedure context
-  intTypeCache*: array[-5 .. 32, PType] ## cache some common integer types
-                                        ## to avoid type allocations
-  nilTypeCache*: PType
+                             ## enforceVoidContext != nil; meaning we infered if to contain a a `stmt`
+                             ## (void) and so `foo` must result in an expression that can be `void`.
+                             ## Which plays into discard checks.
+                             ## 
+                             ## It's used as a sentinel value, setting a node's typ field to this can
+                             ## then be compared with later to raise errors or to see if something is
+                             ## meant to be in the void context.
+                             ## 
+                             ## `enforceVoidContext` is not the `void` type, see `voidType`
+                             ## 
+                             ## written: once at sem start
+                             ## read:
+                             ##  - semExprWithType: check if an expr has no type
+                             ##  - semAsgn: ensure assignments aren't an expression
+                             ##  - semstmts: for/while/etc stmt enforcement 
+  currentScope*: PScope ## current scope based on semantic analysis' traversal through the ast,
+                        ## then read during lookups of various symbols/idents
+                        ## 
+                        ## written: sem/exprs/call/...
+                        ## read: lookups
+  p*: PProcCon ## procedure context used all over semantic analysis. Tracks various
+               ## aspects of when traversal is in a proc, top level module, blocks,
+               ## loops, etc
+               ## 
+               ## written: all over sem
+               ## read: all over sem
   matchedConcept*: ptr TMatchedConcept ## the current concept being matched
-  friendModules*: seq[PSym]  ## friend modules; may access private data;
-                             ## this is used so that generic instantiations
-                             ## can access private object fields
-  instCounter*: int          ## to prevent endless instantiations
-  templInstCounter*: ref int ## gives every template instantiation a unique id
-  inGenericContext*: int     ## &gt; 0 if we are in a generic type
-  inStaticContext*: int      ## &gt; 0 if we are inside a static: block
+                                       ## 
+                                       ## written:
+                                       ##  - seminst: start of generateInstance save old one, at end restore it
+                                       ##  - sigmatch matchUserTypeClass
+                                       ## read:
+                                       ##  - afterCallActions
+                                       ##  - semExpr after ident/sym lookup and type nodes nkTypeOfExpr, etc
+                                       ##  - semstmts var/let, discard, list
+                                       ##  - sigmatch: typeRel and friends
+  inTypeContext*: int ## track whether we're in a &quot;type context&quot;, eg: type section, used by
+                      ## `suggest`, but that might leak into other parts of sem.
+                      ## 
+                      ## written: semgnrc, semstmts, semtempl, semtypes
+                      ## read: suggest
+  inConceptDecl*: int ## whether we're in a concept declaration, `concepts` tracks this so we
+                      ## can differentiate whether it's the concept description vs the concept
+                      ## check (hence need implementations and should error without one)
+                      ## 
+                      ## written: concepts
+                      ## read: semIterator (one line for errors, seems janky)
+                      ## 
+                      ## xxx: some refactoring should allow for removal
+  templInstCounter*: ref int ## gives each template instantiation a unique id
+                             ## 
+                             ## written:
+                             ##  - init once at sem start per module
+                             ##  - strung along to each new context per macro
+                             ##    or template eval; it's mutable
+                             ##  - evalTemplate increments it
+                             ## read: captured and read in `TemplCtx`
+  instCounter*: int ## To prevent endless macro pragma and generic instantiations.
+                    ## 
+                    ## written:
+                    ##  - pragmas: track macro pragmas expansions
+                    ##  - seminst: track generic instantiations
+                    ## read:
+                    ##  - pragmas: check count and error
+                    ##  - seminst: check count and error
+  inGenericContext*: int ## &gt; 0 if we are in a generic type
+                         ## 
+                         ## written:
+                         ##  - semexprs: save/restore in `tryExpr`
+                         ##  - semstmts: 
+                         ## `typeSectionRighSidePass`, guard `semTypeNode`
+                         ## read:
+                         ##  - semexprs: checked in `semIs`
+                         ##  - semInst: `generateInstance` guard instantiation until we're out
+                         ##  
+                         ## - semtypes: `semTypeNode` and friends guard instantiation
+  inGenericInst*: int ## &gt; 0 if we are instantiating a generic, weird this seems an awful lot
+                      ## 
+                      ## like `instCounter`
+                      ## 
+                      ## written:
+                      ##  - semexprs: save/restore in `tryExpr`
+                      ##  - semstmts: 
+                      ## `typeSectionRighSidePass`, guard `semTypeNode`
+                      ## read:
+                      ##  - semexprs: checked in `semIs`
+                      ##  - semInst: `generateInstance` guard instantiation until we're out
+                      ##  
+                      ## - semtypes: `semTypeNode` and friends guard instantiation
+  generics*: seq[TInstantiationPair] ## pending list of instantiated generics to compile accumulates generics
+                                     ## to compile for the backend on module close
+                                     ## 
+                                     ## written:
+                                     ##  - semexprs: save/restore in `tryExpr`
+                                     ##  - seminst: `fixupInsantiatedSymbols` scan generics looking for a
+                                     ##             match based on symbol id
+                                     ## read:
+                                     ##  - sem: module close read and add to module ast
+                                     ##  - seminst: `fixupInsantiatedSymbols` updates the generic, one reason
+                                     ##              it's mutated is to support forward declarations
+  lastGenericIdx*: int       ## used for the generics stack (`generics`)
+                             ## 
+                             ## written/read:
+                             ##  - sem: updated after each close of a module,
+                             ##         why? xxx: is this because of suggest?
+                             ## NB this isn't preserved restored in `tryExpr`,
+                             ##    but it's not mutated anywhere else, suggest
+                             ##    seems to be the only thing that might need
+                             ##    this and it's likely a leak -- growing over
+                             ##    time.
+  inStaticContext*: int ## &gt; 0 if we are inside a static: block
+                        ## 
+                        ## written:
+                        ##  - semStaticExpr: inc/dec around semExprWithType call likely for the
+                        ##                   
+                        ## evalAtCompileTime, see below
+                        ##  - semexprs: save/restore in `tryExpr`
+                        ##  - semstmts: inc/dec around semConst and semStaticStmt
+                        ## 
+                        ## read:
+                        ##  - evalAtCompileTime: guard compile time eval
+                        ##  - 
+                        ## semBindSym: whether to resolve the binding or not
+                        ##  - 
+                        ## semDynamicSym: whether to bind the sym or not
   inUnrolledContext*: int    ## &gt; 0 if we are unrolling a loop
-  compilesContextId*: int    ## &gt; 0 if we are in a ``compiles`` magic
-  compilesContextIdGenerator*: int
-  inGenericInst*: int        ## &gt; 0 if we are instantiating a generic
-  converters*: seq[PSym]
-  patterns*: seq[PSym]       ## sequence of pattern matchers
-  optionStack*: seq[POptionEntry]
-  symMapping*: TIdTable      ## every gensym'ed symbol needs to be mapped
-                             ## to some new symbol in a generic instantiation
-  libs*: seq[PLib]           ## all libs used by this module
-  semConstExpr*: proc (c: PContext; n: PNode): PNode {.nimcall.}
-  semExpr*: proc (c: PContext; n: PNode; flags: TExprFlags = {}): PNode {.
-      nimcall.}
-  semTryExpr*: proc (c: PContext; n: PNode; flags: TExprFlags = {}): PNode {.
-      nimcall.}
-  semTryConstExpr*: proc (c: PContext; n: PNode): PNode {.nimcall.}
-  computeRequiresInit*: proc (c: PContext; t: PType): bool {.nimcall.}
-  hasUnresolvedArgs*: proc (c: PContext; n: PNode): bool
-  semOperand*: proc (c: PContext; n: PNode; flags: TExprFlags = {}): PNode {.
-      nimcall.}
-  semConstBoolExpr*: proc (c: PContext; n: PNode): PNode {.nimcall.}
-  semOverloadedCall*: proc (c: PContext; n: PNode; filter: TSymKinds;
-                            flags: TExprFlags): PNode {.nimcall.}
-  semTypeNode*: proc (c: PContext; n: PNode; prev: PType): PType {.nimcall.}
-  semInferredLambda*: proc (c: PContext; pt: TIdTable; n: PNode): PNode
-  semGenerateInstance*: proc (c: PContext; fn: PSym; pt: TIdTable;
-                              info: TLineInfo): PSym
-  includedFiles*: IntSet     ## used to detect recursive include files
+                             ## 
+                             ## written:
+                             ##  - semexprs: save/restore in `tryExpr`
+                             ##  - semfields: inc/dec guards in 
+                             ## semForFields
+                             ##               and semForObjectFields
+                             ## read: 
+                             ## `semVarOrLet` to determine if the var
+                             ##       or let is shadowed
+                             ## xxx: we don't read it for const, but prior to
+                             ##      
+                             ## evaluation aren't they shadowed?
+  compilesContextId*: int ## &gt; 0 if we are in a ``compiles`` magic
+                          ## 
+                          ## written:
+                          ##  - semexprs: save/restore in `tryExpr`
+                          ##              xxx: only for 1 level nesting some generics related hacks
+                          ##  
+                          ## - suggest: inc/dec likely used to supress excessive error output
+                          ## 
+                          ## read:
+                          ##  - lookups: guard error output and cascading errors during compiles
+                          ##  
+                          ## - semcall: guard diagnostic/errors during compiles
+                          ##  - 
+                          ## semexpr: check imports are top level
+                          ##  - seminst: use to set/fetch from the generic cache
+                          ##  
+                          ## - sempass2: guard diagnostics during compiles context
+                          ##  
+                          ## xxx: much of this simplifies with nkError
+  compilesContextIdGenerator*: int ## sequence to generate `compilesContextId` values, only gets bumped when
+                                   ## we go from a non-compilesContext to a compiles context, but not from
+                                   ## compiles to compiles context.
+                                   ## 
+                                   ## written:
+                                   ##  - semexprs: save/restore in `tryExpr`; increment if we're heading
+                                   ##              into a nested compile from the level
+                                   ##              xxx: only for 1 level nesting some generics related hacks
+                                   ## read:
+                                   ##  - `tryExpr`: read and assigned to `compilesContextId`
+  optionStack*: seq[POptionEntry] ## when pragmas are pushed/popped
+                                  ## 
+                                  ## written:
+                                  ##  - pragmas: pushed calling convention, dyn lib, etc or process pop
+                                  ##  - semdata: setters used to init compiler settings etc
+                                  ## read:
+                                  ##  - pragmas: check to see if proc should remove from stacktrace and
+                                  ##             which implicit pragmas to include
+                                  ##  - semtypes: if there are options then create a dummy proc type node
+                                  ##              to merge pragmas... xxx: this seems silly
+  inUncheckedAssignSection*: int ## if we're in an unassigned check, via a pragma block
+                                 ## 
+                                 ## written:
+                                 ##  - sempragmablock in semstmts
+                                 ## read:
+                                 ##  - sigmatch: islvalue
+                                 ##  - semobjconstr: errors for case object/discriminator assignments
+                                 ##  - newHiddenAddrTaken: check to see if we're in an unsafe assignment
+                                 ##                        cast xxx: seems overly broad
+                                 ##  - analyseIfAddressTakenInCall: same check as newHiddenAddrTaken
+  signatures*: TStrTable ## stores types for params in `using` statements
+                         ## 
+                         ## written:
+                         ##  - semUsing: adds an skParam symbol for lookup in semProcTypeNode
+                         ## read:
+                         ##  - semProcTypeNode: lookup of params defined via the `using` statement
+  selfName*: PIdent ## used for the experimental `this` pragma support (remove me!)
+                    ## 
+                    ## written:
+                    ##  - pragmas: `prepareSinglePragma` writes the name of the `this` param
+                    ## read:
+                    ##  - seminst: `rawHandleSelf` reads the name of the `this` param
+  module*: PSym              ## the module sym belonging to the context used everywhere
+  topLevelScope*: PScope ## scope for all top-level symbols of the module as in the module's scope
+                         ## 
+                         ## written:
+                         ##  - sem: `myopen` is called per module, and we open a new module scope
+                         ##         and reset in `recoverContext` for exception recovery
+                         ## read:
+                         ##  - lookups: for symbol search and check if a sym is at the top level
+                         ##  - semexprs: `semexpr` guard for no top level defer stmts and in
+                         ##              `lookupForDeclared` for module qualified symbols
+                         ##  - suggest: iterate through top level symbols for suggestions
+  imports*: seq[ImportedModule] ## scope for all imported symbols
+                                ## 
+                                ## written:
+                                ##  - importer: written when adding imports
+                                ## read:
+                                ##  - importer: look for duplicate imports
+                                ##  - lookups: to scan for imported symbols
+  friendModules*: seq[PSym] ## friend modules; may access private data; this is used so that generic
+                            ## instantiations can access private object fields.
+                            ## 
+                            ## written:
+                            ##  - semdata: for each `newContext` a module is its own friend
+                            ##  - semAfterMacroCall: calling a macro declared in another macro adds
+                            ##                       the declaring module as a friend for the life of
+                            ##                       the `semAfterMacroCall`, then we remove it
+                            ##  - generateInstance: instancing a generic, like macro above, makes the
+                            ##                      declaring module a friend for the lifetime of the
+                            ##                      instancing, then we remove it
+                            ## read:
+                            ##  - suggest: scan for visible fields in `fieldVisible` which is used
+                            ##             beyond suggestions
+  moduleScope*: PScope ## scope where we shove module symbols, the module itself, and other
+                       ## modules that are imported.
+                       ## 
+                       ## written:
+                       ##  - lookups: push error symbols here to avoid cascading errors in
+                       ##             interactive or outside of nested compilation contexts
+                       ##  - sem: init in `myopen`, then add itself, during system import add
+                       ##         the system module symbol
+                       ## read:
+                       ##  - implicitly read as it's part of the chain of scopes
+  topStmts*: int ## counts the number of encountered top level statements
+                 ## 
+                 ## written:
+                 ##  - sem: incremented in semStmtAndGenerateGenerics
+                 ## read:
+                 ##  - semData: query if it's the first top level statement
+  includedFiles*: IntSet ## used to detect recursive include files
+                         ## 
+                         ## written:
+                         ##  - semdata: initialized
+                         ##  - semstmts: remove included file after processing
+                         ##              xxx: this is buggy and leads to bad error messages, we
+                         ##                   should instead mark it as already processed for nice
+                         ##                   errors about duplicate includes and declarations
+                         ## read:
+                         ##  - semstmts: check for recursive includes
+  unusedImports*: seq[(PSym, TLineInfo)] ## tracks which imports are unused, assume all new imports are unused,
+                                         ## then remove them from here as we encounter usages.
+                                         ## 
+                                         ## written:
+                                         ##  - importer: add all imported module as unused
+                                         ##  - suggest: `markOwnerModuleAsUsed`, used beyond suggestions
+                                         ## read:
+                                         ##  - sem: on pass close report all unused modules
+  features*: set[Feature] ## compiler feature flags, can be varied via pragmas, so per module;
+                          ## maybe that shouldn't be a thing?
+                          ## 
+                          ## written:
+                          ##  - pragmas: `processExperimental` enable experimental features
+                          ##  - semdata: init, push/pop pragma options
+                          ##  - sempass2: save/restore features during strict nil checks
+                          ##  - nileval: initialized for the interpreter
+                          ## read:
+                          ##  - lexer: for unicode operators
+                          ##  - semcall: implicit deref
+                          ##  - lookups: query overloadable enums
+                          ##  - semgnrc: query overloadable enums
+                          ##  - semtempl: query overloadable enums
+                          ##  - semtypes: query overloadable enums and strict not nil
+                          ##  - options: query nil checks enabled
+                          ##  - sempass2: query strict effects, views, funcs, and not nil
+                          ##  - typeallowed: query views
+                          ##  - semmagic: query dynamic bind sym
+                          ##  - semstmts: query dot and call operators
+                          ##  - vm/gen/ops: query allowInfiniteLoops and vmopsDanger
+  importModuleMap*: Table[int, int] ## module.id =&gt; module.id; the key is an imported module, and the value
+                                    ## is the real module in case of alias
+                                    ## 
+                                    ## written:
+                                    ##  - importer: track imported module/alias and the real module
+                                    ## read:
+                                    ##  - suggest: `markOwnerModuleAsUsed`, used beyond suggestions, query
+                                    ##             imported module to exclude from unused modules
+  exportIndirections*: HashSet[(int, int)] ## (module.id, symbol.id); the first is the exporting/origin module and
+                                           ## the second is the exported symbol
+                                           ## 
+                                           ## written:
+                                           ##  - importer: track if we're reexporting a symbol
+                                           ## read:
+                                           ##  - suggest: `markOwnerModuleAsUsed`, used beyond suggestions, query
+                                           ##             export indirections to track usage info
+  recursiveDep*: seq[tuple[importer, importee: string]] ## used to detect recursive `importer` issues populated by importer and
+                                                        ## used by `lookups`
+                                                        ## 
+                                                        ## written:
+                                                        ##  - importer: add dependency
+                                                        ##  - lookups: truncated to avoid excessive nim check errors
+                                                        ## read:
+                                                        ##  - lookups: query if for possible recursive dependencies
+  cache*: IdentCache         ## used everywhere for identifier caching
+  graph*: ModuleGraph        ## access to the compilation graph, used everywhere
+  voidType*: PType           ## for typeof(stmt)
+                             ## 
+                             ## written: sem: initialized
+                             ## read: semExprWithType: set type for ast to void
+  intTypeCache*: array[-5 .. 32, PType] ## cache some common integer types to avoid type allocations
+                                        ## 
+                                        ## written/read entirely in semdata `getIntLitType`
+  nilTypeCache*: PType       ## store the nil type
+                             ## 
+                             ## written/read in semexprs getNilType
+  converters*: seq[PSym] ## track current converters and then look them up during dispatch in
+                         ## `sigmatch`.
+                         ## 
+                         ## written:
+                         ##  - semdata: init and append in `addConverter` which is used when a
+                         ##             converter is defined or imported
+                         ## read:
+                         ##  - sigmatch: to query converters
   pureEnumFields*: TStrTable ## pure enum fields that can be used unambiguously
-  userPragmas*: TStrTable
-  evalContext*: PEvalContext
-  unknownIdents*: IntSet     ## ids of all unknown identifiers to prevent
-                             ## naming it multiple times
-  generics*: seq[TInstantiationPair] ## pending list of instantiated generics to compile
-  topStmts*: int             ## counts the number of encountered top level statements
-  lastGenericIdx*: int       ## used for the generics stack
-  hloLoopDetector*: int      ## used to prevent endless loops in the HLO
+                             ## 
+                             ## written:
+                             ##  - importer: add when a pure enum field is declared or imported
+                             ##  - semdata: init
+                             ## read:
+                             ##  - lookups: search for pure enums if all else fails
+                             ##  - semgnrc: lookup pure enums
+  patterns*: seq[PSym] ## sequence of pattern matchers used for term rewriting and also `hlo`,
+                       ## where highlevel optimizations are effectively pattern matches.
+                       ## 
+                       ## written:
+                       ##  - semdata: init and updated via addPattern, which isn't used by hlo??
+                       ##  - hlo: `applyPatterns` add patterns for optimizations
+                       ##  - semstmts: semProcAux adds term rewriting definitions
+                       ##  - semtempl: semTemplateDef adds term rewriting definitions
+                       ## read:
+                       ##  - hlo: check len to see if there are patterns to apply
+  userPragmas*: TStrTable ## user pragma symbols
+                          ## 
+                          ## written:
+                          ##  - pragmas: add user defined pragmas as encountered
+                          ##  - semdata: init
+                          ## read:
+                          ##  - pragmas: query user pragmas to see if we need to process it now
+                          ##  - semstmts: query user pragmas for proc/conv/etc annotation lookup
+                          ##  - semtypes: query user pragmas for type section pragmas
+  libs*: seq[PLib] ## all libs used by this module, mostly setup pragmas.
+                   ## 
+                   ## written:
+                   ##  - semdata: init
+                   ##  - pragmas: add to dynamic libs
+                   ## read:
+                   ##  - pragmas: query dynamic libs
+  isAmbiguous*: bool         ## track whether ident lookups are in ambiguous mode
+                             ## 
+                             ## written:
+                             ##  - lookups: set so it can be fetched in `semexpr`
+                             ##  - semexpr: set prior to lookup
+                             ## read:
+                             ##  - semexpr: queried to see how to treat symbol ambiguity
+  semConstExpr*: proc (c: PContext; n: PNode): PNode {.nimcall.} ## used to break cyclic dependencies, init in sem during module open and
+                                                                 ## read in pragmas, semmagic, and semtypinst
+  semExpr*: proc (c: PContext; n: PNode; flags: TExprFlags = {}): PNode {.
+      nimcall.} ## read to break cyclic dependencies, init in sem during module open and
+                ## read in concepts, pragmas, semtypinst, sigmatch, and suggest
+  semTryExpr*: proc (c: PContext; n: PNode; flags: TExprFlags = {}): PNode {.
+      nimcall.} ## read to break cyclic dependencies, init in sem during module open and
+                ## read in sigmatch
+  semTryConstExpr*: proc (c: PContext; n: PNode): PNode {.nimcall.} ## read to break cyclic dependencies, init in sem during module open and
+                                                                    ## read in semcall and sigmatch
+  computeRequiresInit*: proc (c: PContext; t: PType): bool {.nimcall.} ## read to break cyclic dependencies, init in sem during module open and
+                                                                       ## read in semtypinst
+  hasUnresolvedArgs*: proc (c: PContext; n: PNode): bool ## read to break cyclic dependencies, init in sem during module open and
+                                                         ## read in pragmas
+  semOperand*: proc (c: PContext; n: PNode; flags: TExprFlags = {}): PNode {.
+      nimcall.} ## read to break cyclic dependencies, init in sem during module open and
+                ## read in semcall and sigmatch
+  semConstBoolExpr*: proc (c: PContext; n: PNode): PNode {.nimcall.} ## read to break cyclic dependencies, init in sem during module open and
+                                                                     ## read in pragmas
+  semOverloadedCall*: proc (c: PContext; n: PNode; filter: TSymKinds;
+                            flags: TExprFlags): PNode {.nimcall.} ## read to break cyclic dependencies, init in sem during module open and
+                                                                  ## read in pragmas and semtypinst
+  semTypeNode*: proc (c: PContext; n: PNode; prev: PType): PType {.nimcall.} ## read to break cyclic dependencies, init in sem during module open and
+                                                                             ## read in pragmas
+  semInferredLambda*: proc (c: PContext; pt: TIdTable; n: PNode): PNode ## read to break cyclic dependencies, init in sem during module open and
+                                                                        ## read in sigmatch
+  semGenerateInstance*: proc (c: PContext; fn: PSym; pt: TIdTable;
+                              info: TLineInfo): PSym ## read to break cyclic dependencies, init in sem during module open and
+                                                     ## read in sigmatch
   instTypeBoundOp*: proc (c: PContext; dc: PSym; t: PType; info: TLineInfo;
-                          op: TTypeAttachedOp; col: int): PSym {.nimcall.}
-  selfName*: PIdent
-  cache*: IdentCache
-  graph*: ModuleGraph
-  signatures*: TStrTable
-  recursiveDep*: seq[tuple[importer, importee: string]]
-  suggestionsMade*: bool
-  isAmbiguous*: bool
-  features*: set[Feature]
-  inTypeContext*, inConceptDecl*: int
-  unusedImports*: seq[(PSym, TLineInfo)]
-  exportIndirections*: HashSet[(int, int)] ## (module.id, symbol.id)
-  importModuleMap*: Table[int, int] ## (module.id, module.id)
-  lastTLineInfo*: TLineInfo
-  sideEffects*: Table[int, seq[(TLineInfo, PSym)]] ## symbol.id index
-  inUncheckedAssignSection*: int">TContext</a></li>
+                          op: TTypeAttachedOp; col: int): PSym {.nimcall.} ## read to break cyclic dependencies, init in sem during module open and
+                                                                           ## read in liftdestructors and semtypinst
+  sideEffects*: Table[int, seq[(TLineInfo, PSym)]] ## symbol.id =&gt; (info, sym); indexed on symbol id, tracks effects per sym
+                                                   ## 
+                                                   ## written/read in sempass2, for marking and listing side effects
+  hloLoopDetector*: int      ## used to prevent endless loops in the HLO
+                             ## 
+                             ## written/read in hlo, detect if hlo pattern
+                             ## applications are looping
+  suggestionsMade*: bool     ## track whether suggestion were made, written/read in sem
+  lastTLineInfo*: TLineInfo ## last line info used in suggest by `markUsed` to track deprecated
+                            ## symbol locations">TContext</a></li>
   <li><a class="reference" href="#TInstantiationPair"
     title="TInstantiationPair = object
   genericSym*: PSym
@@ -586,7 +926,7 @@ window.addEventListener('DOMContentLoaded', main);
 
   </div>
   &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L1"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -619,7 +959,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L84"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L84"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L84" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -632,7 +972,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L82"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L82"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L82" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -644,7 +984,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L93"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L93"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L93" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -656,7 +996,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L57"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L57"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L57" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -668,7 +1008,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L58"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L58"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L58" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -677,87 +1017,427 @@ class="link-seesrc" target="_blank">Source</a>
 <div id="TContext">
 <dt><pre><a href="semdata.html#TContext"><span class="Identifier">TContext</span></a> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <a href="../modules/modulegraphs.html#TPassContext"><span class="Identifier">TPassContext</span></a>
   <span class="Identifier">enforceVoidContext</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a> <span class="Comment">## for `if cond: stmt else: foo`, `foo` will be evaluated under</span>
-                             <span class="Comment">## enforceVoidContext != nil</span>
-  <span class="Identifier">voidType</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a>
-  <span class="Identifier">module</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a>              <span class="Comment">## the module sym belonging to the context</span>
-  <span class="Identifier">currentScope</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PScope"><span class="Identifier">PScope</span></a>      <span class="Comment">## current scope</span>
-  <span class="Identifier">moduleScope</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PScope"><span class="Identifier">PScope</span></a>       <span class="Comment">## scope for modules</span>
-  <span class="Identifier">imports</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="semdata.html#ImportedModule"><span class="Identifier">ImportedModule</span></a><span class="Other">]</span> <span class="Comment">## scope for all imported symbols</span>
-  <span class="Identifier">topLevelScope</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PScope"><span class="Identifier">PScope</span></a>     <span class="Comment">## scope for all top-level symbols</span>
-  <span class="Identifier">p</span><span class="Operator">*</span><span class="Other">:</span> <a href="semdata.html#PProcCon"><span class="Identifier">PProcCon</span></a>               <span class="Comment">## procedure context</span>
-  <span class="Identifier">intTypeCache</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">array</span><span class="Other">[</span><span class="DecNumber">-5</span> <span class="Operator">..</span> <span class="DecNumber">32</span><span class="Other">,</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a><span class="Other">]</span> <span class="Comment">## cache some common integer types</span>
-                                        <span class="Comment">## to avoid type allocations</span>
-  <span class="Identifier">nilTypeCache</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a>
+                             <span class="Comment">## enforceVoidContext != nil; meaning we infered if to contain a a `stmt`</span>
+                             <span class="Comment">## (void) and so `foo` must result in an expression that can be `void`.</span>
+                             <span class="Comment">## Which plays into discard checks.</span>
+                             <span class="Comment">## </span>
+                             <span class="Comment">## It's used as a sentinel value, setting a node's typ field to this can</span>
+                             <span class="Comment">## then be compared with later to raise errors or to see if something is</span>
+                             <span class="Comment">## meant to be in the void context.</span>
+                             <span class="Comment">## </span>
+                             <span class="Comment">## `enforceVoidContext` is not the `void` type, see `voidType`</span>
+                             <span class="Comment">## </span>
+                             <span class="Comment">## written: once at sem start</span>
+                             <span class="Comment">## read:</span>
+                             <span class="Comment">##  - semExprWithType: check if an expr has no type</span>
+                             <span class="Comment">##  - semAsgn: ensure assignments aren't an expression</span>
+                             <span class="Comment">##  - semstmts: for/while/etc stmt enforcement </span>
+  <span class="Identifier">currentScope</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PScope"><span class="Identifier">PScope</span></a> <span class="Comment">## current scope based on semantic analysis' traversal through the ast,</span>
+                        <span class="Comment">## then read during lookups of various symbols/idents</span>
+                        <span class="Comment">## </span>
+                        <span class="Comment">## written: sem/exprs/call/...</span>
+                        <span class="Comment">## read: lookups</span>
+  <span class="Identifier">p</span><span class="Operator">*</span><span class="Other">:</span> <a href="semdata.html#PProcCon"><span class="Identifier">PProcCon</span></a> <span class="Comment">## procedure context used all over semantic analysis. Tracks various</span>
+               <span class="Comment">## aspects of when traversal is in a proc, top level module, blocks,</span>
+               <span class="Comment">## loops, etc</span>
+               <span class="Comment">## </span>
+               <span class="Comment">## written: all over sem</span>
+               <span class="Comment">## read: all over sem</span>
   <span class="Identifier">matchedConcept</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">ptr</span> <a href="semdata.html#TMatchedConcept"><span class="Identifier">TMatchedConcept</span></a> <span class="Comment">## the current concept being matched</span>
-  <span class="Identifier">friendModules</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">]</span>  <span class="Comment">## friend modules; may access private data;</span>
-                             <span class="Comment">## this is used so that generic instantiations</span>
-                             <span class="Comment">## can access private object fields</span>
-  <span class="Identifier">instCounter</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>          <span class="Comment">## to prevent endless instantiations</span>
-  <span class="Identifier">templInstCounter</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">ref</span> <span class="Identifier">int</span> <span class="Comment">## gives every template instantiation a unique id</span>
-  <span class="Identifier">inGenericContext</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>     <span class="Comment">## &gt; 0 if we are in a generic type</span>
-  <span class="Identifier">inStaticContext</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>      <span class="Comment">## &gt; 0 if we are inside a static: block</span>
+                                       <span class="Comment">## </span>
+                                       <span class="Comment">## written:</span>
+                                       <span class="Comment">##  - seminst: start of generateInstance save old one, at end restore it</span>
+                                       <span class="Comment">##  - sigmatch matchUserTypeClass</span>
+                                       <span class="Comment">## read:</span>
+                                       <span class="Comment">##  - afterCallActions</span>
+                                       <span class="Comment">##  - semExpr after ident/sym lookup and type nodes nkTypeOfExpr, etc</span>
+                                       <span class="Comment">##  - semstmts var/let, discard, list</span>
+                                       <span class="Comment">##  - sigmatch: typeRel and friends</span>
+  <span class="Identifier">inTypeContext</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Comment">## track whether we're in a &quot;type context&quot;, eg: type section, used by</span>
+                      <span class="Comment">## `suggest`, but that might leak into other parts of sem.</span>
+                      <span class="Comment">## </span>
+                      <span class="Comment">## written: semgnrc, semstmts, semtempl, semtypes</span>
+                      <span class="Comment">## read: suggest</span>
+  <span class="Identifier">inConceptDecl</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Comment">## whether we're in a concept declaration, `concepts` tracks this so we</span>
+                      <span class="Comment">## can differentiate whether it's the concept description vs the concept</span>
+                      <span class="Comment">## check (hence need implementations and should error without one)</span>
+                      <span class="Comment">## </span>
+                      <span class="Comment">## written: concepts</span>
+                      <span class="Comment">## read: semIterator (one line for errors, seems janky)</span>
+                      <span class="Comment">## </span>
+                      <span class="Comment">## xxx: some refactoring should allow for removal</span>
+  <span class="Identifier">templInstCounter</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">ref</span> <span class="Identifier">int</span> <span class="Comment">## gives each template instantiation a unique id</span>
+                             <span class="Comment">## </span>
+                             <span class="Comment">## written:</span>
+                             <span class="Comment">##  - init once at sem start per module</span>
+                             <span class="Comment">##  - strung along to each new context per macro</span>
+                             <span class="Comment">##    or template eval; it's mutable</span>
+                             <span class="Comment">##  - evalTemplate increments it</span>
+                             <span class="Comment">## read: captured and read in `TemplCtx`</span>
+  <span class="Identifier">instCounter</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Comment">## To prevent endless macro pragma and generic instantiations.</span>
+                    <span class="Comment">## </span>
+                    <span class="Comment">## written:</span>
+                    <span class="Comment">##  - pragmas: track macro pragmas expansions</span>
+                    <span class="Comment">##  - seminst: track generic instantiations</span>
+                    <span class="Comment">## read:</span>
+                    <span class="Comment">##  - pragmas: check count and error</span>
+                    <span class="Comment">##  - seminst: check count and error</span>
+  <span class="Identifier">inGenericContext</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Comment">## &gt; 0 if we are in a generic type</span>
+                         <span class="Comment">## </span>
+                         <span class="Comment">## written:</span>
+                         <span class="Comment">##  - semexprs: save/restore in `tryExpr`</span>
+                         <span class="Comment">##  - semstmts: </span>
+                         <span class="Comment">## `typeSectionRighSidePass`, guard `semTypeNode`</span>
+                         <span class="Comment">## read:</span>
+                         <span class="Comment">##  - semexprs: checked in `semIs`</span>
+                         <span class="Comment">##  - semInst: `generateInstance` guard instantiation until we're out</span>
+                         <span class="Comment">##  </span>
+                         <span class="Comment">## - semtypes: `semTypeNode` and friends guard instantiation</span>
+  <span class="Identifier">inGenericInst</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Comment">## &gt; 0 if we are instantiating a generic, weird this seems an awful lot</span>
+                      <span class="Comment">## </span>
+                      <span class="Comment">## like `instCounter`</span>
+                      <span class="Comment">## </span>
+                      <span class="Comment">## written:</span>
+                      <span class="Comment">##  - semexprs: save/restore in `tryExpr`</span>
+                      <span class="Comment">##  - semstmts: </span>
+                      <span class="Comment">## `typeSectionRighSidePass`, guard `semTypeNode`</span>
+                      <span class="Comment">## read:</span>
+                      <span class="Comment">##  - semexprs: checked in `semIs`</span>
+                      <span class="Comment">##  - semInst: `generateInstance` guard instantiation until we're out</span>
+                      <span class="Comment">##  </span>
+                      <span class="Comment">## - semtypes: `semTypeNode` and friends guard instantiation</span>
+  <span class="Identifier">generics</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="semdata.html#TInstantiationPair"><span class="Identifier">TInstantiationPair</span></a><span class="Other">]</span> <span class="Comment">## pending list of instantiated generics to compile accumulates generics</span>
+                                     <span class="Comment">## to compile for the backend on module close</span>
+                                     <span class="Comment">## </span>
+                                     <span class="Comment">## written:</span>
+                                     <span class="Comment">##  - semexprs: save/restore in `tryExpr`</span>
+                                     <span class="Comment">##  - seminst: `fixupInsantiatedSymbols` scan generics looking for a</span>
+                                     <span class="Comment">##             match based on symbol id</span>
+                                     <span class="Comment">## read:</span>
+                                     <span class="Comment">##  - sem: module close read and add to module ast</span>
+                                     <span class="Comment">##  - seminst: `fixupInsantiatedSymbols` updates the generic, one reason</span>
+                                     <span class="Comment">##              it's mutated is to support forward declarations</span>
+  <span class="Identifier">lastGenericIdx</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>       <span class="Comment">## used for the generics stack (`generics`)</span>
+                             <span class="Comment">## </span>
+                             <span class="Comment">## written/read:</span>
+                             <span class="Comment">##  - sem: updated after each close of a module,</span>
+                             <span class="Comment">##         why? xxx: is this because of suggest?</span>
+                             <span class="Comment">## NB this isn't preserved restored in `tryExpr`,</span>
+                             <span class="Comment">##    but it's not mutated anywhere else, suggest</span>
+                             <span class="Comment">##    seems to be the only thing that might need</span>
+                             <span class="Comment">##    this and it's likely a leak -- growing over</span>
+                             <span class="Comment">##    time.</span>
+  <span class="Identifier">inStaticContext</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Comment">## &gt; 0 if we are inside a static: block</span>
+                        <span class="Comment">## </span>
+                        <span class="Comment">## written:</span>
+                        <span class="Comment">##  - semStaticExpr: inc/dec around semExprWithType call likely for the</span>
+                        <span class="Comment">##                   </span>
+                        <span class="Comment">## evalAtCompileTime, see below</span>
+                        <span class="Comment">##  - semexprs: save/restore in `tryExpr`</span>
+                        <span class="Comment">##  - semstmts: inc/dec around semConst and semStaticStmt</span>
+                        <span class="Comment">## </span>
+                        <span class="Comment">## read:</span>
+                        <span class="Comment">##  - evalAtCompileTime: guard compile time eval</span>
+                        <span class="Comment">##  - </span>
+                        <span class="Comment">## semBindSym: whether to resolve the binding or not</span>
+                        <span class="Comment">##  - </span>
+                        <span class="Comment">## semDynamicSym: whether to bind the sym or not</span>
   <span class="Identifier">inUnrolledContext</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>    <span class="Comment">## &gt; 0 if we are unrolling a loop</span>
-  <span class="Identifier">compilesContextId</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>    <span class="Comment">## &gt; 0 if we are in a ``compiles`` magic</span>
-  <span class="Identifier">compilesContextIdGenerator</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
-  <span class="Identifier">inGenericInst</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>        <span class="Comment">## &gt; 0 if we are instantiating a generic</span>
-  <span class="Identifier">converters</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">]</span>
-  <span class="Identifier">patterns</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">]</span>       <span class="Comment">## sequence of pattern matchers</span>
-  <span class="Identifier">optionStack</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="semdata.html#POptionEntry"><span class="Identifier">POptionEntry</span></a><span class="Other">]</span>
-  <span class="Identifier">symMapping</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#TIdTable"><span class="Identifier">TIdTable</span></a>      <span class="Comment">## every gensym'ed symbol needs to be mapped</span>
-                             <span class="Comment">## to some new symbol in a generic instantiation</span>
-  <span class="Identifier">libs</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="../ast/ast_types.html#PLib"><span class="Identifier">PLib</span></a><span class="Other">]</span>           <span class="Comment">## all libs used by this module</span>
-  <span class="Identifier">semConstExpr</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> {.<span class="Identifier">nimcall</span>.}
-  <span class="Identifier">semExpr</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">;</span> <span class="Identifier">flags</span><span class="Other">:</span> <a href="../ast/ast_types.html#TExprFlags"><span class="Identifier">TExprFlags</span></a> <span class="Other">=</span> <span class="Other">{</span><span class="Other">}</span><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> {.
-      <span class="Identifier">nimcall</span>.}
-  <span class="Identifier">semTryExpr</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">;</span> <span class="Identifier">flags</span><span class="Other">:</span> <a href="../ast/ast_types.html#TExprFlags"><span class="Identifier">TExprFlags</span></a> <span class="Other">=</span> <span class="Other">{</span><span class="Other">}</span><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> {.
-      <span class="Identifier">nimcall</span>.}
-  <span class="Identifier">semTryConstExpr</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> {.<span class="Identifier">nimcall</span>.}
-  <span class="Identifier">computeRequiresInit</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">t</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">nimcall</span>.}
-  <span class="Identifier">hasUnresolvedArgs</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span>
-  <span class="Identifier">semOperand</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">;</span> <span class="Identifier">flags</span><span class="Other">:</span> <a href="../ast/ast_types.html#TExprFlags"><span class="Identifier">TExprFlags</span></a> <span class="Other">=</span> <span class="Other">{</span><span class="Other">}</span><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> {.
-      <span class="Identifier">nimcall</span>.}
-  <span class="Identifier">semConstBoolExpr</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> {.<span class="Identifier">nimcall</span>.}
-  <span class="Identifier">semOverloadedCall</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">;</span> <span class="Identifier">filter</span><span class="Other">:</span> <a href="../ast/ast_types.html#TSymKinds"><span class="Identifier">TSymKinds</span></a><span class="Other">;</span>
-                            <span class="Identifier">flags</span><span class="Other">:</span> <a href="../ast/ast_types.html#TExprFlags"><span class="Identifier">TExprFlags</span></a><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> {.<span class="Identifier">nimcall</span>.}
-  <span class="Identifier">semTypeNode</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">;</span> <span class="Identifier">prev</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a> {.<span class="Identifier">nimcall</span>.}
-  <span class="Identifier">semInferredLambda</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">pt</span><span class="Other">:</span> <a href="../ast/ast_types.html#TIdTable"><span class="Identifier">TIdTable</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a>
-  <span class="Identifier">semGenerateInstance</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">fn</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">;</span> <span class="Identifier">pt</span><span class="Other">:</span> <a href="../ast/ast_types.html#TIdTable"><span class="Identifier">TIdTable</span></a><span class="Other">;</span>
-                              <span class="Identifier">info</span><span class="Other">:</span> <a href="../ast/ast_types.html#TLineInfo"><span class="Identifier">TLineInfo</span></a><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a>
-  <span class="Identifier">includedFiles</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">IntSet</span>     <span class="Comment">## used to detect recursive include files</span>
+                             <span class="Comment">## </span>
+                             <span class="Comment">## written:</span>
+                             <span class="Comment">##  - semexprs: save/restore in `tryExpr`</span>
+                             <span class="Comment">##  - semfields: inc/dec guards in </span>
+                             <span class="Comment">## semForFields</span>
+                             <span class="Comment">##               and semForObjectFields</span>
+                             <span class="Comment">## read: </span>
+                             <span class="Comment">## `semVarOrLet` to determine if the var</span>
+                             <span class="Comment">##       or let is shadowed</span>
+                             <span class="Comment">## xxx: we don't read it for const, but prior to</span>
+                             <span class="Comment">##      </span>
+                             <span class="Comment">## evaluation aren't they shadowed?</span>
+  <span class="Identifier">compilesContextId</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Comment">## &gt; 0 if we are in a ``compiles`` magic</span>
+                          <span class="Comment">## </span>
+                          <span class="Comment">## written:</span>
+                          <span class="Comment">##  - semexprs: save/restore in `tryExpr`</span>
+                          <span class="Comment">##              xxx: only for 1 level nesting some generics related hacks</span>
+                          <span class="Comment">##  </span>
+                          <span class="Comment">## - suggest: inc/dec likely used to supress excessive error output</span>
+                          <span class="Comment">## </span>
+                          <span class="Comment">## read:</span>
+                          <span class="Comment">##  - lookups: guard error output and cascading errors during compiles</span>
+                          <span class="Comment">##  </span>
+                          <span class="Comment">## - semcall: guard diagnostic/errors during compiles</span>
+                          <span class="Comment">##  - </span>
+                          <span class="Comment">## semexpr: check imports are top level</span>
+                          <span class="Comment">##  - seminst: use to set/fetch from the generic cache</span>
+                          <span class="Comment">##  </span>
+                          <span class="Comment">## - sempass2: guard diagnostics during compiles context</span>
+                          <span class="Comment">##  </span>
+                          <span class="Comment">## xxx: much of this simplifies with nkError</span>
+  <span class="Identifier">compilesContextIdGenerator</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Comment">## sequence to generate `compilesContextId` values, only gets bumped when</span>
+                                   <span class="Comment">## we go from a non-compilesContext to a compiles context, but not from</span>
+                                   <span class="Comment">## compiles to compiles context.</span>
+                                   <span class="Comment">## </span>
+                                   <span class="Comment">## written:</span>
+                                   <span class="Comment">##  - semexprs: save/restore in `tryExpr`; increment if we're heading</span>
+                                   <span class="Comment">##              into a nested compile from the level</span>
+                                   <span class="Comment">##              xxx: only for 1 level nesting some generics related hacks</span>
+                                   <span class="Comment">## read:</span>
+                                   <span class="Comment">##  - `tryExpr`: read and assigned to `compilesContextId`</span>
+  <span class="Identifier">optionStack</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="semdata.html#POptionEntry"><span class="Identifier">POptionEntry</span></a><span class="Other">]</span> <span class="Comment">## when pragmas are pushed/popped</span>
+                                  <span class="Comment">## </span>
+                                  <span class="Comment">## written:</span>
+                                  <span class="Comment">##  - pragmas: pushed calling convention, dyn lib, etc or process pop</span>
+                                  <span class="Comment">##  - semdata: setters used to init compiler settings etc</span>
+                                  <span class="Comment">## read:</span>
+                                  <span class="Comment">##  - pragmas: check to see if proc should remove from stacktrace and</span>
+                                  <span class="Comment">##             which implicit pragmas to include</span>
+                                  <span class="Comment">##  - semtypes: if there are options then create a dummy proc type node</span>
+                                  <span class="Comment">##              to merge pragmas... xxx: this seems silly</span>
+  <span class="Identifier">inUncheckedAssignSection</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Comment">## if we're in an unassigned check, via a pragma block</span>
+                                 <span class="Comment">## </span>
+                                 <span class="Comment">## written:</span>
+                                 <span class="Comment">##  - sempragmablock in semstmts</span>
+                                 <span class="Comment">## read:</span>
+                                 <span class="Comment">##  - sigmatch: islvalue</span>
+                                 <span class="Comment">##  - semobjconstr: errors for case object/discriminator assignments</span>
+                                 <span class="Comment">##  - newHiddenAddrTaken: check to see if we're in an unsafe assignment</span>
+                                 <span class="Comment">##                        cast xxx: seems overly broad</span>
+                                 <span class="Comment">##  - analyseIfAddressTakenInCall: same check as newHiddenAddrTaken</span>
+  <span class="Identifier">signatures</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#TStrTable"><span class="Identifier">TStrTable</span></a> <span class="Comment">## stores types for params in `using` statements</span>
+                         <span class="Comment">## </span>
+                         <span class="Comment">## written:</span>
+                         <span class="Comment">##  - semUsing: adds an skParam symbol for lookup in semProcTypeNode</span>
+                         <span class="Comment">## read:</span>
+                         <span class="Comment">##  - semProcTypeNode: lookup of params defined via the `using` statement</span>
+  <span class="Identifier">selfName</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PIdent"><span class="Identifier">PIdent</span></a> <span class="Comment">## used for the experimental `this` pragma support (remove me!)</span>
+                    <span class="Comment">## </span>
+                    <span class="Comment">## written:</span>
+                    <span class="Comment">##  - pragmas: `prepareSinglePragma` writes the name of the `this` param</span>
+                    <span class="Comment">## read:</span>
+                    <span class="Comment">##  - seminst: `rawHandleSelf` reads the name of the `this` param</span>
+  <span class="Identifier">module</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a>              <span class="Comment">## the module sym belonging to the context used everywhere</span>
+  <span class="Identifier">topLevelScope</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PScope"><span class="Identifier">PScope</span></a> <span class="Comment">## scope for all top-level symbols of the module as in the module's scope</span>
+                         <span class="Comment">## </span>
+                         <span class="Comment">## written:</span>
+                         <span class="Comment">##  - sem: `myopen` is called per module, and we open a new module scope</span>
+                         <span class="Comment">##         and reset in `recoverContext` for exception recovery</span>
+                         <span class="Comment">## read:</span>
+                         <span class="Comment">##  - lookups: for symbol search and check if a sym is at the top level</span>
+                         <span class="Comment">##  - semexprs: `semexpr` guard for no top level defer stmts and in</span>
+                         <span class="Comment">##              `lookupForDeclared` for module qualified symbols</span>
+                         <span class="Comment">##  - suggest: iterate through top level symbols for suggestions</span>
+  <span class="Identifier">imports</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="semdata.html#ImportedModule"><span class="Identifier">ImportedModule</span></a><span class="Other">]</span> <span class="Comment">## scope for all imported symbols</span>
+                                <span class="Comment">## </span>
+                                <span class="Comment">## written:</span>
+                                <span class="Comment">##  - importer: written when adding imports</span>
+                                <span class="Comment">## read:</span>
+                                <span class="Comment">##  - importer: look for duplicate imports</span>
+                                <span class="Comment">##  - lookups: to scan for imported symbols</span>
+  <span class="Identifier">friendModules</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">]</span> <span class="Comment">## friend modules; may access private data; this is used so that generic</span>
+                            <span class="Comment">## instantiations can access private object fields.</span>
+                            <span class="Comment">## </span>
+                            <span class="Comment">## written:</span>
+                            <span class="Comment">##  - semdata: for each `newContext` a module is its own friend</span>
+                            <span class="Comment">##  - semAfterMacroCall: calling a macro declared in another macro adds</span>
+                            <span class="Comment">##                       the declaring module as a friend for the life of</span>
+                            <span class="Comment">##                       the `semAfterMacroCall`, then we remove it</span>
+                            <span class="Comment">##  - generateInstance: instancing a generic, like macro above, makes the</span>
+                            <span class="Comment">##                      declaring module a friend for the lifetime of the</span>
+                            <span class="Comment">##                      instancing, then we remove it</span>
+                            <span class="Comment">## read:</span>
+                            <span class="Comment">##  - suggest: scan for visible fields in `fieldVisible` which is used</span>
+                            <span class="Comment">##             beyond suggestions</span>
+  <span class="Identifier">moduleScope</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PScope"><span class="Identifier">PScope</span></a> <span class="Comment">## scope where we shove module symbols, the module itself, and other</span>
+                       <span class="Comment">## modules that are imported.</span>
+                       <span class="Comment">## </span>
+                       <span class="Comment">## written:</span>
+                       <span class="Comment">##  - lookups: push error symbols here to avoid cascading errors in</span>
+                       <span class="Comment">##             interactive or outside of nested compilation contexts</span>
+                       <span class="Comment">##  - sem: init in `myopen`, then add itself, during system import add</span>
+                       <span class="Comment">##         the system module symbol</span>
+                       <span class="Comment">## read:</span>
+                       <span class="Comment">##  - implicitly read as it's part of the chain of scopes</span>
+  <span class="Identifier">topStmts</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Comment">## counts the number of encountered top level statements</span>
+                 <span class="Comment">## </span>
+                 <span class="Comment">## written:</span>
+                 <span class="Comment">##  - sem: incremented in semStmtAndGenerateGenerics</span>
+                 <span class="Comment">## read:</span>
+                 <span class="Comment">##  - semData: query if it's the first top level statement</span>
+  <span class="Identifier">includedFiles</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">IntSet</span> <span class="Comment">## used to detect recursive include files</span>
+                         <span class="Comment">## </span>
+                         <span class="Comment">## written:</span>
+                         <span class="Comment">##  - semdata: initialized</span>
+                         <span class="Comment">##  - semstmts: remove included file after processing</span>
+                         <span class="Comment">##              xxx: this is buggy and leads to bad error messages, we</span>
+                         <span class="Comment">##                   should instead mark it as already processed for nice</span>
+                         <span class="Comment">##                   errors about duplicate includes and declarations</span>
+                         <span class="Comment">## read:</span>
+                         <span class="Comment">##  - semstmts: check for recursive includes</span>
+  <span class="Identifier">unusedImports</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Other">(</span><a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">,</span> <a href="../ast/ast_types.html#TLineInfo"><span class="Identifier">TLineInfo</span></a><span class="Other">)</span><span class="Other">]</span> <span class="Comment">## tracks which imports are unused, assume all new imports are unused,</span>
+                                         <span class="Comment">## then remove them from here as we encounter usages.</span>
+                                         <span class="Comment">## </span>
+                                         <span class="Comment">## written:</span>
+                                         <span class="Comment">##  - importer: add all imported module as unused</span>
+                                         <span class="Comment">##  - suggest: `markOwnerModuleAsUsed`, used beyond suggestions</span>
+                                         <span class="Comment">## read:</span>
+                                         <span class="Comment">##  - sem: on pass close report all unused modules</span>
+  <span class="Identifier">features</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><a href="../front/in_options.html#Feature"><span class="Identifier">Feature</span></a><span class="Other">]</span> <span class="Comment">## compiler feature flags, can be varied via pragmas, so per module;</span>
+                          <span class="Comment">## maybe that shouldn't be a thing?</span>
+                          <span class="Comment">## </span>
+                          <span class="Comment">## written:</span>
+                          <span class="Comment">##  - pragmas: `processExperimental` enable experimental features</span>
+                          <span class="Comment">##  - semdata: init, push/pop pragma options</span>
+                          <span class="Comment">##  - sempass2: save/restore features during strict nil checks</span>
+                          <span class="Comment">##  - nileval: initialized for the interpreter</span>
+                          <span class="Comment">## read:</span>
+                          <span class="Comment">##  - lexer: for unicode operators</span>
+                          <span class="Comment">##  - semcall: implicit deref</span>
+                          <span class="Comment">##  - lookups: query overloadable enums</span>
+                          <span class="Comment">##  - semgnrc: query overloadable enums</span>
+                          <span class="Comment">##  - semtempl: query overloadable enums</span>
+                          <span class="Comment">##  - semtypes: query overloadable enums and strict not nil</span>
+                          <span class="Comment">##  - options: query nil checks enabled</span>
+                          <span class="Comment">##  - sempass2: query strict effects, views, funcs, and not nil</span>
+                          <span class="Comment">##  - typeallowed: query views</span>
+                          <span class="Comment">##  - semmagic: query dynamic bind sym</span>
+                          <span class="Comment">##  - semstmts: query dot and call operators</span>
+                          <span class="Comment">##  - vm/gen/ops: query allowInfiniteLoops and vmopsDanger</span>
+  <span class="Identifier">importModuleMap</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">]</span> <span class="Comment">## module.id =&gt; module.id; the key is an imported module, and the value</span>
+                                    <span class="Comment">## is the real module in case of alias</span>
+                                    <span class="Comment">## </span>
+                                    <span class="Comment">## written:</span>
+                                    <span class="Comment">##  - importer: track imported module/alias and the real module</span>
+                                    <span class="Comment">## read:</span>
+                                    <span class="Comment">##  - suggest: `markOwnerModuleAsUsed`, used beyond suggestions, query</span>
+                                    <span class="Comment">##             imported module to exclude from unused modules</span>
+  <span class="Identifier">exportIndirections</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">HashSet</span><span class="Other">[</span><span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">]</span> <span class="Comment">## (module.id, symbol.id); the first is the exporting/origin module and</span>
+                                           <span class="Comment">## the second is the exported symbol</span>
+                                           <span class="Comment">## </span>
+                                           <span class="Comment">## written:</span>
+                                           <span class="Comment">##  - importer: track if we're reexporting a symbol</span>
+                                           <span class="Comment">## read:</span>
+                                           <span class="Comment">##  - suggest: `markOwnerModuleAsUsed`, used beyond suggestions, query</span>
+                                           <span class="Comment">##             export indirections to track usage info</span>
+  <span class="Identifier">recursiveDep</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">importer</span><span class="Other">,</span> <span class="Identifier">importee</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">]</span><span class="Other">]</span> <span class="Comment">## used to detect recursive `importer` issues populated by importer and</span>
+                                                        <span class="Comment">## used by `lookups`</span>
+                                                        <span class="Comment">## </span>
+                                                        <span class="Comment">## written:</span>
+                                                        <span class="Comment">##  - importer: add dependency</span>
+                                                        <span class="Comment">##  - lookups: truncated to avoid excessive nim check errors</span>
+                                                        <span class="Comment">## read:</span>
+                                                        <span class="Comment">##  - lookups: query if for possible recursive dependencies</span>
+  <span class="Identifier">cache</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/idents.html#IdentCache"><span class="Identifier">IdentCache</span></a>         <span class="Comment">## used everywhere for identifier caching</span>
+  <span class="Identifier">graph</span><span class="Operator">*</span><span class="Other">:</span> <a href="../modules/modulegraphs.html#ModuleGraph"><span class="Identifier">ModuleGraph</span></a>        <span class="Comment">## access to the compilation graph, used everywhere</span>
+  <span class="Identifier">voidType</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a>           <span class="Comment">## for typeof(stmt)</span>
+                             <span class="Comment">## </span>
+                             <span class="Comment">## written: sem: initialized</span>
+                             <span class="Comment">## read: semExprWithType: set type for ast to void</span>
+  <span class="Identifier">intTypeCache</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">array</span><span class="Other">[</span><span class="DecNumber">-5</span> <span class="Operator">..</span> <span class="DecNumber">32</span><span class="Other">,</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a><span class="Other">]</span> <span class="Comment">## cache some common integer types to avoid type allocations</span>
+                                        <span class="Comment">## </span>
+                                        <span class="Comment">## written/read entirely in semdata `getIntLitType`</span>
+  <span class="Identifier">nilTypeCache</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a>       <span class="Comment">## store the nil type</span>
+                             <span class="Comment">## </span>
+                             <span class="Comment">## written/read in semexprs getNilType</span>
+  <span class="Identifier">converters</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">]</span> <span class="Comment">## track current converters and then look them up during dispatch in</span>
+                         <span class="Comment">## `sigmatch`.</span>
+                         <span class="Comment">## </span>
+                         <span class="Comment">## written:</span>
+                         <span class="Comment">##  - semdata: init and append in `addConverter` which is used when a</span>
+                         <span class="Comment">##             converter is defined or imported</span>
+                         <span class="Comment">## read:</span>
+                         <span class="Comment">##  - sigmatch: to query converters</span>
   <span class="Identifier">pureEnumFields</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#TStrTable"><span class="Identifier">TStrTable</span></a> <span class="Comment">## pure enum fields that can be used unambiguously</span>
-  <span class="Identifier">userPragmas</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#TStrTable"><span class="Identifier">TStrTable</span></a>
-  <span class="Identifier">evalContext</span><span class="Operator">*</span><span class="Other">:</span> <a href="../vm/vmdef.html#PEvalContext"><span class="Identifier">PEvalContext</span></a>
-  <span class="Identifier">unknownIdents</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">IntSet</span>     <span class="Comment">## ids of all unknown identifiers to prevent</span>
-                             <span class="Comment">## naming it multiple times</span>
-  <span class="Identifier">generics</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="semdata.html#TInstantiationPair"><span class="Identifier">TInstantiationPair</span></a><span class="Other">]</span> <span class="Comment">## pending list of instantiated generics to compile</span>
-  <span class="Identifier">topStmts</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>             <span class="Comment">## counts the number of encountered top level statements</span>
-  <span class="Identifier">lastGenericIdx</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>       <span class="Comment">## used for the generics stack</span>
-  <span class="Identifier">hloLoopDetector</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>      <span class="Comment">## used to prevent endless loops in the HLO</span>
+                             <span class="Comment">## </span>
+                             <span class="Comment">## written:</span>
+                             <span class="Comment">##  - importer: add when a pure enum field is declared or imported</span>
+                             <span class="Comment">##  - semdata: init</span>
+                             <span class="Comment">## read:</span>
+                             <span class="Comment">##  - lookups: search for pure enums if all else fails</span>
+                             <span class="Comment">##  - semgnrc: lookup pure enums</span>
+  <span class="Identifier">patterns</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">]</span> <span class="Comment">## sequence of pattern matchers used for term rewriting and also `hlo`,</span>
+                       <span class="Comment">## where highlevel optimizations are effectively pattern matches.</span>
+                       <span class="Comment">## </span>
+                       <span class="Comment">## written:</span>
+                       <span class="Comment">##  - semdata: init and updated via addPattern, which isn't used by hlo??</span>
+                       <span class="Comment">##  - hlo: `applyPatterns` add patterns for optimizations</span>
+                       <span class="Comment">##  - semstmts: semProcAux adds term rewriting definitions</span>
+                       <span class="Comment">##  - semtempl: semTemplateDef adds term rewriting definitions</span>
+                       <span class="Comment">## read:</span>
+                       <span class="Comment">##  - hlo: check len to see if there are patterns to apply</span>
+  <span class="Identifier">userPragmas</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#TStrTable"><span class="Identifier">TStrTable</span></a> <span class="Comment">## user pragma symbols</span>
+                          <span class="Comment">## </span>
+                          <span class="Comment">## written:</span>
+                          <span class="Comment">##  - pragmas: add user defined pragmas as encountered</span>
+                          <span class="Comment">##  - semdata: init</span>
+                          <span class="Comment">## read:</span>
+                          <span class="Comment">##  - pragmas: query user pragmas to see if we need to process it now</span>
+                          <span class="Comment">##  - semstmts: query user pragmas for proc/conv/etc annotation lookup</span>
+                          <span class="Comment">##  - semtypes: query user pragmas for type section pragmas</span>
+  <span class="Identifier">libs</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><a href="../ast/ast_types.html#PLib"><span class="Identifier">PLib</span></a><span class="Other">]</span> <span class="Comment">## all libs used by this module, mostly setup pragmas.</span>
+                   <span class="Comment">## </span>
+                   <span class="Comment">## written:</span>
+                   <span class="Comment">##  - semdata: init</span>
+                   <span class="Comment">##  - pragmas: add to dynamic libs</span>
+                   <span class="Comment">## read:</span>
+                   <span class="Comment">##  - pragmas: query dynamic libs</span>
+  <span class="Identifier">isAmbiguous</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">bool</span>         <span class="Comment">## track whether ident lookups are in ambiguous mode</span>
+                             <span class="Comment">## </span>
+                             <span class="Comment">## written:</span>
+                             <span class="Comment">##  - lookups: set so it can be fetched in `semexpr`</span>
+                             <span class="Comment">##  - semexpr: set prior to lookup</span>
+                             <span class="Comment">## read:</span>
+                             <span class="Comment">##  - semexpr: queried to see how to treat symbol ambiguity</span>
+  <span class="Identifier">semConstExpr</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> {.<span class="Identifier">nimcall</span>.} <span class="Comment">## used to break cyclic dependencies, init in sem during module open and</span>
+                                                                 <span class="Comment">## read in pragmas, semmagic, and semtypinst</span>
+  <span class="Identifier">semExpr</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">;</span> <span class="Identifier">flags</span><span class="Other">:</span> <a href="../ast/ast_types.html#TExprFlags"><span class="Identifier">TExprFlags</span></a> <span class="Other">=</span> <span class="Other">{</span><span class="Other">}</span><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> {.
+      <span class="Identifier">nimcall</span>.} <span class="Comment">## read to break cyclic dependencies, init in sem during module open and</span>
+                <span class="Comment">## read in concepts, pragmas, semtypinst, sigmatch, and suggest</span>
+  <span class="Identifier">semTryExpr</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">;</span> <span class="Identifier">flags</span><span class="Other">:</span> <a href="../ast/ast_types.html#TExprFlags"><span class="Identifier">TExprFlags</span></a> <span class="Other">=</span> <span class="Other">{</span><span class="Other">}</span><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> {.
+      <span class="Identifier">nimcall</span>.} <span class="Comment">## read to break cyclic dependencies, init in sem during module open and</span>
+                <span class="Comment">## read in sigmatch</span>
+  <span class="Identifier">semTryConstExpr</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> {.<span class="Identifier">nimcall</span>.} <span class="Comment">## read to break cyclic dependencies, init in sem during module open and</span>
+                                                                    <span class="Comment">## read in semcall and sigmatch</span>
+  <span class="Identifier">computeRequiresInit</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">t</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">nimcall</span>.} <span class="Comment">## read to break cyclic dependencies, init in sem during module open and</span>
+                                                                       <span class="Comment">## read in semtypinst</span>
+  <span class="Identifier">hasUnresolvedArgs</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Comment">## read to break cyclic dependencies, init in sem during module open and</span>
+                                                         <span class="Comment">## read in pragmas</span>
+  <span class="Identifier">semOperand</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">;</span> <span class="Identifier">flags</span><span class="Other">:</span> <a href="../ast/ast_types.html#TExprFlags"><span class="Identifier">TExprFlags</span></a> <span class="Other">=</span> <span class="Other">{</span><span class="Other">}</span><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> {.
+      <span class="Identifier">nimcall</span>.} <span class="Comment">## read to break cyclic dependencies, init in sem during module open and</span>
+                <span class="Comment">## read in semcall and sigmatch</span>
+  <span class="Identifier">semConstBoolExpr</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> {.<span class="Identifier">nimcall</span>.} <span class="Comment">## read to break cyclic dependencies, init in sem during module open and</span>
+                                                                     <span class="Comment">## read in pragmas</span>
+  <span class="Identifier">semOverloadedCall</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">;</span> <span class="Identifier">filter</span><span class="Other">:</span> <a href="../ast/ast_types.html#TSymKinds"><span class="Identifier">TSymKinds</span></a><span class="Other">;</span>
+                            <span class="Identifier">flags</span><span class="Other">:</span> <a href="../ast/ast_types.html#TExprFlags"><span class="Identifier">TExprFlags</span></a><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> {.<span class="Identifier">nimcall</span>.} <span class="Comment">## read to break cyclic dependencies, init in sem during module open and</span>
+                                                                  <span class="Comment">## read in pragmas and semtypinst</span>
+  <span class="Identifier">semTypeNode</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">;</span> <span class="Identifier">prev</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a> {.<span class="Identifier">nimcall</span>.} <span class="Comment">## read to break cyclic dependencies, init in sem during module open and</span>
+                                                                             <span class="Comment">## read in pragmas</span>
+  <span class="Identifier">semInferredLambda</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">pt</span><span class="Other">:</span> <a href="../ast/ast_types.html#TIdTable"><span class="Identifier">TIdTable</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> <span class="Comment">## read to break cyclic dependencies, init in sem during module open and</span>
+                                                                        <span class="Comment">## read in sigmatch</span>
+  <span class="Identifier">semGenerateInstance</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">fn</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">;</span> <span class="Identifier">pt</span><span class="Other">:</span> <a href="../ast/ast_types.html#TIdTable"><span class="Identifier">TIdTable</span></a><span class="Other">;</span>
+                              <span class="Identifier">info</span><span class="Other">:</span> <a href="../ast/ast_types.html#TLineInfo"><span class="Identifier">TLineInfo</span></a><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a> <span class="Comment">## read to break cyclic dependencies, init in sem during module open and</span>
+                                                     <span class="Comment">## read in sigmatch</span>
   <span class="Identifier">instTypeBoundOp</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">dc</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">;</span> <span class="Identifier">t</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a><span class="Other">;</span> <span class="Identifier">info</span><span class="Other">:</span> <a href="../ast/ast_types.html#TLineInfo"><span class="Identifier">TLineInfo</span></a><span class="Other">;</span>
-                          <span class="Identifier">op</span><span class="Other">:</span> <a href="../ast/ast_types.html#TTypeAttachedOp"><span class="Identifier">TTypeAttachedOp</span></a><span class="Other">;</span> <span class="Identifier">col</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a> {.<span class="Identifier">nimcall</span>.}
-  <span class="Identifier">selfName</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#PIdent"><span class="Identifier">PIdent</span></a>
-  <span class="Identifier">cache</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/idents.html#IdentCache"><span class="Identifier">IdentCache</span></a>
-  <span class="Identifier">graph</span><span class="Operator">*</span><span class="Other">:</span> <a href="../modules/modulegraphs.html#ModuleGraph"><span class="Identifier">ModuleGraph</span></a>
-  <span class="Identifier">signatures</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#TStrTable"><span class="Identifier">TStrTable</span></a>
-  <span class="Identifier">recursiveDep</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">importer</span><span class="Other">,</span> <span class="Identifier">importee</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">]</span><span class="Other">]</span>
-  <span class="Identifier">suggestionsMade</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">bool</span>
-  <span class="Identifier">isAmbiguous</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">bool</span>
-  <span class="Identifier">features</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">set</span><span class="Other">[</span><a href="../front/in_options.html#Feature"><span class="Identifier">Feature</span></a><span class="Other">]</span>
-  <span class="Identifier">inTypeContext</span><span class="Operator">*</span><span class="Other">,</span> <span class="Identifier">inConceptDecl</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
-  <span class="Identifier">unusedImports</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Other">(</span><a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">,</span> <a href="../ast/ast_types.html#TLineInfo"><span class="Identifier">TLineInfo</span></a><span class="Other">)</span><span class="Other">]</span>
-  <span class="Identifier">exportIndirections</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">HashSet</span><span class="Other">[</span><span class="Other">(</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">]</span> <span class="Comment">## (module.id, symbol.id)</span>
-  <span class="Identifier">importModuleMap</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">int</span><span class="Other">]</span> <span class="Comment">## (module.id, module.id)</span>
-  <span class="Identifier">lastTLineInfo</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#TLineInfo"><span class="Identifier">TLineInfo</span></a>
-  <span class="Identifier">sideEffects</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Other">(</span><a href="../ast/ast_types.html#TLineInfo"><span class="Identifier">TLineInfo</span></a><span class="Other">,</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">)</span><span class="Other">]</span><span class="Other">]</span> <span class="Comment">## symbol.id index</span>
-  <span class="Identifier">inUncheckedAssignSection</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
-</pre></dt>
+                          <span class="Identifier">op</span><span class="Other">:</span> <a href="../ast/ast_types.html#TTypeAttachedOp"><span class="Identifier">TTypeAttachedOp</span></a><span class="Other">;</span> <span class="Identifier">col</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a> {.<span class="Identifier">nimcall</span>.} <span class="Comment">## read to break cyclic dependencies, init in sem during module open and</span>
+                                                                           <span class="Comment">## read in liftdestructors and semtypinst</span>
+  <span class="Identifier">sideEffects</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">int</span><span class="Other">,</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Other">(</span><a href="../ast/ast_types.html#TLineInfo"><span class="Identifier">TLineInfo</span></a><span class="Other">,</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">)</span><span class="Other">]</span><span class="Other">]</span> <span class="Comment">## symbol.id =&gt; (info, sym); indexed on symbol id, tracks effects per sym</span>
+                                                   <span class="Comment">## </span>
+                                                   <span class="Comment">## written/read in sempass2, for marking and listing side effects</span>
+  <span class="Identifier">hloLoopDetector</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>      <span class="Comment">## used to prevent endless loops in the HLO</span>
+                             <span class="Comment">## </span>
+                             <span class="Comment">## written/read in hlo, detect if hlo pattern</span>
+                             <span class="Comment">## applications are looping</span>
+  <span class="Identifier">suggestionsMade</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">bool</span>     <span class="Comment">## track whether suggestion were made, written/read in sem</span>
+  <span class="Identifier">lastTLineInfo</span><span class="Operator">*</span><span class="Other">:</span> <a href="../ast/ast_types.html#TLineInfo"><span class="Identifier">TLineInfo</span></a> <span class="Comment">## last line info used in suggest by `markUsed` to track deprecated</span>
+                            <span class="Comment">## symbol locations</span>
+  </pre></dt>
 <dd>
 
 a context represents the module that is currently being compiled
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L94"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L128"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L94" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L128" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -770,7 +1450,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L77"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L77"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L77" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -786,7 +1466,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L72"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L72"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L72" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -806,7 +1486,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 entries to put on a stack for pragma parsing
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L48"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L48"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L48" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -829,7 +1509,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 procedure context; also used for top-level statements
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L59"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L59"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L59" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -846,9 +1526,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L357"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L870"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L357" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L870" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -858,9 +1538,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L362"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L875"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L362" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L875" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -870,9 +1550,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L343"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L856"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L343" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L856" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -883,9 +1563,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L339"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L852"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L339" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L852" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -895,9 +1575,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L373"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L886"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L373" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L886" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -907,9 +1587,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L347"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L860"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L347" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L860" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -919,9 +1599,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L367"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L880"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L367" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L880" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -931,9 +1611,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L579"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1092"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L579" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1092" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -944,9 +1624,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L574"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1087"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L574" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1087" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -956,9 +1636,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L394"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L907"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L394" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L907" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -969,9 +1649,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L544"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1057"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L544" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1057" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -982,9 +1662,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L538"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1051"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L538" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1051" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -994,9 +1674,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L275"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L789"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L275" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L789" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1006,9 +1686,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L514"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1027"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L514" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1027" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1018,9 +1698,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 creates a type representing an error state
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L509"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1022"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L509" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1022" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1030,9 +1710,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L380"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L893"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L380" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L893" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1042,9 +1722,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L226"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L740"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L226" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L740" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1054,9 +1734,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L518"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1031"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L518" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1031" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1066,9 +1746,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L260"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L774"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L260" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L774" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1078,9 +1758,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 owner stack (used for initializing the owner field of syms) the documentation comment always gets assigned to the current owner
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L234"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L748"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L234" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L748" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1090,9 +1770,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L264"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L778"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L264" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L778" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1104,9 +1784,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L177"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L691"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L177" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L691" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1116,9 +1796,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 <tt class="docutils literal"><span class="pre"><span class="Identifier">true</span></span></tt> if this is the first top level statement encountered for this module pass.
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L172"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L686"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L172" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L686" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1128,9 +1808,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L550"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1063"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L550" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1063" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1141,9 +1821,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L553"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1066"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L553" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1066" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1153,9 +1833,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L248"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L762"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L248" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L762" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1165,9 +1845,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L464"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L977"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L464" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L977" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1178,9 +1858,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L222"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L736"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L222" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L736" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1190,9 +1870,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L487"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1000"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L487" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1000" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1202,9 +1882,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L471"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L984"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L471" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L984" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1214,9 +1894,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L406"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L919"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L406" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L919" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1227,9 +1907,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L402"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L915"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L402" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L915" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1242,9 +1922,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L523"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1036"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L523" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1036" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1256,9 +1936,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L497"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1010"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L497" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1010" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1268,9 +1948,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L458"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L971"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L458" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L971" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1280,9 +1960,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L443"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L956"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L443" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L956" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1293,9 +1973,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L434"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L947"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L434" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L947" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1306,9 +1986,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L409"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L922"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L409" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L922" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1319,9 +1999,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L420"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L933"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L420" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L933" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1332,9 +2012,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L427"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L940"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L427" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L940" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1344,9 +2024,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L533"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1046"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L533" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1046" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1357,9 +2037,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L312"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L826"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L312" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L826" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1369,9 +2049,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L390"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L903"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L390" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L903" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1381,9 +2061,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L286"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L800"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L286" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L800" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1393,9 +2073,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L399"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L912"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L399" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L912" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1406,9 +2086,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L453"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L966"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L453" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L966" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1419,9 +2099,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L448"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L961"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L448" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L961" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1431,9 +2111,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L560"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1073"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L560" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1073" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1443,9 +2123,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L305"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L819"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L305" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L819" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1456,9 +2136,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L244"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L758"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L244" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L758" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1468,9 +2148,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L251"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L765"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L251" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L765" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1480,9 +2160,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L557"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1070"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L557" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1070" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1492,9 +2172,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L294"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L808"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L294" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L808" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1504,9 +2184,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L241"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L755"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L241" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L755" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1516,9 +2196,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L253"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L767"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L253" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L767" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1528,9 +2208,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L385"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L898"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L385" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L898" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1541,9 +2221,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 Templates and macros are very special in Nim; these have inlining semantics so after semantic checking they leave no trace in the sem'checked AST. This is very bad for IDE-like tooling (&quot;find all usages of this template&quot; would not work). We need special logic to remember macro/template expansions. This is done here and delegated to the &quot;rod&quot; file mechanism.
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L592"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1105"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L592" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1105" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1553,9 +2233,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L230"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L744"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L230" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L744" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1565,9 +2245,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L584"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1097"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L584" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1097" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1577,9 +2257,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L563"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1076"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L563" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1076" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1591,9 +2271,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L192"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L706"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L192" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L706" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1604,9 +2284,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L570"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1083"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L570" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1083" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1621,9 +2301,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 convenience to export a symbol from the current module
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L566"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1079"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L566" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1079" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1633,9 +2313,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L170"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L684"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L170" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L684" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1645,9 +2325,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L337"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L850"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L337" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L850" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1657,9 +2337,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L336"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L849"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L336" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L849" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -1669,9 +2349,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/0e34c3de0770834f4016b4ae546759afa33fbe29/compiler/sem/semdata.nim#L506"
+href="https://github.com/nim-works/nimskull/tree/220a06ac7bef26edf5e9f4039587d7a67490ce74/compiler/sem/semdata.nim#L1019"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L506" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/semdata.nim#L1019" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
