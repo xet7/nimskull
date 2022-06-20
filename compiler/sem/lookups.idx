@@ -42,7 +42,9 @@ fixSpelling	sem/lookups.html#fixSpelling,PContext,PIdent	lookups: fixSpelling(c:
 errorUseQualifier	sem/lookups.html#errorUseQualifier,PContext,TLineInfo,PSym	lookups: errorUseQualifier(c: PContext; info: TLineInfo; s: PSym)	
 errorUndeclaredIdentifier	sem/lookups.html#errorUndeclaredIdentifier,PContext,TLineInfo,string,seq[SemSpellCandidate]	lookups: errorUndeclaredIdentifier(c: PContext; info: TLineInfo; name: string;\n                          candidates: seq[SemSpellCandidate] = @[])	
 errorSym	sem/lookups.html#errorSym,PContext,PNode,PNode	lookups: errorSym(c: PContext; n, err: PNode): PSym	
+errorUndeclaredIdentifierHint	sem/lookups.html#errorUndeclaredIdentifierHint,PContext,PNode,PIdent	lookups: errorUndeclaredIdentifierHint(c: PContext; n: PNode; ident: PIdent): PSym	
 lookUp	sem/lookups.html#lookUp,PContext,PNode	lookups: lookUp(c: PContext; n: PNode): PSym	
+errorUndeclaredIdentifierWithHint	sem/lookups.html#errorUndeclaredIdentifierWithHint,PContext,PNode,string,seq[SemSpellCandidate]	lookups: errorUndeclaredIdentifierWithHint(c: PContext; n: PNode; name: string;\n                                  candidates: seq[SemSpellCandidate] = @[]): PSym	
 checkAmbiguity	sem/lookups.html#checkAmbiguity	TLookupFlag.checkAmbiguity	
 checkUndeclared	sem/lookups.html#checkUndeclared	TLookupFlag.checkUndeclared	
 checkModule	sem/lookups.html#checkModule	TLookupFlag.checkModule	
