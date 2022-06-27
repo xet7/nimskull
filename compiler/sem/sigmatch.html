@@ -140,9 +140,6 @@ window.addEventListener('DOMContentLoaded', main);
   <li><a class="reference" href="#TCandidateState"
     title="TCandidateState = enum
   csEmpty, csMatch, csNoMatch">TCandidateState</a></li>
-  <li><a class="reference" href="#TCheckPointResult"
-    title="TCheckPointResult = enum
-  cpNone, cpFuzzy, cpExact">TCheckPointResult</a></li>
   <li><a class="reference" href="#TTypeRelFlag"
     title="TTypeRelFlag = enum
   trDontBind, trNoCovariance, trBindGenericParam ## bind tyGenericParam even with trDontBind">TTypeRelFlag</a></li>
@@ -154,12 +151,7 @@ window.addEventListener('DOMContentLoaded', main);
 <li>
   <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
   <ul class="simple simple-toc-section">
-      <ul class="simple nested-toc-section">$
-      <li><a class="reference" href="#%24%2CSuggest"
-    title="`$`(suggest: Suggest): string">`$`(suggest: Suggest): string</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">argtypeMatches
+      <ul class="simple nested-toc-section">argtypeMatches
       <li><a class="reference" href="#argtypeMatches%2CPContext%2CPType%2CPType"
     title="argtypeMatches(c: PContext; f, a: PType; fromHlo = false): bool">argtypeMatches(c: PContext; f, a: PType; fromHlo = false): bool</a></li>
 
@@ -172,16 +164,6 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">cmpTypes
       <li><a class="reference" href="#cmpTypes%2CPContext%2CPType%2CPType"
     title="cmpTypes(c: PContext; f, a: PType): TTypeRelation">cmpTypes(c: PContext; f, a: PType): TTypeRelation</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">fieldVisible
-      <li><a class="reference" href="#fieldVisible%2CPContext%2CPSym"
-    title="fieldVisible(c: PContext; f: PSym): bool">fieldVisible(c: PContext; f: PSym): bool</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">inCheckpoint
-      <li><a class="reference" href="#inCheckpoint%2CTLineInfo%2CTLineInfo"
-    title="inCheckpoint(current, trackPos: TLineInfo): TCheckPointResult">inCheckpoint(current, trackPos: TLineInfo): TCheckPointResult</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">inferStaticParam
@@ -203,21 +185,6 @@ window.addEventListener('DOMContentLoaded', main);
     title="instTypeBoundOp(c: PContext; dc: PSym; t: PType; info: TLineInfo;
                 op: TTypeAttachedOp; col: int): PSym">instTypeBoundOp(c: PContext; dc: PSym; t: PType; info: TLineInfo;
                 op: TTypeAttachedOp; col: int): PSym</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">isTracked
-      <li><a class="reference" href="#isTracked%2CTLineInfo%2CTLineInfo%2Cint"
-    title="isTracked(current, trackPos: TLineInfo; tokenLen: int): bool">isTracked(current, trackPos: TLineInfo; tokenLen: int): bool</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">markOwnerModuleAsUsed
-      <li><a class="reference" href="#markOwnerModuleAsUsed%2CPContext%2CPSym"
-    title="markOwnerModuleAsUsed(c: PContext; s: PSym)">markOwnerModuleAsUsed(c: PContext; s: PSym)</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">markUsed
-      <li><a class="reference" href="#markUsed%2CPContext%2CTLineInfo%2CPSym"
-    title="markUsed(c: PContext; info: TLineInfo; s: PSym)">markUsed(c: PContext; info: TLineInfo; s: PSym)</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">matches
@@ -247,51 +214,9 @@ window.addEventListener('DOMContentLoaded', main);
     title="partialMatch(c: PContext; n: PNode; m: var TCandidate)">partialMatch(c: PContext; n: PNode; m: var TCandidate)</a></li>
 
   </ul>
-  <ul class="simple nested-toc-section">safeSemExpr
-      <li><a class="reference" href="#safeSemExpr%2CPContext%2CPNode"
-    title="safeSemExpr(c: PContext; n: PNode): PNode">safeSemExpr(c: PContext; n: PNode): PNode</a></li>
-
-  </ul>
   <ul class="simple nested-toc-section">semFinishOperands
       <li><a class="reference" href="#semFinishOperands%2CPContext%2CPNode"
     title="semFinishOperands(c: PContext; n: PNode)">semFinishOperands(c: PContext; n: PNode)</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">suggestDecl
-      <li><a class="reference" href="#suggestDecl%2CPContext%2CPNode%2CPSym"
-    title="suggestDecl(c: PContext; n: PNode; s: PSym)">suggestDecl(c: PContext; n: PNode; s: PSym)</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">suggestEnum
-      <li><a class="reference" href="#suggestEnum%2CPContext%2CPNode%2CPType"
-    title="suggestEnum(c: PContext; n: PNode; t: PType)">suggestEnum(c: PContext; n: PNode; t: PType)</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">suggestExpr
-      <li><a class="reference" href="#suggestExpr%2CPContext%2CPNode"
-    title="suggestExpr(c: PContext; n: PNode)">suggestExpr(c: PContext; n: PNode)</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">suggestExprNoCheck
-      <li><a class="reference" href="#suggestExprNoCheck%2CPContext%2CPNode"
-    title="suggestExprNoCheck(c: PContext; n: PNode)">suggestExprNoCheck(c: PContext; n: PNode)</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">suggestSentinel
-      <li><a class="reference" href="#suggestSentinel%2CPContext"
-    title="suggestSentinel(c: PContext)">suggestSentinel(c: PContext)</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">suggestStmt
-      <li><a class="reference" href="#suggestStmt%2CPContext%2CPNode"
-    title="suggestStmt(c: PContext; n: PNode)">suggestStmt(c: PContext; n: PNode)</a></li>
-
-  </ul>
-  <ul class="simple nested-toc-section">suggestSym
-      <li><a class="reference" href="#suggestSym%2CModuleGraph%2CTLineInfo%2CPSym%2CPSym"
-    title="suggestSym(g: ModuleGraph; info: TLineInfo; s: PSym; usageSym: var PSym;
-           isDecl = true)">suggestSym(g: ModuleGraph; info: TLineInfo; s: PSym; usageSym: var PSym;
-           isDecl = true)</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">toDebugCallableCandidate
@@ -328,27 +253,18 @@ window.addEventListener('DOMContentLoaded', main);
 
   </div>
   &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L1"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L1"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L1" class="link-seesrc" target="_blank" >Edit</a>
 
   <div class="nine columns" id="content">
   <div id="tocRoot"></div>
   
-  <p class="module-desc">This module implements the signature matching for resolving the call to overloaded procs, generic procs and operators.<p>This file implements features required for IDE support.</p>
-<p>Due to Nim's nature and the fact that <tt class="docutils literal"><span class="pre">system.nim</span></tt> is always imported, there are lots of potential symbols. Furthermore thanks to templates and macros even context based analysis does not help much: In a context like <tt class="docutils literal"><span class="pre">let x: |</span></tt> where a type has to follow, that type might be constructed from a template like <tt class="docutils literal"><span class="pre">extractField(MyObject, fieldName)</span></tt>. We deal with this problem by smart sorting so that the likely symbols come first. This sorting is done this way:</p>
-<ul class="simple"><li>If there is a prefix (foo|), symbols starting with this prefix come first.</li>
-<li>If the prefix is part of the name (but the name doesn't start with it), these symbols come second.</li>
-<li>If we have a prefix, only symbols matching this prefix are returned and nothing else.</li>
-<li>If we have no prefix, consider the context. We currently distinguish between type and non-type contexts.</li>
-<li>Finally, sort matches by relevance. The relevance is determined by the number of usages, so <tt class="docutils literal"><span class="pre">strutils.replace</span></tt> comes before <tt class="docutils literal"><span class="pre">strutils.wordWrap</span></tt>.</li>
-<li>In any case, sorting also considers scoping information. Local variables get high priority.</li>
-</ul>
-</p>
+  <p class="module-desc">This module implements the signature matching for resolving the call to overloaded procs, generic procs and operators.</p>
   <div class="section" id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="../ast/ast.html">../ast/ast</a>, <a class="reference external" href="../ast/astalgo.html">../ast/astalgo</a>, <a class="reference external" href="../ast/types.html">../ast/types</a>, <a class="reference external" href="../ast/renderer.html">../ast/renderer</a>, <a class="reference external" href="../ast/idents.html">../ast/idents</a>, <a class="reference external" href="../ast/lexer.html">../ast/lexer</a>, <a class="reference external" href="../ast/typesrenderer.html">../ast/typesrenderer</a>, <a class="reference external" href="../ast/trees.html">../ast/trees</a>, <a class="reference external" href="../ast/linter.html">../ast/linter</a>, <a class="reference external" href="../ast/lineinfos.html">../ast/lineinfos</a>, <a class="reference external" href="../ast/errorhandling.html">../ast/errorhandling</a>, <a class="reference external" href="../ast/reports.html">../ast/reports</a>, <a class="reference external" href="../modules/modulegraphs.html">../modules/modulegraphs</a>, <a class="reference external" href="../modules/magicsys.html">../modules/magicsys</a>, <a class="reference external" href="../front/msgs.html">../front/msgs</a>, <a class="reference external" href="../front/options.html">../front/options</a>, <a class="reference external" href="semdata.html">semdata</a>, <a class="reference external" href="semtypinst.html">semtypinst</a>, <a class="reference external" href="lookups.html">lookups</a>, <a class="reference external" href="lowerings.html">lowerings</a>, <a class="reference external" href="parampatterns.html">parampatterns</a>, <a class="reference external" href="concepts.html">concepts</a>, <a class="reference external" href="../utils/debugutils.html">../utils/debugutils</a>, <a class="reference external" href="../ast/wordrecg.html">../ast/wordrecg</a>, <a class="reference external" href="../utils/prefixmatches.html">../utils/prefixmatches</a>
+<a class="reference external" href="../ast/ast.html">../ast/ast</a>, <a class="reference external" href="../ast/astalgo.html">../ast/astalgo</a>, <a class="reference external" href="../ast/types.html">../ast/types</a>, <a class="reference external" href="../ast/renderer.html">../ast/renderer</a>, <a class="reference external" href="../ast/idents.html">../ast/idents</a>, <a class="reference external" href="../ast/trees.html">../ast/trees</a>, <a class="reference external" href="../ast/lineinfos.html">../ast/lineinfos</a>, <a class="reference external" href="../ast/errorhandling.html">../ast/errorhandling</a>, <a class="reference external" href="../ast/reports.html">../ast/reports</a>, <a class="reference external" href="../modules/modulegraphs.html">../modules/modulegraphs</a>, <a class="reference external" href="../modules/magicsys.html">../modules/magicsys</a>, <a class="reference external" href="../front/msgs.html">../front/msgs</a>, <a class="reference external" href="../front/options.html">../front/options</a>, <a class="reference external" href="semdata.html">semdata</a>, <a class="reference external" href="semtypinst.html">semtypinst</a>, <a class="reference external" href="lookups.html">lookups</a>, <a class="reference external" href="lowerings.html">lowerings</a>, <a class="reference external" href="parampatterns.html">parampatterns</a>, <a class="reference external" href="concepts.html">concepts</a>, <a class="reference external" href="../utils/debugutils.html">../utils/debugutils</a>
 </dl></div>
 <div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
@@ -391,9 +307,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L56"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L52"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L56" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L52" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -404,22 +320,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L53"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L49"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L53" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-</div>
-<div id="TCheckPointResult">
-<dt><pre><a href="sigmatch.html#TCheckPointResult"><span class="Identifier">TCheckPointResult</span></a> <span class="Other">=</span> <span class="Keyword">enum</span>
-  <span class="Identifier">cpNone</span><span class="Other">,</span> <span class="Identifier">cpFuzzy</span><span class="Other">,</span> <span class="Identifier">cpExact</span></pre></dt>
-<dd>
-
-
-&nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/tools/suggest.nim#L446"
-class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/tools/suggest.nim#L446" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L49" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -430,9 +333,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L89"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L85"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L89" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L85" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -442,9 +345,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L94"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L90"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L94" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L90" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -453,29 +356,17 @@ class="link-seesrc" target="_blank">Source</a>
 <div class="section" id="12">
 <h1><a class="toc-backref" href="#12">Procs</a></h1>
 <dl class="item">
-<div id="$,Suggest">
-<dt><pre><span class="Keyword">proc</span> <a href="#%24%2CSuggest"><span class="Identifier">`$`</span></a><span class="Other">(</span><span class="Identifier">suggest</span><span class="Other">:</span> <a href="../front/options.html#Suggest"><span class="Identifier">Suggest</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
-&nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/tools/suggest.nim#L187"
-class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/tools/suggest.nim#L187" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-</div>
 <div id="argtypeMatches,PContext,PType,PType">
 <dt><pre><span class="Keyword">proc</span> <a href="#argtypeMatches%2CPContext%2CPType%2CPType"><span class="Identifier">argtypeMatches</span></a><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">f</span><span class="Other">,</span> <span class="Identifier">a</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a><span class="Other">;</span> <span class="Identifier">fromHlo</span> <span class="Other">=</span> <span class="Identifier">false</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">ERecoverableError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">]</span></span>.}</pre></dt>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L2656"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L2649"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L2656" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L2649" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -486,9 +377,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L295"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L288"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L295" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L288" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -500,34 +391,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L1874"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L1867"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L1874" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-</div>
-<div id="fieldVisible,PContext,PSym">
-<dt><pre><span class="Keyword">proc</span> <a href="#fieldVisible%2CPContext%2CPSym"><span class="Identifier">fieldVisible</span></a><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">f</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
-&nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/tools/suggest.nim#L266"
-class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/tools/suggest.nim#L266" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-</div>
-<div id="inCheckpoint,TLineInfo,TLineInfo">
-<dt><pre><span class="Keyword">proc</span> <a href="#inCheckpoint%2CTLineInfo%2CTLineInfo"><span class="Identifier">inCheckpoint</span></a><span class="Other">(</span><span class="Identifier">current</span><span class="Other">,</span> <span class="Identifier">trackPos</span><span class="Other">:</span> <a href="../ast/ast_types.html#TLineInfo"><span class="Identifier">TLineInfo</span></a><span class="Other">)</span><span class="Other">:</span> <a href="sigmatch.html#TCheckPointResult"><span class="Identifier">TCheckPointResult</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
-&nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/tools/suggest.nim#L449"
-class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/tools/suggest.nim#L449" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L1867" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -549,9 +415,9 @@ class="link-seesrc" target="_blank">Source</a>
 </dl>
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L787"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L780"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L787" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L780" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -562,9 +428,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L145"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L138"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L145" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L138" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -575,9 +441,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L128"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L121"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L128" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L121" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -590,61 +456,23 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L2671"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L2664"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L2671" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-</div>
-<div id="isTracked,TLineInfo,TLineInfo,int">
-<dt><pre><span class="Keyword">proc</span> <a href="#isTracked%2CTLineInfo%2CTLineInfo%2Cint"><span class="Identifier">isTracked</span></a><span class="Other">(</span><span class="Identifier">current</span><span class="Other">,</span> <span class="Identifier">trackPos</span><span class="Other">:</span> <a href="../ast/ast_types.html#TLineInfo"><span class="Identifier">TLineInfo</span></a><span class="Other">;</span> <span class="Identifier">tokenLen</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
-&nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/tools/suggest.nim#L457"
-class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/tools/suggest.nim#L457" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-</div>
-<div id="markOwnerModuleAsUsed,PContext,PSym">
-<dt><pre><span class="Keyword">proc</span> <a href="#markOwnerModuleAsUsed%2CPContext%2CPSym"><span class="Identifier">markOwnerModuleAsUsed</span></a><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">s</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
-&nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/tools/suggest.nim#L577"
-class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/tools/suggest.nim#L577" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-</div>
-<div id="markUsed,PContext,TLineInfo,PSym">
-<dt><pre><span class="Keyword">proc</span> <a href="#markUsed%2CPContext%2CTLineInfo%2CPSym"><span class="Identifier">markUsed</span></a><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">info</span><span class="Other">:</span> <a href="../ast/ast_types.html#TLineInfo"><span class="Identifier">TLineInfo</span></a><span class="Other">;</span> <span class="Identifier">s</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">)</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">ERecoverableError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
-&nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/tools/suggest.nim#L593"
-class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/tools/suggest.nim#L593" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L2664" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="matches,PContext,PNode,TCandidate">
 <dt><pre><span class="Keyword">proc</span> <a href="#matches%2CPContext%2CPNode%2CTCandidate"><span class="Identifier">matches</span></a><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">;</span> <span class="Identifier">m</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="sigmatch.html#TCandidate"><span class="Identifier">TCandidate</span></a><span class="Other">)</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">ERecoverableError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ReadDirEffect</span><span class="Other">,</span> <span class="Identifier">RootEffect</span><span class="Other">]</span></span>.}</pre></dt>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ReadDirEffect</span><span class="Other">,</span> <span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L2597"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L2590"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L2597" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L2590" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -655,9 +483,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L632"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L625"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L632" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L625" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -668,9 +496,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L175"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L168"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L175" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L168" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -681,50 +509,37 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L179"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L172"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L179" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L172" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="paramTypesMatch,TCandidate,PType,PType,PNode">
 <dt><pre><span class="Keyword">proc</span> <a href="#paramTypesMatch%2CTCandidate%2CPType%2CPType%2CPNode"><span class="Identifier">paramTypesMatch</span></a><span class="Other">(</span><span class="Identifier">m</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="sigmatch.html#TCandidate"><span class="Identifier">TCandidate</span></a><span class="Other">;</span> <span class="Identifier">f</span><span class="Other">,</span> <span class="Identifier">a</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a><span class="Other">;</span> <span class="Identifier">arg</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">ERecoverableError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">]</span></span>.}</pre></dt>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L2216"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L2209"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L2216" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L2209" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="partialMatch,PContext,PNode,TCandidate">
 <dt><pre><span class="Keyword">proc</span> <a href="#partialMatch%2CPContext%2CPNode%2CTCandidate"><span class="Identifier">partialMatch</span></a><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">;</span> <span class="Identifier">m</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="sigmatch.html#TCandidate"><span class="Identifier">TCandidate</span></a><span class="Other">)</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">ERecoverableError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ReadDirEffect</span><span class="Other">,</span> <span class="Identifier">RootEffect</span><span class="Other">]</span></span>.}</pre></dt>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ReadDirEffect</span><span class="Other">,</span> <span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L2592"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L2585"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L2592" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-</div>
-<div id="safeSemExpr,PContext,PNode">
-<dt><pre><span class="Keyword">proc</span> <a href="#safeSemExpr%2CPContext%2CPNode"><span class="Identifier">safeSemExpr</span></a><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">)</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
-&nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/tools/suggest.nim#L614"
-class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/tools/suggest.nim#L614" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L2585" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -735,105 +550,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L2586"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L2579"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L2586" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-</div>
-<div id="suggestDecl,PContext,PNode,PSym">
-<dt><pre><span class="Keyword">proc</span> <a href="#suggestDecl%2CPContext%2CPNode%2CPSym"><span class="Identifier">suggestDecl</span></a><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">;</span> <span class="Identifier">s</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">)</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">ERecoverableError</span><span class="Other">,</span> <span class="Identifier">ESuggestDone</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
-&nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/tools/suggest.nim#L675"
-class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/tools/suggest.nim#L675" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-</div>
-<div id="suggestEnum,PContext,PNode,PType">
-<dt><pre><span class="Keyword">proc</span> <a href="#suggestEnum%2CPContext%2CPNode%2CPType"><span class="Identifier">suggestEnum</span></a><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">;</span> <span class="Identifier">t</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a><span class="Other">)</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">ESuggestDone</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
-&nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/tools/suggest.nim#L685"
-class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/tools/suggest.nim#L685" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-</div>
-<div id="suggestExpr,PContext,PNode">
-<dt><pre><span class="Keyword">proc</span> <a href="#suggestExpr%2CPContext%2CPNode"><span class="Identifier">suggestExpr</span></a><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">)</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">ERecoverableError</span><span class="Other">,</span> <span class="Identifier">ESuggestDone</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
-&nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/tools/suggest.nim#L672"
-class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/tools/suggest.nim#L672" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-</div>
-<div id="suggestExprNoCheck,PContext,PNode">
-<dt><pre><span class="Keyword">proc</span> <a href="#suggestExprNoCheck%2CPContext%2CPNode"><span class="Identifier">suggestExprNoCheck</span></a><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">)</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">ERecoverableError</span><span class="Other">,</span> <span class="Identifier">ESuggestDone</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
-&nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/tools/suggest.nim#L643"
-class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/tools/suggest.nim#L643" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-</div>
-<div id="suggestSentinel,PContext">
-<dt><pre><span class="Keyword">proc</span> <a href="#suggestSentinel%2CPContext"><span class="Identifier">suggestSentinel</span></a><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span>
-    <span class="Identifier">ReadDirEffect</span><span class="Other">,</span> <span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
-&nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/tools/suggest.nim#L691"
-class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/tools/suggest.nim#L691" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-</div>
-<div id="suggestStmt,PContext,PNode">
-<dt><pre><span class="Keyword">proc</span> <a href="#suggestStmt%2CPContext%2CPNode"><span class="Identifier">suggestStmt</span></a><span class="Other">(</span><span class="Identifier">c</span><span class="Other">:</span> <a href="semdata.html#PContext"><span class="Identifier">PContext</span></a><span class="Other">;</span> <span class="Identifier">n</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">)</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">ERecoverableError</span><span class="Other">,</span> <span class="Identifier">ESuggestDone</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-
-&nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/tools/suggest.nim#L682"
-class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/tools/suggest.nim#L682" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-</div>
-<div id="suggestSym,ModuleGraph,TLineInfo,PSym,PSym">
-<dt><pre><span class="Keyword">proc</span> <a href="#suggestSym%2CModuleGraph%2CTLineInfo%2CPSym%2CPSym"><span class="Identifier">suggestSym</span></a><span class="Other">(</span><span class="Identifier">g</span><span class="Other">:</span> <a href="../modules/modulegraphs.html#ModuleGraph"><span class="Identifier">ModuleGraph</span></a><span class="Other">;</span> <span class="Identifier">info</span><span class="Other">:</span> <a href="../ast/ast_types.html#TLineInfo"><span class="Identifier">TLineInfo</span></a><span class="Other">;</span> <span class="Identifier">s</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">;</span> <span class="Identifier">usageSym</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">;</span>
-                <span class="Identifier">isDecl</span> <span class="Other">=</span> <span class="Identifier">true</span><span class="Other">)</span> {.<span class="Identifier">inline</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-misnamed: should be 'symDeclared'
-&nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/tools/suggest.nim#L509"
-class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/tools/suggest.nim#L509" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L2579" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -844,9 +563,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L102"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L95"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L102" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L95" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -866,9 +585,9 @@ typeRel can be used to establish various relationships between types:<ol class="
 <p><tt class="docutils literal"><span class="pre"><span class="Identifier">seq</span><span class="Punctuation">[</span><span class="Identifier">seq</span><span class="Punctuation">[</span><span class="Identifier">any</span><span class="Punctuation">]</span><span class="Punctuation">]</span></span></tt> is a strict subset of seq[any] and hence more specific.</p>
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L945"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L938"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L945" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L938" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -879,9 +598,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L286"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L279"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L286" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L279" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -896,9 +615,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/23eb3017bca18d4ee8fa4291d2114a3b490b31f7/compiler/sem/sigmatch.nim#L112"
+href="https://github.com/nim-works/nimskull/tree/709d2b9b7f4c4b9ced2809fdccc1a150aabc30fa/compiler/sem/sigmatch.nim#L105"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L112" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/sem/sigmatch.nim#L105" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>

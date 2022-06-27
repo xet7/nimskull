@@ -12,6 +12,7 @@ TPassOpen	modules/modulegraphs.html#TPassOpen	modulegraphs: TPassOpen
 TPassClose	modules/modulegraphs.html#TPassClose	modulegraphs: TPassClose	
 TPassProcess	modules/modulegraphs.html#TPassProcess	modulegraphs: TPassProcess	
 TPass	modules/modulegraphs.html#TPass	modulegraphs: TPass	
+SuggestCallback	modules/modulegraphs.html#SuggestCallback	modulegraphs: SuggestCallback	
 resetForBackend	modules/modulegraphs.html#resetForBackend,ModuleGraph	modulegraphs: resetForBackend(g: ModuleGraph)	
 semtabAll	modules/modulegraphs.html#semtabAll.t,ModuleGraph,PSym	modulegraphs: semtabAll(g: ModuleGraph; m: PSym): TStrTable	
 initStrTables	modules/modulegraphs.html#initStrTables,ModuleGraph,PSym	modulegraphs: initStrTables(g: ModuleGraph; m: PSym)	

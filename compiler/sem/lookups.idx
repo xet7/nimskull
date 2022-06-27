@@ -55,3 +55,4 @@ initOverloadIter	sem/lookups.html#initOverloadIter,TOverloadIter,PContext,PNode	
 lastOverloadScope	sem/lookups.html#lastOverloadScope,TOverloadIter	lookups: lastOverloadScope(o: TOverloadIter): int	
 nextOverloadIter	sem/lookups.html#nextOverloadIter,TOverloadIter,PContext,PNode	lookups: nextOverloadIter(o: var TOverloadIter; c: PContext; n: PNode): PSym	
 pickSym	sem/lookups.html#pickSym,PContext,PNode,set[TSymKind],TSymFlags	lookups: pickSym(c: PContext; n: PNode; kinds: set[TSymKind]; flags: TSymFlags = {}): PSym	
+fieldVisible	sem/lookups.html#fieldVisible,PContext,PSym	lookups: fieldVisible(c: PContext; f: PSym): bool	
