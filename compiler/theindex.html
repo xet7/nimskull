@@ -12059,7 +12059,11 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="registerAdditionalOps" href="#registerAdditionalOps"><span>registerAdditionalOps:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vmops: registerAdditionalOps(c: PCtx)" href="vm/vmops.html#registerAdditionalOps%2CPCtx">vmops: registerAdditionalOps(c: PCtx)</a></li>
+          data-doc-search-tag="vmops: registerAdditionalOps(c: var TCtx; disallowDangerous: bool)" href="vm/vmops.html#registerAdditionalOps%2CTCtx%2Cbool">vmops: registerAdditionalOps(c: var TCtx; disallowDangerous: bool)</a></li>
+          </ul></dd>
+<dt><a name="registerBasicOps" href="#registerBasicOps"><span>registerBasicOps:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="vmops: registerBasicOps(c: var TCtx)" href="vm/vmops.html#registerBasicOps%2CTCtx">vmops: registerBasicOps(c: var TCtx)</a></li>
           </ul></dd>
 <dt><a name="registerCallback" href="#registerCallback"><span>registerCallback:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -12071,9 +12075,29 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="magicsys: registerCompilerProc(g: ModuleGraph; s: PSym)" href="modules/magicsys.html#registerCompilerProc%2CModuleGraph%2CPSym">magicsys: registerCompilerProc(g: ModuleGraph; s: PSym)</a></li>
           </ul></dd>
+<dt><a name="registerCompileTimeOps" href="#registerCompileTimeOps"><span>registerCompileTimeOps:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="vmops: registerCompileTimeOps(c: var TCtx)" href="vm/vmops.html#registerCompileTimeOps%2CTCtx">vmops: registerCompileTimeOps(c: var TCtx)</a></li>
+          </ul></dd>
+<dt><a name="registerDebugOps" href="#registerDebugOps"><span>registerDebugOps:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="vmops: registerDebugOps(c: var TCtx)" href="vm/vmops.html#registerDebugOps%2CTCtx">vmops: registerDebugOps(c: var TCtx)</a></li>
+          </ul></dd>
 <dt><a name="registerInitProcs" href="#registerInitProcs"><span>registerInitProcs:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="cgen: registerInitProcs(g: BModuleList; m: PSym; flags: set[ModuleBackendFlag])" href="backend/cgen.html#registerInitProcs%2CBModuleList%2CPSym%2Cset%5BModuleBackendFlag%5D">cgen: registerInitProcs(g: BModuleList; m: PSym; flags: set[ModuleBackendFlag])</a></li>
+          </ul></dd>
+<dt><a name="registerIoReadOps" href="#registerIoReadOps"><span>registerIoReadOps:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="vmops: registerIoReadOps(c: var TCtx)" href="vm/vmops.html#registerIoReadOps%2CTCtx">vmops: registerIoReadOps(c: var TCtx)</a></li>
+          </ul></dd>
+<dt><a name="registerIoWriteOps" href="#registerIoWriteOps"><span>registerIoWriteOps:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="vmops: registerIoWriteOps(c: var TCtx)" href="vm/vmops.html#registerIoWriteOps%2CTCtx">vmops: registerIoWriteOps(c: var TCtx)</a></li>
+          </ul></dd>
+<dt><a name="registerMacroOps" href="#registerMacroOps"><span>registerMacroOps:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="vmops: registerMacroOps(c: var TCtx)" href="vm/vmops.html#registerMacroOps%2CTCtx">vmops: registerMacroOps(c: var TCtx)</a></li>
           </ul></dd>
 <dt><a name="registerModule" href="#registerModule"><span>registerModule:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -12090,6 +12114,14 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="registerNimScriptSymbol2" href="#registerNimScriptSymbol2"><span>registerNimScriptSymbol2:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="magicsys: registerNimScriptSymbol2(g: ModuleGraph; s: PSym): PNode" href="modules/magicsys.html#registerNimScriptSymbol2%2CModuleGraph%2CPSym">magicsys: registerNimScriptSymbol2(g: ModuleGraph; s: PSym): PNode</a></li>
+          </ul></dd>
+<dt><a name="registerOs2Ops" href="#registerOs2Ops"><span>registerOs2Ops:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="vmops: registerOs2Ops(c: var TCtx)" href="vm/vmops.html#registerOs2Ops%2CTCtx">vmops: registerOs2Ops(c: var TCtx)</a></li>
+          </ul></dd>
+<dt><a name="registerOsOps" href="#registerOsOps"><span>registerOsOps:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="vmops: registerOsOps(c: var TCtx)" href="vm/vmops.html#registerOsOps%2CTCtx">vmops: registerOsOps(c: var TCtx)</a></li>
           </ul></dd>
 <dt><a name="registerPass" href="#registerPass"><span>registerPass:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -20556,7 +20588,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-06-30 00:00:00 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-07-01 00:00:00 UTC</small>
       </div>
     </div>
   </div>
