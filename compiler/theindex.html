@@ -2879,7 +2879,7 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="ic: debug(tree: PackedTree; m: PackedModule)" href="ic/ic.html#debug%2CPackedTree%2CPackedModule">ic: debug(tree: PackedTree; m: PackedModule)</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="astrepr: debug(it: PNode | PSym | PNode)" href="utils/astrepr.html#debug">astrepr: debug(it: PNode | PSym | PNode)</a></li>
+          data-doc-search-tag="astrepr: debug(it: PNode | PSym | PType)" href="utils/astrepr.html#debug">astrepr: debug(it: PNode | PSym | PType)</a></li>
           <li><a class="reference external"
           data-doc-search-tag="astrepr: debug(it: PNode | PSym | PNode; tconf: TReprConf)" href="utils/astrepr.html#debug%2C%2CTReprConf">astrepr: debug(it: PNode | PSym | PNode; tconf: TReprConf)</a></li>
           <li><a class="reference external"
@@ -5354,6 +5354,10 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="indAndComment" href="#indAndComment"><span>indAndComment:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="parser: indAndComment(p: var Parser; n: PNode; maybeMissEquals = false)" href="ast/parser.html#indAndComment%2CParser%2CPNode">parser: indAndComment(p: var Parser; n: PNode; maybeMissEquals = false)</a></li>
+          </ul></dd>
+<dt><a name="inDebug" href="#inDebug"><span>inDebug:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="astrepr: inDebug(): bool" href="utils/astrepr.html#inDebug">astrepr: inDebug(): bool</a></li>
           </ul></dd>
 <dt><a name="index" href="#index"><span>index:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -18255,6 +18259,10 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="NilTransition.TResult" href="sem/nilcheck_enums.html#TResult">NilTransition.TResult</a></li>
           </ul></dd>
+<dt><a name="trfDescFlag" href="#trfDescFlag"><span>trfDescFlag:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="TReprFlag.trfDescFlag" href="utils/astrepr.html#trfDescFlag">TReprFlag.trfDescFlag</a></li>
+          </ul></dd>
 <dt><a name="trfIndexVisisted" href="#trfIndexVisisted"><span>trfIndexVisisted:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="TReprFlag.trfIndexVisisted" href="utils/astrepr.html#trfIndexVisisted">TReprFlag.trfIndexVisisted</a></li>
@@ -18270,6 +18278,18 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="trfShowDefaultedFields" href="#trfShowDefaultedFields"><span>trfShowDefaultedFields:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="TReprFlag.trfShowDefaultedFields" href="utils/astrepr.html#trfShowDefaultedFields">TReprFlag.trfShowDefaultedFields</a></li>
+          </ul></dd>
+<dt><a name="trfShowFullSymTypes" href="#trfShowFullSymTypes"><span>trfShowFullSymTypes:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="TReprFlag.trfShowFullSymTypes" href="utils/astrepr.html#trfShowFullSymTypes">TReprFlag.trfShowFullSymTypes</a></li>
+          </ul></dd>
+<dt><a name="trfShowKindTypes" href="#trfShowKindTypes"><span>trfShowKindTypes:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="TReprFlag.trfShowKindTypes" href="utils/astrepr.html#trfShowKindTypes">TReprFlag.trfShowKindTypes</a></li>
+          </ul></dd>
+<dt><a name="trfShowNilFields" href="#trfShowNilFields"><span>trfShowNilFields:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="TReprFlag.trfShowNilFields" href="utils/astrepr.html#trfShowNilFields">TReprFlag.trfShowNilFields</a></li>
           </ul></dd>
 <dt><a name="trfShowNodeComments" href="#trfShowNodeComments"><span>trfShowNodeComments:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -18354,6 +18374,10 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="trfShowTypeAlloc" href="#trfShowTypeAlloc"><span>trfShowTypeAlloc:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="TReprFlag.trfShowTypeAlloc" href="utils/astrepr.html#trfShowTypeAlloc">TReprFlag.trfShowTypeAlloc</a></li>
+          </ul></dd>
+<dt><a name="trfShowTypeAst" href="#trfShowTypeAst"><span>trfShowTypeAst:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="TReprFlag.trfShowTypeAst" href="utils/astrepr.html#trfShowTypeAst">TReprFlag.trfShowTypeAst</a></li>
           </ul></dd>
 <dt><a name="trfShowTypeCallConv" href="#trfShowTypeCallConv"><span>trfShowTypeCallConv:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -20592,7 +20616,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-07-03 00:00:00 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-07-04 00:00:00 UTC</small>
       </div>
     </div>
   </div>

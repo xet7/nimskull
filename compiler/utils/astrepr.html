@@ -136,7 +136,12 @@ window.addEventListener('DOMContentLoaded', main);
                              ## metadata and are rarely needed for printing.
   trfIndexVisisted,         ## Enumerate each visited node when printing the
                              ## `PNode` tree
+  trfShowKindTypes, ## Show `T:`, `S:`, `N:` prefixes for the enum kinds
+                     ## when printed in the tree. This is useful to distinguish between
+                     ## various structure types when printing node that contains symbols
+                     ## which also have types.
   trfShowDefaultedFields,   ## Show fields with defaulted values
+  trfShowNilFields,         ## Show fields with `nil` values
   trfShowSymFlags,          ## Show symbol `.flags` field
   trfShowSymLineInfo,       ## Line information
   trfShowSymName, trfShowSymTypes, ## Flat render of the symbol type
@@ -149,10 +154,13 @@ window.addEventListener('DOMContentLoaded', main);
   trfShowSymBitsize,        ## `.bitsize`
   trfShowSymAlignment,      ## `.alignment`
   trfShowSymAst,            ## `.ast` from the symbol
+  trfShowFullSymTypes,      ## Full render of the symbol type on one level.
+                             ## Multiple levels are not printed
   trfShowSymId,             ## `module` and `item` from `itemId` field
   trfShowTypeCallConv,      ## Calling convention
   trfShowTypeFlags,         ## `.flags`
   trfShowTypeSym,           ## `.sym`
+  trfShowTypeAst,           ## `.n` of the `PType` object
   trfShowTypeAlloc,         ## `.align` and `.size` fields. They represent a
                              ## single logical chunk of information, and pinter together
   trfShowTypeOwner,         ## Full chain of the type owner
@@ -162,7 +170,8 @@ window.addEventListener('DOMContentLoaded', main);
   trfShowNodeIds,           ## `.id` field, available when compiler is built with `-d:nodeIds`
   trfShowNodeComments,      ## `.comment` field
   trfShowNodeErrors,        ## Embedded `nkError` reports
-  trfShowNodeTypes           ## Flat render of the node type">TReprFlag</a></li>
+  trfShowNodeTypes, trfDescFlag ## For each formatted field, show name of the flag that
+                                ## controls it">TReprFlag</a></li>
 
   </ul>
 </li>
@@ -181,9 +190,9 @@ window.addEventListener('DOMContentLoaded', main);
     title="compactTReprConf = defaultTReprConf + trfPackedFields">compactTReprConf</a></li>
   <li><a class="reference" href="#defaultTReprConf"
     title="defaultTReprConf = TReprConf(maxDepth: 120, maxLen: 30, maxPath: 1, flags: {
-    trfReportInfo, trfSkipAuxError, trfShowSymFlags,
+    trfReportInfo, trfSkipAuxError, trfShowKindTypes, trfShowSymFlags,
     trfShowSymName..trfShowSymOwner, trfShowSymOffset..trfShowSymAlignment,
-    trfShowTypeCallConv..trfShowTypeSym, trfShowTypeOwner,
+    trfShowFullSymTypes, trfShowTypeCallConv..trfShowTypeSym, trfShowTypeOwner,
     trfShowNodeFlags..trfShowNodeTypes})">defaultTReprConf</a></li>
   <li><a class="reference" href="#onlyStructureTReprConf"
     title="onlyStructureTReprConf = block:
@@ -194,7 +203,7 @@ window.addEventListener('DOMContentLoaded', main);
   <li><a class="reference" href="#verboseTReprConf"
     title="verboseTReprConf = block:   ## Show absolutely everything
   var base = defaultTReprConf + {low(TReprFlag)..high(TReprFlag)} -
-      {trfPackedFields}
+      {trfPackedFields, trfDescFlag}
   base.maxPath = 40
   base">verboseTReprConf</a></li>
 
@@ -226,10 +235,10 @@ window.addEventListener('DOMContentLoaded', main);
     title="debug(conf: ConfigRef; it: PNode | PType | PSym)">debug(conf: ConfigRef; it: PNode | PType | PSym)</a></li>
   <li><a class="reference" href="#debug%2CConfigRef%2C%2CTReprConf"
     title="debug(conf: ConfigRef; it: PNode | PType | PSym; tconf: TReprConf)">debug(conf: ConfigRef; it: PNode | PType | PSym; tconf: TReprConf)</a></li>
-  <li><a class="reference" href="#debug"
-    title="debug(it: PNode | PSym | PNode)">debug(it: PNode | PSym | PNode)</a></li>
   <li><a class="reference" href="#debug%2C%2CTReprConf"
     title="debug(it: PNode | PSym | PNode; tconf: TReprConf)">debug(it: PNode | PSym | PNode; tconf: TReprConf)</a></li>
+  <li><a class="reference" href="#debug"
+    title="debug(it: PNode | PSym | PType)">debug(it: PNode | PSym | PType)</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">debugAst
@@ -255,6 +264,11 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">incl
       <li><a class="reference" href="#incl%2CTReprConf%2C"
     title="incl(conf: var TReprConf; flag: TReprFlag | set[TReprFlag])">incl(conf: var TReprConf; flag: TReprFlag | set[TReprFlag])</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">inDebug
+      <li><a class="reference" href="#inDebug"
+    title="inDebug(): bool">inDebug(): bool</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">inFile
@@ -301,7 +315,7 @@ window.addEventListener('DOMContentLoaded', main);
 
   </div>
   &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L1"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L1"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L1" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -320,7 +334,9 @@ class="link-seesrc" target="_blank">Source</a>
 <p><tt class="docutils literal"><span class="pre"><span class="Identifier">treeRepr</span></span></tt> and all other procedures in the module accept <tt class="docutils literal"><span class="pre"><span class="Identifier">TReprConf</span></span></tt> object (default value is provided via <tt class="docutils literal"><span class="pre"><span class="Identifier">implicitTReprConf</span></span></tt> global, for gdb procs it is used implicitly) that controls which fields specifically will be printed.</p>
 <p>Configuration object also includes callbacks that would allow you to provide additional information for the printed targets. For example, you want to perform some analysis, and don't have <tt class="docutils literal"><span class="pre"><span class="Identifier">ConfigRef</span></span></tt> object passed around (because your code <em>only</em> collects some data from the nodes). But then you need to figure out the actual location of where node comes from. In that case you simply assign to <tt class="docutils literal"><span class="pre"><span class="Identifier">implicitTReprConf</span><span class="Operator">.</span><span class="Identifier">extraNodeInfo</span></span></tt>, and next <tt class="docutils literal"><span class="pre"><span class="Identifier">debug</span></span></tt> you call will provide needed information.</p>
 <pre class="listing"><span class="Identifier">implicitTReprConf</span><span class="Operator">.</span><span class="Identifier">extraNodeInfo</span> <span class="Operator">=</span> <span class="Keyword">proc</span><span class="Punctuation">(</span><span class="Identifier">node</span><span class="Punctuation">:</span> <span class="Identifier">PNode</span><span class="Punctuation">)</span><span class="Punctuation">:</span> <span class="Identifier">ColText</span> <span class="Operator">=</span>
-  <span class="Identifier">result</span><span class="Operator">.</span><span class="Identifier">add</span> <span class="StringLit">&quot;node location &quot;</span> <span class="Operator">&amp;</span> <span class="Punctuation">(</span><span class="Identifier">config</span> <span class="Operator">$</span> <span class="Identifier">node</span><span class="Operator">.</span><span class="Identifier">info</span><span class="Punctuation">)</span></pre></p>
+  <span class="Identifier">result</span><span class="Operator">.</span><span class="Identifier">add</span> <span class="StringLit">&quot;node location &quot;</span> <span class="Operator">&amp;</span> <span class="Punctuation">(</span><span class="Identifier">config</span> <span class="Operator">$</span> <span class="Identifier">node</span><span class="Operator">.</span><span class="Identifier">info</span><span class="Punctuation">)</span></pre><p>You can change implicit trepr configuration in the necessary modules or in <tt class="docutils literal"><span class="pre"><span class="Identifier">compiler</span><span class="Operator">/</span><span class="Identifier">nim</span><span class="Operator">.</span><span class="Identifier">nim</span></span></tt>, right after creation of the config reference.</p>
+<p>If you need to figure out what specific flag controls which field (without going into the source code) add <tt class="docutils literal"><span class="pre"><span class="Identifier">trfDescFlag</span></span></tt> to the configuration.</p>
+</p>
   <div class="section" id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
@@ -354,9 +370,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 Main debug configuration object
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L114"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L128"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L114" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L128" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -372,7 +388,12 @@ class="link-seesrc" target="_blank">Source</a>
                              <span class="Comment">## metadata and are rarely needed for printing.</span>
   <span class="Identifier">trfIndexVisisted</span><span class="Other">,</span>         <span class="Comment">## Enumerate each visited node when printing the</span>
                              <span class="Comment">## `PNode` tree</span>
+  <span class="Identifier">trfShowKindTypes</span><span class="Other">,</span> <span class="Comment">## Show `T:`, `S:`, `N:` prefixes for the enum kinds</span>
+                     <span class="Comment">## when printed in the tree. This is useful to distinguish between</span>
+                     <span class="Comment">## various structure types when printing node that contains symbols</span>
+                     <span class="Comment">## which also have types.</span>
   <span class="Identifier">trfShowDefaultedFields</span><span class="Other">,</span>   <span class="Comment">## Show fields with defaulted values</span>
+  <span class="Identifier">trfShowNilFields</span><span class="Other">,</span>         <span class="Comment">## Show fields with `nil` values</span>
   <span class="Identifier">trfShowSymFlags</span><span class="Other">,</span>          <span class="Comment">## Show symbol `.flags` field</span>
   <span class="Identifier">trfShowSymLineInfo</span><span class="Other">,</span>       <span class="Comment">## Line information</span>
   <span class="Identifier">trfShowSymName</span><span class="Other">,</span> <span class="Identifier">trfShowSymTypes</span><span class="Other">,</span> <span class="Comment">## Flat render of the symbol type</span>
@@ -385,10 +406,13 @@ class="link-seesrc" target="_blank">Source</a>
   <span class="Identifier">trfShowSymBitsize</span><span class="Other">,</span>        <span class="Comment">## `.bitsize`</span>
   <span class="Identifier">trfShowSymAlignment</span><span class="Other">,</span>      <span class="Comment">## `.alignment`</span>
   <span class="Identifier">trfShowSymAst</span><span class="Other">,</span>            <span class="Comment">## `.ast` from the symbol</span>
+  <span class="Identifier">trfShowFullSymTypes</span><span class="Other">,</span>      <span class="Comment">## Full render of the symbol type on one level.</span>
+                             <span class="Comment">## Multiple levels are not printed</span>
   <span class="Identifier">trfShowSymId</span><span class="Other">,</span>             <span class="Comment">## `module` and `item` from `itemId` field</span>
   <span class="Identifier">trfShowTypeCallConv</span><span class="Other">,</span>      <span class="Comment">## Calling convention</span>
   <span class="Identifier">trfShowTypeFlags</span><span class="Other">,</span>         <span class="Comment">## `.flags`</span>
   <span class="Identifier">trfShowTypeSym</span><span class="Other">,</span>           <span class="Comment">## `.sym`</span>
+  <span class="Identifier">trfShowTypeAst</span><span class="Other">,</span>           <span class="Comment">## `.n` of the `PType` object</span>
   <span class="Identifier">trfShowTypeAlloc</span><span class="Other">,</span>         <span class="Comment">## `.align` and `.size` fields. They represent a</span>
                              <span class="Comment">## single logical chunk of information, and pinter together</span>
   <span class="Identifier">trfShowTypeOwner</span><span class="Other">,</span>         <span class="Comment">## Full chain of the type owner</span>
@@ -398,14 +422,15 @@ class="link-seesrc" target="_blank">Source</a>
   <span class="Identifier">trfShowNodeIds</span><span class="Other">,</span>           <span class="Comment">## `.id` field, available when compiler is built with `-d:nodeIds`</span>
   <span class="Identifier">trfShowNodeComments</span><span class="Other">,</span>      <span class="Comment">## `.comment` field</span>
   <span class="Identifier">trfShowNodeErrors</span><span class="Other">,</span>        <span class="Comment">## Embedded `nkError` reports</span>
-  <span class="Identifier">trfShowNodeTypes</span>           <span class="Comment">## Flat render of the node type</span></pre></dt>
+  <span class="Identifier">trfShowNodeTypes</span><span class="Other">,</span> <span class="Identifier">trfDescFlag</span> <span class="Comment">## For each formatted field, show name of the flag that</span>
+                                <span class="Comment">## controls it</span></pre></dt>
 <dd>
 
 Configuration options for treeRepr debugging
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L70"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L74"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L70" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L74" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -420,9 +445,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 global configuration object that is implicitly used by <tt class="docutils literal"><span class="pre"><span class="Identifier">debugAst</span></span></tt> and <tt class="docutils literal"><span class="pre"><span class="Identifier">debugType</span></span></tt>. Can be used in order to configure behaviour of the debugging functions that could later be called from <tt class="docutils literal"><span class="pre"><span class="Identifier">gdb</span></span></tt> environment (<tt class="docutils literal"><span class="pre"><span class="Identifier">debugAst</span></span></tt>, <tt class="docutils literal"><span class="pre"><span class="Identifier">debugType</span></span></tt>, <tt class="docutils literal"><span class="pre"><span class="Identifier">debugSym</span></span></tt>), or sem execution tracer
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L209"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L227"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L209" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L227" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -437,25 +462,25 @@ class="link-seesrc" target="_blank">Source</a>
 
 Compacted tree repr configuration
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L199"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L216"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L199" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L216" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="defaultTReprConf">
 <dt><pre><a href="astrepr.html#defaultTReprConf"><span class="Identifier">defaultTReprConf</span></a> <span class="Other">=</span> <a href="astrepr.html#TReprConf"><span class="Identifier">TReprConf</span></a><span class="Other">(</span><span class="Identifier">maxDepth</span><span class="Other">:</span> <span class="DecNumber">120</span><span class="Other">,</span> <span class="Identifier">maxLen</span><span class="Other">:</span> <span class="DecNumber">30</span><span class="Other">,</span> <span class="Identifier">maxPath</span><span class="Other">:</span> <span class="DecNumber">1</span><span class="Other">,</span> <span class="Identifier">flags</span><span class="Other">:</span> <span class="Other">{</span>
-    <span class="DecNumber">trfReportInfo</span><span class="Other">,</span> <span class="DecNumber">trfSkipAuxError</span><span class="Other">,</span> <span class="DecNumber">trfShowSymFlags</span><span class="Other">,</span>
+    <span class="DecNumber">trfReportInfo</span><span class="Other">,</span> <span class="DecNumber">trfSkipAuxError</span><span class="Other">,</span> <span class="DecNumber">trfShowKindTypes</span><span class="Other">,</span> <span class="DecNumber">trfShowSymFlags</span><span class="Other">,</span>
     <span class="DecNumber">trfShowSymName</span><span class="Other">..</span><span class="DecNumber">trfShowSymOwner</span><span class="Other">,</span> <span class="DecNumber">trfShowSymOffset</span><span class="Other">..</span><span class="DecNumber">trfShowSymAlignment</span><span class="Other">,</span>
-    <span class="DecNumber">trfShowTypeCallConv</span><span class="Other">..</span><span class="DecNumber">trfShowTypeSym</span><span class="Other">,</span> <span class="DecNumber">trfShowTypeOwner</span><span class="Other">,</span>
+    <span class="DecNumber">trfShowFullSymTypes</span><span class="Other">,</span> <span class="DecNumber">trfShowTypeCallConv</span><span class="Other">..</span><span class="DecNumber">trfShowTypeSym</span><span class="Other">,</span> <span class="DecNumber">trfShowTypeOwner</span><span class="Other">,</span>
     <span class="DecNumber">trfShowNodeFlags</span><span class="Other">..</span><span class="DecNumber">trfShowNodeTypes</span><span class="Other">}</span><span class="Other">)</span></pre></dt>
 <dd>
 
 Default based configuration for the tree repr printing functions
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L159"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L172"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L159" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L172" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -469,25 +494,25 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L178"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L195"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L178" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L195" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="verboseTReprConf">
 <dt><pre><a href="astrepr.html#verboseTReprConf"><span class="Identifier">verboseTReprConf</span></a> <span class="Other">=</span> <span class="Keyword">block</span><span class="Other">:</span>   <span class="Comment">## Show absolutely everything</span>
   <span class="Keyword">var</span> <span class="Identifier">base</span> <span class="Other">=</span> <a href="astrepr.html#defaultTReprConf"><span class="Identifier">defaultTReprConf</span></a> <span class="Operator">+</span> <span class="Other">{</span><span class="Identifier">low</span><span class="Other">(</span><a href="astrepr.html#TReprFlag"><span class="Identifier">TReprFlag</span></a><span class="Other">)</span><span class="Other">..</span><span class="Identifier">high</span><span class="Other">(</span><a href="astrepr.html#TReprFlag"><span class="Identifier">TReprFlag</span></a><span class="Other">)</span><span class="Other">}</span> <span class="Operator">-</span>
-      <span class="Other">{</span><span class="Identifier">trfPackedFields</span><span class="Other">}</span>
+      <span class="Other">{</span><span class="Identifier">trfPackedFields</span><span class="Other">,</span> <span class="Identifier">trfDescFlag</span><span class="Other">}</span>
   <span class="Identifier">base</span><span class="Other">.</span><span class="Identifier">maxPath</span> <span class="Other">=</span> <span class="DecNumber">40</span>
   <span class="Identifier">base</span></pre></dt>
 <dd>
 
 Show absolutely everything
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L201"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L218"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L201" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L218" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -502,9 +527,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 Set of flags to print all fields in all tree reprs
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L139"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L153"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L139" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L153" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -519,9 +544,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L191"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L208"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L191" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L208" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -531,15 +556,16 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L195"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L212"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L195" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L212" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="debug,ConfigRef,">
 <dt><pre><span class="Keyword">proc</span> <a href="#debug%2CConfigRef%2C"><span class="Identifier">debug</span></a><span class="Other">(</span><span class="Identifier">conf</span><span class="Other">:</span> <a href="../front/options.html#ConfigRef"><span class="Identifier">ConfigRef</span></a><span class="Other">;</span> <span class="Identifier">it</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> <span class="Operator">|</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a> <span class="Operator">|</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">)</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">deprecated</span><span class="Other">:</span> <span class="StringLit">&quot;DEBUG proc, should not be used in the final build!&quot;</span></span>.}</pre></dt>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">deprecated</span><span class="Other">:</span> <span class="StringLit">&quot;DEBUG proc, should not be used in the final build!&quot;</span><span class="Other">,</span>
+    </span><span class="Identifier">noSideEffect</span>.}</pre></dt>
 <dd>
   <div class="deprecation-message">
     <b>Deprecated:</b> DEBUG proc, should not be used in the final build!
@@ -547,15 +573,16 @@ class="link-seesrc" target="_blank">Source</a>
 
 Print tree representation of the AST
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L790"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L875"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L790" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L875" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="debug,ConfigRef,,TReprConf">
 <dt><pre><span class="Keyword">proc</span> <a href="#debug%2CConfigRef%2C%2CTReprConf"><span class="Identifier">debug</span></a><span class="Other">(</span><span class="Identifier">conf</span><span class="Other">:</span> <a href="../front/options.html#ConfigRef"><span class="Identifier">ConfigRef</span></a><span class="Other">;</span> <span class="Identifier">it</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> <span class="Operator">|</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a> <span class="Operator">|</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">;</span> <span class="Identifier">tconf</span><span class="Other">:</span> <a href="astrepr.html#TReprConf"><span class="Identifier">TReprConf</span></a><span class="Other">)</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">deprecated</span><span class="Other">:</span> <span class="StringLit">&quot;DEBUG proc, should not be used in the final build!&quot;</span></span>.}</pre></dt>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">deprecated</span><span class="Other">:</span> <span class="StringLit">&quot;DEBUG proc, should not be used in the final build!&quot;</span><span class="Other">,</span>
+    </span><span class="Identifier">noSideEffect</span>.}</pre></dt>
 <dd>
   <div class="deprecation-message">
     <b>Deprecated:</b> DEBUG proc, should not be used in the final build!
@@ -563,30 +590,16 @@ class="link-seesrc" target="_blank">Source</a>
 
 Print tree representation of the AST
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L782"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L864"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L782" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-</div>
-<div id="debug">
-<dt><pre><span class="Keyword">proc</span> <a href="#debug"><span class="Identifier">debug</span></a><span class="Other">(</span><span class="Identifier">it</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> <span class="Operator">|</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a> <span class="Operator">|</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">deprecated</span><span class="Other">:</span> <span class="StringLit">&quot;DEBUG proc, should not be used in the final build!&quot;</span></span>.}</pre></dt>
-<dd>
-  <div class="deprecation-message">
-    <b>Deprecated:</b> DEBUG proc, should not be used in the final build!
-  </div>
-
-Convenience overload of <tt class="docutils literal"><span class="pre"><span class="Identifier">debugAst</span></span></tt>
-&nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L786"
-class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L786" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L864" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="debug,,TReprConf">
 <dt><pre><span class="Keyword">proc</span> <a href="#debug%2C%2CTReprConf"><span class="Identifier">debug</span></a><span class="Other">(</span><span class="Identifier">it</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> <span class="Operator">|</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a> <span class="Operator">|</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">;</span> <span class="Identifier">tconf</span><span class="Other">:</span> <a href="astrepr.html#TReprConf"><span class="Identifier">TReprConf</span></a><span class="Other">)</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">deprecated</span><span class="Other">:</span> <span class="StringLit">&quot;DEBUG proc, should not be used in the final build!&quot;</span></span>.}</pre></dt>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">deprecated</span><span class="Other">:</span> <span class="StringLit">&quot;DEBUG proc, should not be used in the final build!&quot;</span><span class="Other">,</span>
+    </span><span class="Identifier">noSideEffect</span>.}</pre></dt>
 <dd>
   <div class="deprecation-message">
     <b>Deprecated:</b> DEBUG proc, should not be used in the final build!
@@ -594,15 +607,32 @@ class="link-seesrc" target="_blank">Source</a>
 
 Convenience overload of <tt class="docutils literal"><span class="pre"><span class="Identifier">debugAst</span></span></tt>
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L778"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L859"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L778" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L859" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="debug">
+<dt><pre><span class="Keyword">proc</span> <a href="#debug"><span class="Identifier">debug</span></a><span class="Other">(</span><span class="Identifier">it</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> <span class="Operator">|</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a> <span class="Operator">|</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a><span class="Other">)</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">deprecated</span><span class="Other">:</span> <span class="StringLit">&quot;DEBUG proc, should not be used in the final build!&quot;</span><span class="Other">,</span>
+                                       </span><span class="Identifier">noSideEffect</span>.}</pre></dt>
+<dd>
+  <div class="deprecation-message">
+    <b>Deprecated:</b> DEBUG proc, should not be used in the final build!
+  </div>
+
+Convenience overload of <tt class="docutils literal"><span class="pre"><span class="Identifier">debugAst</span></span></tt>
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L870"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L870" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="debugAst,PNode">
 <dt><pre><span class="Keyword">proc</span> <a href="#debugAst%2CPNode"><span class="Identifier">debugAst</span></a><span class="Other">(</span><span class="Identifier">it</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">)</span> {.<span class="Identifier">exportc</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">deprecated</span><span class="Other">:</span> <span class="StringLit">&quot;DEBUG proc, should not be used in the final build!&quot;</span><span class="Other">,</span>
-                           <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
+                           </span><span class="Identifier">noSideEffect</span><span class="Other">,</span>
+                           <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
                            <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
   <div class="deprecation-message">
@@ -615,15 +645,16 @@ there is no <tt class="docutils literal"><span class="pre"><span class="Identifi
 This proc is annotated with <tt class="docutils literal"><span class="pre"><span class="Punctuation">{</span><span class="Operator">.</span><span class="Identifier">exportc</span><span class="Operator">.</span><span class="Punctuation">}</span></span></tt> which means it's mangled name exactly the same - <tt class="docutils literal"><span class="pre"><span class="Identifier">debugAst</span></span></tt> and you can call it from the <tt class="docutils literal"><span class="pre"><span class="Identifier">gdb</span></span></tt> debugging session.</div>
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L756"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L834"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L756" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L834" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="debugSym,PSym">
 <dt><pre><span class="Keyword">proc</span> <a href="#debugSym%2CPSym"><span class="Identifier">debugSym</span></a><span class="Other">(</span><span class="Identifier">it</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">)</span> {.<span class="Identifier">exportc</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">deprecated</span><span class="Other">:</span> <span class="StringLit">&quot;DEBUG proc, should not be used in the final build!&quot;</span><span class="Other">,</span>
-                          <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
+                          </span><span class="Identifier">noSideEffect</span><span class="Other">,</span>
+                          <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span>
                           <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
   <div class="deprecation-message">
@@ -632,15 +663,16 @@ class="link-seesrc" target="_blank">Source</a>
 
 Print out tree represntation of the symbol. Can also be used in gdb debugging session due to <tt class="docutils literal"><span class="pre"><span class="Operator">.</span><span class="Identifier">exportc</span><span class="Operator">.</span></span></tt> annotation
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L773"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L853"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L773" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L853" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="debugType,PType">
 <dt><pre><span class="Keyword">proc</span> <a href="#debugType%2CPType"><span class="Identifier">debugType</span></a><span class="Other">(</span><span class="Identifier">it</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a><span class="Other">)</span> {.<span class="Identifier">exportc</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">deprecated</span><span class="Other">:</span> <span class="StringLit">&quot;DEBUG proc, should not be used in the final build!&quot;</span><span class="Other">,</span>
-                            <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span>
+                            </span><span class="Identifier">noSideEffect</span><span class="Other">,</span>
+                            <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span>
                             <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
   <div class="deprecation-message">
@@ -649,9 +681,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 Print out tree represntation of the type. Can also be used in gdb debugging session due to <tt class="docutils literal"><span class="pre"><span class="Operator">.</span><span class="Identifier">exportc</span><span class="Operator">.</span></span></tt> annotation
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L768"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L847"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L768" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L847" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -661,9 +693,9 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L188"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L205"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L188" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L205" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -673,16 +705,31 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L185"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L202"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L185" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L202" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+</div>
+<div id="inDebug">
+<dt><pre><span class="Keyword">func</span> <a href="#inDebug"><span class="Identifier">inDebug</span></a><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Check whether current implicit compiler configuration is in the 'debug' range.<div class="admonition admonition-warning"><span class="admonition-warning-text"><b>Warning:</b></span>
+Requires implicit debug configuration to be set</div>
+
+&nbsp;&nbsp;<a
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L922"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L922" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="inFile,ConfigRef,,string,Slice[int]">
 <dt><pre><span class="Keyword">proc</span> <a href="#inFile%2CConfigRef%2C%2Cstring%2CSlice%5Bint%5D"><span class="Identifier">inFile</span></a><span class="Other">(</span><span class="Identifier">conf</span><span class="Other">:</span> <a href="../front/options.html#ConfigRef"><span class="Identifier">ConfigRef</span></a><span class="Other">;</span> <span class="Identifier">node</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> <span class="Operator">|</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">;</span> <span class="Identifier">file</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span>
             <span class="Identifier">lrange</span><span class="Other">:</span> <span class="Identifier">Slice</span><span class="Other">[</span><span class="Identifier">int</span><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">low</span><span class="Other">(</span><span class="Identifier">int</span><span class="Other">)</span> <span class="Operator">..</span> <span class="Identifier">high</span><span class="Other">(</span><span class="Identifier">int</span><span class="Other">)</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">deprecated</span><span class="Other">:</span> <span class="StringLit">&quot;DEBUG proc, should not be used in the final build!&quot;</span></span>.}</pre></dt>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">deprecated</span><span class="Other">:</span> <span class="StringLit">&quot;DEBUG proc, should not be used in the final build!&quot;</span><span class="Other">,</span>
+    </span><span class="Identifier">noSideEffect</span>.}</pre></dt>
 <dd>
   <div class="deprecation-message">
     <b>Deprecated:</b> DEBUG proc, should not be used in the final build!
@@ -690,40 +737,45 @@ class="link-seesrc" target="_blank">Source</a>
 
 Check if file name of the <tt class="docutils literal"><span class="pre"><span class="Identifier">info</span></span></tt> has <tt class="docutils literal"><span class="pre"><span class="Identifier">filename</span></span></tt> in it, and that node is located in the specified line range. For debugging purposes as it is pretty slow.
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L798"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L884"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L798" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L884" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="inFile,,string,Slice[int]">
 <dt><pre><span class="Keyword">proc</span> <a href="#inFile%2C%2Cstring%2CSlice%5Bint%5D"><span class="Identifier">inFile</span></a><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a> <span class="Operator">|</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">;</span> <span class="Identifier">file</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span>
             <span class="Identifier">lrange</span><span class="Other">:</span> <span class="Identifier">Slice</span><span class="Other">[</span><span class="Identifier">int</span><span class="Other">]</span> <span class="Other">=</span> <span class="Identifier">low</span><span class="Other">(</span><span class="Identifier">int</span><span class="Other">)</span> <span class="Operator">..</span> <span class="Identifier">high</span><span class="Other">(</span><span class="Identifier">int</span><span class="Other">)</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">deprecated</span><span class="Other">:</span> <span class="StringLit">&quot;DEBUG proc, should not be used in the final build!&quot;</span></span>.}</pre></dt>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">deprecated</span><span class="Other">:</span> <span class="StringLit">&quot;DEBUG proc, should not be used in the final build!&quot;</span><span class="Other">,</span>
+    </span><span class="Identifier">noSideEffect</span>.}</pre></dt>
 <dd>
   <div class="deprecation-message">
     <b>Deprecated:</b> DEBUG proc, should not be used in the final build!
   </div>
 
-Check if file name of the <tt class="docutils literal"><span class="pre"><span class="Identifier">info</span></span></tt> has <tt class="docutils literal"><span class="pre"><span class="Identifier">filename</span></span></tt> in it. For debugging purposes as it is pretty slow. Should be used like this:<dl class="docutils"><dt>..code-block::nim</dt>
-<dd><dl class="docutils"><dt>if inFile(conf, node.info, &quot;filename&quot;):</dt>
+<p>Check if file name of the <tt class="docutils literal"><span class="pre"><span class="Identifier">info</span></span></tt> has <tt class="docutils literal"><span class="pre"><span class="Identifier">filename</span></span></tt> in it. For debugging purposes as it is pretty slow. Should be used like this:</p>
+<p>..code-block::nim</p>
+<blockquote><p><dl class="docutils"><dt>if inFile(conf, node.info, &quot;filename&quot;):</dt>
 <dd>debug node # For example</dd>
 </dl>
-</dd>
-</dl>
+</p></blockquote>
 <p>This proc requries implicit debug config to be set, since information about nodde file names is not available otherwise.</p>
+<div class="admonition admonition-warning"><span class="admonition-warning-text"><b>Warning:</b></span>
+Requires implicit debug configuration to be set</div>
+<div class="admonition admonition-info"><span class="admonition-info-text"><b>Note:</b></span>
+It checks whether <tt class="docutils literal"><span class="pre"><span class="Identifier">file</span></span></tt> is a substring of the full path, so you can only write the a part of the name, like <tt class="docutils literal"><span class="pre"><span class="StringLit">&quot;osproc&quot;</span></span></tt> or <tt class="docutils literal"><span class="pre"><span class="StringLit">&quot;strutils&quot;</span></span></tt></div>
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L810"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L897"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L810" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L897" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="inLines,PNode,Slice[int]">
 <dt><pre><span class="Keyword">proc</span> <a href="#inLines%2CPNode%2CSlice%5Bint%5D"><span class="Identifier">inLines</span></a><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">;</span> <span class="Identifier">lrange</span><span class="Other">:</span> <span class="Identifier">Slice</span><span class="Other">[</span><span class="Identifier">int</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">deprecated</span><span class="Other">:</span> <span class="StringLit">&quot;DEBUG proc, should not be used in the final build!&quot;</span><span class="Other">,</span>
-    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+    </span><span class="Identifier">noSideEffect</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
   <div class="deprecation-message">
     <b>Deprecated:</b> DEBUG proc, should not be used in the final build!
@@ -731,16 +783,16 @@ class="link-seesrc" target="_blank">Source</a>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L794"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L880"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L794" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L880" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="setImplicitDebugConfRef,ConfigRef">
 <dt><pre><span class="Keyword">proc</span> <a href="#setImplicitDebugConfRef%2CConfigRef"><span class="Identifier">setImplicitDebugConfRef</span></a><span class="Other">(</span><span class="Identifier">conf</span><span class="Other">:</span> <a href="../front/options.html#ConfigRef"><span class="Identifier">ConfigRef</span></a><span class="Other">)</span> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">deprecated</span><span class="Other">:</span> <span class="StringLit">&quot;DEBUG proc, should not be used in the final build!&quot;</span><span class="Other">,</span>
-    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+    </span><span class="Identifier">noSideEffect</span><span class="Other">,</span> <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
   <div class="deprecation-message">
     <b>Deprecated:</b> DEBUG proc, should not be used in the final build!
@@ -748,16 +800,16 @@ class="link-seesrc" target="_blank">Source</a>
 
 Set implicit debug config reference.
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L752"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L829"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L752" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L829" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="treeRepr,ConfigRef,PNode,TReprConf,int">
 <dt><pre><span class="Keyword">proc</span> <a href="#treeRepr%2CConfigRef%2CPNode%2CTReprConf%2Cint"><span class="Identifier">treeRepr</span></a><span class="Other">(</span><span class="Identifier">conf</span><span class="Other">:</span> <a href="../front/options.html#ConfigRef"><span class="Identifier">ConfigRef</span></a><span class="Other">;</span> <span class="Identifier">pnode</span><span class="Other">:</span> <a href="../ast/ast_types.html#PNode"><span class="Identifier">PNode</span></a><span class="Other">;</span>
               <span class="Identifier">rconf</span><span class="Other">:</span> <a href="astrepr.html#TReprConf"><span class="Identifier">TReprConf</span></a> <span class="Other">=</span> <span class="Identifier">implicitTReprConf</span><span class="Other">;</span> <span class="Identifier">indent</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">0</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">ColText</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">]</span></span>.}</pre></dt>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 <p>Generate tree representation from <tt class="docutils literal"><span class="pre"><span class="Identifier">PNode</span></span></tt>.</p>
@@ -833,37 +885,37 @@ Output examples in the documentation might be slightly different from the actual
           <span class="Identifier">nflags</span><span class="Punctuation">:</span><span class="Punctuation">{</span><span class="Identifier">Sem</span><span class="Punctuation">}</span></pre><p>Note the <tt class="docutils literal"><span class="pre"><span class="Identifier">Error</span></span></tt> node at <tt class="docutils literal"><span class="pre"><span class="FloatNumber">0.1</span></span></tt> in the ast. In addition to the regular fields it shows error type (<tt class="docutils literal"><span class="pre"><span class="Identifier">CallTypeMismatch</span></span></tt> and error report id). Note that due to <tt class="docutils literal"><span class="pre"><span class="Identifier">nkError</span></span></tt> propagation AST contains multiple error nodes. Innermost was caused by missing <tt class="docutils literal"><span class="pre"><span class="Operator">+</span></span></tt> overload, and then <tt class="docutils literal"><span class="pre"><span class="Identifier">vmTarget</span></span></tt> also failed to resolve, due to malformed arguments. </p>
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L508"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L575"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L508" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L575" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="treeRepr,ConfigRef,PSym,TReprConf,int">
 <dt><pre><span class="Keyword">proc</span> <a href="#treeRepr%2CConfigRef%2CPSym%2CTReprConf%2Cint"><span class="Identifier">treeRepr</span></a><span class="Other">(</span><span class="Identifier">conf</span><span class="Other">:</span> <a href="../front/options.html#ConfigRef"><span class="Identifier">ConfigRef</span></a><span class="Other">;</span> <span class="Identifier">sym</span><span class="Other">:</span> <a href="../ast/ast_types.html#PSym"><span class="Identifier">PSym</span></a><span class="Other">;</span> <span class="Identifier">rconf</span><span class="Other">:</span> <a href="astrepr.html#TReprConf"><span class="Identifier">TReprConf</span></a> <span class="Other">=</span> <span class="Identifier">implicitTReprConf</span><span class="Other">;</span>
               <span class="Identifier">indent</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">0</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">ColText</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">]</span></span>.}</pre></dt>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L393"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L453"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L393" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L453" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
 <div id="treeRepr,ConfigRef,PType,TReprConf,int">
 <dt><pre><span class="Keyword">proc</span> <a href="#treeRepr%2CConfigRef%2CPType%2CTReprConf%2Cint"><span class="Identifier">treeRepr</span></a><span class="Other">(</span><span class="Identifier">conf</span><span class="Other">:</span> <a href="../front/options.html#ConfigRef"><span class="Identifier">ConfigRef</span></a><span class="Other">;</span> <span class="Identifier">typ</span><span class="Other">:</span> <a href="../ast/ast_types.html#PType"><span class="Identifier">PType</span></a><span class="Other">;</span> <span class="Identifier">rconf</span><span class="Other">:</span> <a href="astrepr.html#TReprConf"><span class="Identifier">TReprConf</span></a> <span class="Other">=</span> <span class="Identifier">implicitTReprConf</span><span class="Other">;</span>
               <span class="Identifier">indent</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">0</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">ColText</span> {.
-    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">]</span></span>.}</pre></dt>
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
 &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/b8024c5707426c06a4e0ea2e5239ef778e076fcb/compiler/utils/astrepr.nim#L442"
+href="https://github.com/nim-works/nimskull/tree/e508752133b8d567469a71965c58838b053c3d90/compiler/utils/astrepr.nim#L508"
 class="link-seesrc" target="_blank">Source</a>
-&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L442" class="link-seesrc" target="_blank" >Edit</a>
+&nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/compiler/utils/astrepr.nim#L508" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -877,7 +929,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-07-03 00:00:00 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-07-04 00:00:00 UTC</small>
       </div>
     </div>
   </div>

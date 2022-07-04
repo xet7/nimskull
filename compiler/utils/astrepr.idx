@@ -2,7 +2,9 @@ trfReportInfo	utils/astrepr.html#trfReportInfo	TReprFlag.trfReportInfo
 trfPackedFields	utils/astrepr.html#trfPackedFields	TReprFlag.trfPackedFields	
 trfSkipAuxError	utils/astrepr.html#trfSkipAuxError	TReprFlag.trfSkipAuxError	
 trfIndexVisisted	utils/astrepr.html#trfIndexVisisted	TReprFlag.trfIndexVisisted	
+trfShowKindTypes	utils/astrepr.html#trfShowKindTypes	TReprFlag.trfShowKindTypes	
 trfShowDefaultedFields	utils/astrepr.html#trfShowDefaultedFields	TReprFlag.trfShowDefaultedFields	
+trfShowNilFields	utils/astrepr.html#trfShowNilFields	TReprFlag.trfShowNilFields	
 trfShowSymFlags	utils/astrepr.html#trfShowSymFlags	TReprFlag.trfShowSymFlags	
 trfShowSymLineInfo	utils/astrepr.html#trfShowSymLineInfo	TReprFlag.trfShowSymLineInfo	
 trfShowSymName	utils/astrepr.html#trfShowSymName	TReprFlag.trfShowSymName	
@@ -16,10 +18,12 @@ trfShowSymOffset	utils/astrepr.html#trfShowSymOffset	TReprFlag.trfShowSymOffset
 trfShowSymBitsize	utils/astrepr.html#trfShowSymBitsize	TReprFlag.trfShowSymBitsize	
 trfShowSymAlignment	utils/astrepr.html#trfShowSymAlignment	TReprFlag.trfShowSymAlignment	
 trfShowSymAst	utils/astrepr.html#trfShowSymAst	TReprFlag.trfShowSymAst	
+trfShowFullSymTypes	utils/astrepr.html#trfShowFullSymTypes	TReprFlag.trfShowFullSymTypes	
 trfShowSymId	utils/astrepr.html#trfShowSymId	TReprFlag.trfShowSymId	
 trfShowTypeCallConv	utils/astrepr.html#trfShowTypeCallConv	TReprFlag.trfShowTypeCallConv	
 trfShowTypeFlags	utils/astrepr.html#trfShowTypeFlags	TReprFlag.trfShowTypeFlags	
 trfShowTypeSym	utils/astrepr.html#trfShowTypeSym	TReprFlag.trfShowTypeSym	
+trfShowTypeAst	utils/astrepr.html#trfShowTypeAst	TReprFlag.trfShowTypeAst	
 trfShowTypeAlloc	utils/astrepr.html#trfShowTypeAlloc	TReprFlag.trfShowTypeAlloc	
 trfShowTypeOwner	utils/astrepr.html#trfShowTypeOwner	TReprFlag.trfShowTypeOwner	
 trfShowTypeId	utils/astrepr.html#trfShowTypeId	TReprFlag.trfShowTypeId	
@@ -29,6 +33,7 @@ trfShowNodeIds	utils/astrepr.html#trfShowNodeIds	TReprFlag.trfShowNodeIds
 trfShowNodeComments	utils/astrepr.html#trfShowNodeComments	TReprFlag.trfShowNodeComments	
 trfShowNodeErrors	utils/astrepr.html#trfShowNodeErrors	TReprFlag.trfShowNodeErrors	
 trfShowNodeTypes	utils/astrepr.html#trfShowNodeTypes	TReprFlag.trfShowNodeTypes	
+trfDescFlag	utils/astrepr.html#trfDescFlag	TReprFlag.trfDescFlag	
 TReprFlag	utils/astrepr.html#TReprFlag	astrepr: TReprFlag	
 TReprConf	utils/astrepr.html#TReprConf	astrepr: TReprConf	
 treeReprAllFields	utils/astrepr.html#treeReprAllFields	astrepr: treeReprAllFields	
@@ -50,8 +55,9 @@ debugType	utils/astrepr.html#debugType,PType	astrepr: debugType(it: PType)
 debugSym	utils/astrepr.html#debugSym,PSym	astrepr: debugSym(it: PSym)	
 debug	utils/astrepr.html#debug,,TReprConf	astrepr: debug(it: PNode | PSym | PNode; tconf: TReprConf)	
 debug	utils/astrepr.html#debug,ConfigRef,,TReprConf	astrepr: debug(conf: ConfigRef; it: PNode | PType | PSym; tconf: TReprConf)	
-debug	utils/astrepr.html#debug	astrepr: debug(it: PNode | PSym | PNode)	
+debug	utils/astrepr.html#debug	astrepr: debug(it: PNode | PSym | PType)	
 debug	utils/astrepr.html#debug,ConfigRef,	astrepr: debug(conf: ConfigRef; it: PNode | PType | PSym)	
 inLines	utils/astrepr.html#inLines,PNode,Slice[int]	astrepr: inLines(node: PNode; lrange: Slice[int]): bool	
 inFile	utils/astrepr.html#inFile,ConfigRef,,string,Slice[int]	astrepr: inFile(conf: ConfigRef; node: PNode | PSym; file: string;\n       lrange: Slice[int] = low(int) .. high(int)): bool	
 inFile	utils/astrepr.html#inFile,,string,Slice[int]	astrepr: inFile(node: PNode | PSym; file: string;\n       lrange: Slice[int] = low(int) .. high(int)): bool	
+inDebug	utils/astrepr.html#inDebug	astrepr: inDebug(): bool	
