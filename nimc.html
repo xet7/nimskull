@@ -119,7 +119,12 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference" id="crossminuscompilation-for-android_toc" href="#crossminuscompilation-for-android">Cross-compilation for Android</a></li>
 <li><a class="reference" id="crossminuscompilation-for-ios_toc" href="#crossminuscompilation-for-ios">Cross-compilation for iOS</a></li>
 <li><a class="reference" id="crossminuscompilation-for-nintendo-switch_toc" href="#crossminuscompilation-for-nintendo-switch">Cross-compilation for Nintendo Switch</a></li>
-<li><a class="reference" id="dll-generation_toc" href="#dll-generation">DLL generation</a></li>
+<li><a class="reference" id="usage-with-other-build-systems_toc" href="#usage-with-other-build-systems">Usage with other build systems</a></li>
+<ul class="simple"><li><a class="reference" id="usage-with-other-build-systems-use-the-depfile-in-makefile_toc" href="#usage-with-other-build-systems-use-the-depfile-in-makefile">Use the depfile in Makefile</a></li>
+<li><a class="reference" id="usage-with-other-build-systems-use-the-depfile-in-ninja_toc" href="#usage-with-other-build-systems-use-the-depfile-in-ninja">Use the depfile in Ninja</a></li>
+<li><a class="reference" id="usage-with-other-build-systems-use-the-depfile-in-cmake_toc" href="#usage-with-other-build-systems-use-the-depfile-in-cmake">Use the depfile in CMake</a></li>
+<li><a class="reference" id="usage-with-other-build-systems-use-the-depfile-in-meson_toc" href="#usage-with-other-build-systems-use-the-depfile-in-meson">Use the depfile in Meson</a></li>
+</ul><li><a class="reference" id="dll-generation_toc" href="#dll-generation">DLL generation</a></li>
 <li><a class="reference" id="additional-compilation-switches_toc" href="#additional-compilation-switches">Additional compilation switches</a></li>
 <li><a class="reference" id="configuration-variables_toc" href="#configuration-variables">Configuration variables</a></li>
 <li><a class="reference" id="additional-features_toc" href="#additional-features">Additional Features</a></li>
@@ -141,7 +146,7 @@ window.addEventListener('DOMContentLoaded', main);
 
   </div>
   &nbsp;&nbsp;<a
-href="https://github.com/nim-works/nimskull/tree/82774f0f33a508b7c3c637ce715b5200c5c8b683/doc/nimc.rst#L1"
+href="https://github.com/nim-works/nimskull/tree/75f5e4750a7fe1323e114b24f3f4129789b25161/doc/nimc.rst#L1"
 class="link-seesrc" target="_blank">Source</a>
 &nbsp;&nbsp;<a href="https://github.com/nim-works/nimskull/edit/devel/doc/nimc.rst#L1" class="link-seesrc" target="_blank" >Edit</a>
 
@@ -149,7 +154,7 @@ class="link-seesrc" target="_blank">Source</a>
   <div id="tocRoot"></div>
   
   <p class="module-desc"><table class="docinfo" frame="void" rules="none"><col class="docinfo-name" /><col class="docinfo-content" /><tbody valign="top"><tr><th class="docinfo-name">Author:</th><td>Andreas Rumpf</td></tr>
-<tr><th class="docinfo-name">Version:</th><td>0.1.0-dev.20297</td></tr>
+<tr><th class="docinfo-name">Version:</th><td>0.1.0-dev.20299</td></tr>
 </tbody></table><blockquote><p>&quot;Look at you, hacker. A pathetic creature of meat and bone, panting and sweating as you run through my corridors. How can you challenge a perfect, immortal machine?&quot;</p></blockquote>
 
 <h1><a class="toc-backref" id="introduction" href="#introduction">Introduction</a></h1><p>This document describes the usage of the <em>Nim compiler</em> on the different supported platforms. It is not a definition of the Nim programming language (which is covered in the <a class="reference external" href="manual.html">manual</a>).</p>
@@ -459,6 +464,31 @@ arm.linux.gcc.linkerexe = &quot;arm-linux-gcc&quot;</pre>
 <li>As mmap is not supported, the nimAllocPagesViaMalloc option has to be used.</li>
 </ol>
 
+<h1><a class="toc-backref" id="usage-with-other-build-systems" href="#usage-with-other-build-systems">Usage with other build systems</a></h1>
+<h2><a class="toc-backref" id="usage-with-other-build-systems-use-the-depfile-in-makefile" href="#usage-with-other-build-systems-use-the-depfile-in-makefile">Use the depfile in Makefile</a></h2><pre class="listing">main: main.nim
+   nim c $(NIMFLAGS) --depfile $@.d $&lt;
+
+-include main.d</pre>
+<h2><a class="toc-backref" id="usage-with-other-build-systems-use-the-depfile-in-ninja" href="#usage-with-other-build-systems-use-the-depfile-in-ninja">Use the depfile in Ninja</a></h2><pre class="listing">rule nimc:
+  deps = gcc
+  depfile = $out.d
+  command = nim c $nimflags --depfile $out.d $in
+
+build main: nimc main.nim</pre>
+<h2><a class="toc-backref" id="usage-with-other-build-systems-use-the-depfile-in-cmake" href="#usage-with-other-build-systems-use-the-depfile-in-cmake">Use the depfile in CMake</a></h2><pre class="listing">add_custom_command(
+    OUTPUT main
+    COMMAND nim c ${NIMFLAGS} --depfile main.d main.nim
+    DEPFILE main.d
+    VERBATIM
+)</pre>
+<h2><a class="toc-backref" id="usage-with-other-build-systems-use-the-depfile-in-meson" href="#usage-with-other-build-systems-use-the-depfile-in-meson">Use the depfile in Meson</a></h2><pre class="listing">nim = find_program('nim')
+custom_target(
+  input : 'main.nim',
+  output : 'main',
+  depfile : '@BASENAME@.d',
+  command : [nim, 'c', '--depfile', '@DEPFILE@', '@INPUT@'],
+  build_by_default : true
+)</pre>
 <h1><a class="toc-backref" id="dll-generation" href="#dll-generation">DLL generation</a></h1><p>Nim supports the generation of DLLs. However, there must be only one instance of the GC per process/address space. This instance is contained in <tt class="docutils literal"><span class="pre">nimrtl.dll</span></tt>. This means that every generated Nim DLL depends on <tt class="docutils literal"><span class="pre">nimrtl.dll</span></tt>. To generate the &quot;nimrtl.dll&quot; file, use the command:</p>
 <pre class="listing"><span class="program">nim</span> <span class="option">c</span> <span class="option">-d:release</span> <span class="Identifier">lib/nimrtl.nim</span></pre><p>To link against <tt class="docutils literal"><span class="pre">nimrtl.dll</span></tt> use the command:</p>
 <pre class="listing"><span class="program">nim</span> <span class="option">c</span> <span class="option">-d:useNimRtl</span> <span class="Identifier">myprog.nim</span></pre><p><strong>Note</strong>: Currently the creation of <tt class="docutils literal"><span class="pre">nimrtl.dll</span></tt> with thread support has never been tested and is unlikely to work!</p>

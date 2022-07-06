@@ -19,6 +19,11 @@ Cross-compilation for Windows	nimc.html#crossminuscompilation-for-windows	 Cross
 Cross-compilation for Android	nimc.html#crossminuscompilation-for-android	 Cross-compilation for Android	
 Cross-compilation for iOS	nimc.html#crossminuscompilation-for-ios	 Cross-compilation for iOS	
 Cross-compilation for Nintendo Switch	nimc.html#crossminuscompilation-for-nintendo-switch	 Cross-compilation for Nintendo Switch	
+Usage with other build systems	nimc.html#usage-with-other-build-systems	 Usage with other build systems	
+Use the depfile in Makefile	nimc.html#usage-with-other-build-systems-use-the-depfile-in-makefile	  Use the depfile in Makefile	
+Use the depfile in Ninja	nimc.html#usage-with-other-build-systems-use-the-depfile-in-ninja	  Use the depfile in Ninja	
+Use the depfile in CMake	nimc.html#usage-with-other-build-systems-use-the-depfile-in-cmake	  Use the depfile in CMake	
+Use the depfile in Meson	nimc.html#usage-with-other-build-systems-use-the-depfile-in-meson	  Use the depfile in Meson	
 DLL generation	nimc.html#dll-generation	 DLL generation	
 Additional compilation switches	nimc.html#additional-compilation-switches	 Additional compilation switches	
 malloc	nimc.html#malloc_1	Additional compilation switches	
