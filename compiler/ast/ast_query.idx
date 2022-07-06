@@ -113,3 +113,21 @@ canRaiseConservative	ast/ast_query.html#canRaiseConservative,PNode	ast_query: ca
 canRaise	ast/ast_query.html#canRaise,PNode	ast_query: canRaise(fn: PNode): bool	
 skipAddr	ast/ast_query.html#skipAddr,PNode	ast_query: skipAddr(n: PNode): PNode	
 isNewStyleConcept	ast/ast_query.html#isNewStyleConcept,PNode	ast_query: isNewStyleConcept(n: PNode): bool	
+PosLastIdent	ast/ast_query.html#PosLastIdent	NodePosName.PosLastIdent	
+PosType	ast/ast_query.html#PosType	NodePosName.PosType	
+PosInit	ast/ast_query.html#PosInit	NodePosName.PosInit	
+PosProcBody	ast/ast_query.html#PosProcBody	NodePosName.PosProcBody	
+PosProcReturn	ast/ast_query.html#PosProcReturn	NodePosName.PosProcReturn	
+PosProcArgs	ast/ast_query.html#PosProcArgs	NodePosName.PosProcArgs	
+PosTypeBody	ast/ast_query.html#PosTypeBody	NodePosName.PosTypeBody	
+PosName	ast/ast_query.html#PosName	NodePosName.PosName	
+PosBody	ast/ast_query.html#PosBody	NodePosName.PosBody	
+PosPragma	ast/ast_query.html#PosPragma	NodePosName.PosPragma	
+NodePosName	ast/ast_query.html#NodePosName	ast_query: NodePosName	
+SliceAllIdents	ast/ast_query.html#SliceAllIdents	NodeSliceName.SliceAllIdents	
+SliceAllArguments	ast/ast_query.html#SliceAllArguments	NodeSliceName.SliceAllArguments	
+SliceAllBranches	ast/ast_query.html#SliceAllBranches	NodeSliceName.SliceAllBranches	
+SliceBranchExpressions	ast/ast_query.html#SliceBranchExpressions	NodeSliceName.SliceBranchExpressions	
+NodeSliceName	ast/ast_query.html#NodeSliceName	ast_query: NodeSliceName	
+`[]`	ast/ast_query.html#[],PNode,NodePosName	ast_query: `[]`(node: PNode; pos: NodePosName): PNode	
+`[]`	ast/ast_query.html#[],PNode,NodeSliceName	ast_query: `[]`(node: PNode; slice: NodeSliceName): seq[PNode]	
